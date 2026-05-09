@@ -1,0 +1,38 @@
+// ── Colors ────────────────────────────────────────────────────────────────────
+
+$pink:          #FF007B;
+$pink-dark:     #b30056;
+$pink-muted:    #ff4da6;
+$pink-glow:     rgba(255, 0, 123, 0.25);
+
+$blue:          #00A6FF;
+$blue-dark:     #0073b3;
+$blue-muted:    #4dc3ff;
+$blue-glow:     rgba(0, 166, 255, 0.25);
+
+$bg:            #040c1c;
+$bg-raised:     #091530;
+$bg-surface:    #0e1c3e;
+$bg-border:     #162450;
+
+$text:          #e8eaf6;
+$text-muted:    #8892b0;
+
+// ── Typography ────────────────────────────────────────────────────────────────
+
+$font:          'Press Start 2P', system-ui, monospace;
+
+$text-xs:       0.5rem;
+$text-sm:       0.625rem;
+$text-base:     0.75rem;
+$text-md:       1rem;
+$text-lg:       1.25rem;
+$text-xl:       1.75rem;
+$text-2xl:      2.5rem;
+
+$leading:       1.8;
+
+// ── Layout ────────────────────────────────────────────────────────────────────
+
+$nav-width:     96px;
+$nav-z:         1000;

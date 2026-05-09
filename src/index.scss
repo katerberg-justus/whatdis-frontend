@@ -1,0 +1,68 @@
+@use './styles/variables' as *;
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+// ── Reset & Base ──────────────────────────────────────────────────────────────
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: $font;
+  font-size: $text-base;
+  line-height: $leading;
+  background-color: $bg;
+  color: $text;
+  -webkit-font-smoothing: none;
+}
+
+a {
+  color: $blue;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover { color: $blue-muted; }
+}
+
+p {
+  text-transform: uppercase;
+}
+
+h1 { font-size: $text-2xl; }
+h2 { font-size: $text-xl; }
+h3 { font-size: $text-lg; }
+h4 { font-size: $text-md; }
+h5 { font-size: $text-base; }
+h6 { font-size: $text-sm; }
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.4;
+  color: $text;
+  text-transform: uppercase;
+}
+
+// ── App layout ────────────────────────────────────────────────────────────────
+
+.app {
+  display: flex;
+  height: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem;
+
+  // leave room for fixed hamburger on mobile
+  padding-top: 4.5rem;
+
+  @media (min-width: 768px) {
+    padding-top: 1.5rem;
+    margin-left: $nav-width;
+  }
+}

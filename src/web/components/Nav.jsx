@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router'
+import { useAuth } from '../context/AuthContext'
 import './Nav.scss'
 
 // Pixel-art icons — 16×16 viewBox, each logical pixel = 2×2 units
@@ -55,6 +56,7 @@ const mainLinks = [
 export default function Nav() {
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
+  const { user } = useAuth()
 
   return (
     <nav className={`nav${open ? ' nav--open' : ''}`}>
@@ -82,10 +84,17 @@ export default function Nav() {
 
         <ul className="nav__bottom">
           <li>
-            <NavLink to="/account" end className="nav__link nav__link--account" onClick={close}>
-              <span className="nav__icon"><IconAccount /></span>
-              <span>Account</span>
-            </NavLink>
+            {user ? (
+              <NavLink to="/account" end className="nav__link nav__link--account" onClick={close}>
+                <span className="nav__icon"><IconAccount /></span>
+                <span>Account</span>
+              </NavLink>
+            ) : (
+              <NavLink to="/register" end className="nav__link nav__link--account" onClick={close}>
+                <span className="nav__icon"><IconAccount /></span>
+                <span>Sign Up</span>
+              </NavLink>
+            )}
           </li>
         </ul>
       </div>

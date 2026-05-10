@@ -57,12 +57,15 @@ h1, h2, h3, h4, h5, h6 {
 .main-content {
   flex: 1;
   padding: 1.5rem;
-
-  // leave room for fixed hamburger on mobile
   padding-top: 4.5rem;
 
   @media (min-width: 768px) {
     padding-top: 1.5rem;
     margin-left: $nav-width;
+  }
+
+  &--full {
+    padding-top: 1.5rem;
+    margin-left: 0;
   }
 }

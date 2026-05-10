@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../../context/AuthContext'
 import Button from '../../../components/Button'
+import LockedOverlay from '../../../components/LockedOverlay'
 import './ChallengesPage.scss'
 
 const DAILY = [
@@ -26,6 +28,7 @@ const PACKS = [
 
 export default function ChallengesPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   return (
     <div className="challenges">
@@ -54,23 +57,33 @@ export default function ChallengesPage() {
 
       <section>
         <h2 className="challenges__section-title">Challenge Packs</h2>
-        <div className="challenges__packs">
-          {PACKS.map(({ id, name, total, completed }) => {
-            const pct = Math.round((completed / total) * 100)
-            return (
-              <div
-                key={id}
-                className="challenges__pack-card"
-                onClick={() => navigate(`/packs/${id}/challenges`)}
-              >
-                <span className="challenges__pack-name">{name}</span>
-                <span className="challenges__pack-count">{completed}/{total}</span>
-                <div className="challenges__progress">
-                  <div className="challenges__progress-fill" style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            )
-          })}
+        <div className="locked-wrap">
+          <div className={user ? undefined : 'locked-wrap__content'}>
+            <div className="challenges__packs">
+              {PACKS.map(({ id, name, total, completed }) => {
+                const pct = Math.round((completed / total) * 100)
+                return (
+                  <div
+                    key={id}
+                    className="challenges__pack-card"
+                    onClick={() => navigate(`/packs/${id}/challenges`)}
+                  >
+                    <span className="challenges__pack-name">{name}</span>
+                    <span className="challenges__pack-count">{completed}/{total}</span>
+                    <div className="challenges__progress">
+                      <div className="challenges__progress-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+          {!user && (
+            <LockedOverlay
+              title="Unlock Challenge Packs"
+              message="Create an account to access curated challenge packs."
+            />
+          )}
         </div>
       </section>
 

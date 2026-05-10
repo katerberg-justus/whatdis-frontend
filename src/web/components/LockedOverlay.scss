@@ -1,0 +1,58 @@
+@use '../styles/variables' as *;
+
+.locked-wrap {
+  position: relative;
+
+  &__content {
+    filter: blur(3px);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.5;
+  }
+}
+
+.locked-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 1.5rem;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: $text-muted;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+  }
+
+  &__title {
+    font-size: $text-sm;
+    color: $text;
+  }
+
+  &__message {
+    font-size: $text-xs;
+    color: $text-muted;
+    max-width: 280px;
+    line-height: $leading;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

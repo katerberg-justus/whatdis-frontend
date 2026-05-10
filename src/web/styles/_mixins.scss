@@ -1,0 +1,59 @@
+@use 'variables' as *;
+
+// Shared control tokens — keep button and input pixel-identical
+$control-padding:   0.75rem 1rem;
+$control-font-size: $text-xs;
+$control-line-height: 1;
+
+// Raised panel with border
+@mixin card {
+  background: $bg-raised;
+  border: 2px solid $bg-border;
+}
+
+// Retro outlined button — inherits $font, snaps on hover (no transition)
+@mixin retro-btn($color: $text) {
+  box-sizing: border-box;
+  appearance: none;
+  display: inline-block;
+  font-family: $font;
+  font-size: $control-font-size;
+  line-height: $control-line-height;
+  cursor: pointer;
+  background: $bg-surface;
+  border: 2px solid $color;
+  color: $color;
+  padding: $control-padding;
+  min-width: 80px;
+  margin: 0;
+
+  &:hover {
+    background: $color;
+    color: $bg;
+  }
+}
+
+// Retro text input
+@mixin retro-input {
+  box-sizing: border-box;
+  appearance: none;
+  display: block;
+  font-family: $font;
+  font-size: $control-font-size;
+  line-height: $control-line-height;
+  background: $bg-surface;
+  border: 2px solid $bg-border;
+  color: $text;
+  padding: $control-padding;
+  margin: 0;
+  outline: none;
+  width: 100%;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $blue;
+  }
+}

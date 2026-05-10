@@ -1,0 +1,119 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+$footer-height: 4rem;
+
+.battles {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: $footer-height + 1rem;
+
+  // ── Section title ─────────────────────────────────────────────────────────
+
+  &__section-title {
+    font-size: $text-sm;
+    color: $text-muted;
+    margin-bottom: 0.75rem;
+  }
+
+  // ── Shared list ───────────────────────────────────────────────────────────
+
+  &__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  // ── Shared block styles ───────────────────────────────────────────────────
+
+  &__invite,
+  &__battle {
+    @include card;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+    cursor: pointer;
+
+    &:hover { border-color: $blue; }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  &__opponent {
+    font-size: $text-sm;
+    color: $text;
+  }
+
+  &__meta {
+    font-size: $text-xs;
+    color: $text-muted;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__diff {
+    font-size: $text-xs;
+    padding: 0.125rem 0.375rem;
+    border: 2px solid;
+
+    &--easy   { color: $green; border-color: $green; }
+    &--medium { color: $blue;  border-color: $blue; }
+    &--hard   { color: $pink;  border-color: $pink; }
+  }
+
+  // ── Invite actions ────────────────────────────────────────────────────────
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  // ── Ongoing battle status ─────────────────────────────────────────────────
+
+  &__status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.375rem;
+    flex-shrink: 0;
+  }
+
+  &__score {
+    font-size: $text-sm;
+    color: $text;
+  }
+
+  &__turn {
+    font-size: $text-xs;
+
+    &--yours  { color: $green; }
+    &--theirs { color: $text-muted; }
+  }
+
+  // ── Fixed footer ──────────────────────────────────────────────────────────
+
+  &__footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: $bg;
+    border-top: 2px solid $bg-border;
+
+    @media (min-width: 768px) {
+      left: $nav-width;
+    }
+  }
+}

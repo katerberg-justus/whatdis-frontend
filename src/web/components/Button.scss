@@ -1,0 +1,12 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.btn {
+  &--default { @include retro-btn($text); }
+  &--blue    { @include retro-btn($blue); }
+  &--pink    { @include retro-btn($pink); }
+  &--green   { @include retro-btn($green); }
+  &--muted   { @include retro-btn($text-muted); }
+
+  &--full    { width: 100%; }
+}

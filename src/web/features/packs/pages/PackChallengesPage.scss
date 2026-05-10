@@ -1,0 +1,61 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.pack-challenges {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  // ── Header ─────────────────────────────────────────────────────────────────
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .btn {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  }
+
+  &__title {
+    font-size: $text-sm;
+    color: $text;
+  }
+
+  // ── Grid ───────────────────────────────────────────────────────────────────
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+
+    @media (min-width: 480px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__card {
+    @include card;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover { border-color: $blue; }
+  }
+
+  &__card-number { font-size: $text-xs; color: $text-muted; }
+  &__card-name   { font-size: $text-xs; color: $text; }
+  &__not-found   { font-size: $text-sm; color: $text-muted; }
+}

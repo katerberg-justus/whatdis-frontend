@@ -24,36 +24,15 @@
     @media (min-width: 768px) {
       flex-direction: row;
     }
-  }
 
-  &__daily-card {
-    @include card;
-    flex: 1;
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1.25rem;
-
-    @media (min-width: 768px) {
-      aspect-ratio: unset;
-      height: 260px;
-    }
-  }
-
-  &__daily-title {
-    font-size: $text-sm;
-    color: $text;
-    margin-bottom: auto;
-  }
-
-  &__difficulties {
-    display: flex;
-    gap: 0.5rem;
-
-    .btn {
+    .challenge-card {
       flex: 1;
-      padding: 0.5rem 0;
-      text-align: center;
+      aspect-ratio: 1;
+
+      @media (min-width: 768px) {
+        aspect-ratio: unset;
+        height: 260px;
+      }
     }
   }
 

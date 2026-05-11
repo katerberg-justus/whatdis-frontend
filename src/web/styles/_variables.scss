@@ -13,6 +13,8 @@ $blue-glow:     rgba(0, 166, 255, 0.25);
 $green:         #00e59a;
 $green-dark:    #00a36e;
 
+$orange:        #ff8c00;
+
 $bg:            #040c1c;
 $bg-raised:     #091530;
 $bg-surface:    #0e1c3e;
@@ -37,5 +39,6 @@ $leading:       1.8;
 
 // ── Layout ────────────────────────────────────────────────────────────────────
 
-$nav-width:     96px;
-$nav-z:         1000;
+$nav-width:         96px;
+$nav-z:             1000;
+$status-bar-height: 2.75rem;

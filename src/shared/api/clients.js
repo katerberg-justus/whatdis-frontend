@@ -4,8 +4,8 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000'
 
 const CSRF_METHODS = new Set(['post', 'put', 'patch', 'delete'])
 
-function getCsrfToken() {
-  const match = document.cookie.match(/(?:^|;\s*)csrf_access_token=([^;]*)/)
+function getCsrfToken(name = 'csrf_access_token') {
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`))
   return match ? decodeURIComponent(match[1]) : null
 }
 
@@ -34,7 +34,10 @@ apiClient.interceptors.response.use(
     if (err.response?.status === 401 && !original._retry) {
       original._retry = true
       try {
-        await authClient.post('/auth/refresh')
+        const refreshCsrf = getCsrfToken('csrf_refresh_token')
+        await authClient.post('/auth/refresh', null, {
+          headers: refreshCsrf ? { 'X-CSRF-TOKEN': refreshCsrf } : {},
+        })
         return apiClient(original)
       } catch {
         localStorage.removeItem('user')

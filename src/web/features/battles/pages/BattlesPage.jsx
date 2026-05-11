@@ -1,20 +1,11 @@
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
+import { useLang } from '../../../context/LangContext'
+import { apiGetBattles, apiAcceptBattle, apiDeclineBattle } from '@shared/api/battles'
 import Button from '../../../components/Button'
 import LockedOverlay from '../../../components/LockedOverlay'
 import './BattlesPage.scss'
-
-const INVITES = [
-  { id: 1, from: 'PixelKing',  pack: 'Animals', difficulty: 'hard' },
-  { id: 2, from: 'RetroQueen', pack: 'Tech',     difficulty: 'medium' },
-]
-
-const ONGOING = [
-  { id: 1, opponent: 'PixelKing',    pack: 'Kitchen Appliances', difficulty: 'easy',   yourTurn: true,  score: [2, 1] },
-  { id: 2, opponent: 'RetroQueen',   pack: 'Animals',            difficulty: 'hard',   yourTurn: false, score: [0, 3] },
-  { id: 3, opponent: 'GlitchWizard', pack: 'Cities',             difficulty: 'medium', yourTurn: true,  score: [1, 1] },
-  { id: 4, opponent: 'NeonShadow',   pack: 'Sports',             difficulty: 'easy',   yourTurn: false, score: [3, 2] },
-]
 
 const IconLock = () => (
   <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges">
@@ -25,9 +16,42 @@ const IconLock = () => (
   </svg>
 )
 
+function battleOpponent(battle, userId) {
+  return battle.challenger?.id === userId
+    ? battle.challenged?.username
+    : battle.challenger?.username
+}
+
+function battleScores(battle, userId) {
+  if (battle.challenger?.id === userId) {
+    return [battle.challenger_score ?? 0, battle.challenged_score ?? 0]
+  }
+  return [battle.challenged_score ?? 0, battle.challenger_score ?? 0]
+}
+
 export default function BattlesPage() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { user }  = useAuth()
+  const navigate  = useNavigate()
+  const { t }     = useLang()
+  const [battles, setBattles] = useState([])
+
+  const loadBattles = useCallback(() => {
+    if (!user) return
+    apiGetBattles().then(setBattles).catch(() => {})
+  }, [user])
+
+  useEffect(() => { loadBattles() }, [loadBattles])
+
+  const invites = battles.filter(b => b.status === 'pending' && b.challenged?.id === user?.id)
+  const ongoing = battles.filter(b => b.status === 'active')
+
+  async function handleAccept(battleId) {
+    try { await apiAcceptBattle(battleId); loadBattles() } catch {}
+  }
+
+  async function handleDecline(battleId) {
+    try { await apiDeclineBattle(battleId); loadBattles() } catch {}
+  }
 
   return (
     <div className="battles">
@@ -35,22 +59,24 @@ export default function BattlesPage() {
       <div className="locked-wrap">
         <div className={user ? undefined : 'locked-wrap__content'}>
 
-          {INVITES.length > 0 && (
+          {invites.length > 0 && (
             <section className="battles__section">
-              <h2 className="battles__section-title">Pending Invites</h2>
+              <h2 className="battles__section-title">{t('battles.pendingInvites')}</h2>
               <ul className="battles__list">
-                {INVITES.map(({ id, from, pack, difficulty }) => (
-                  <li key={id} className="battles__invite">
+                {invites.map((battle) => (
+                  <li key={battle.id} className="battles__invite">
                     <div className="battles__info">
-                      <span className="battles__opponent">{from}</span>
+                      <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
                       <span className="battles__meta">
-                        {pack}
-                        <span className={`battles__diff battles__diff--${difficulty}`}>{difficulty}</span>
+                        {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
+                        <span className={`battles__diff battles__diff--${battle.difficulty}`}>
+                          {battle.difficulty}
+                        </span>
                       </span>
                     </div>
                     <div className="battles__actions">
-                      <Button color="green">Accept</Button>
-                      <Button color="muted">Decline</Button>
+                      <Button color="green" onClick={() => handleAccept(battle.id)}>{t('battles.accept')}</Button>
+                      <Button color="muted" onClick={() => handleDecline(battle.id)}>{t('battles.decline')}</Button>
                     </div>
                   </li>
                 ))}
@@ -59,25 +85,37 @@ export default function BattlesPage() {
           )}
 
           <section className="battles__section">
-            <h2 className="battles__section-title">Ongoing</h2>
+            <h2 className="battles__section-title">{t('battles.ongoing')}</h2>
             <ul className="battles__list">
-              {ONGOING.map(({ id, opponent, pack, difficulty, yourTurn, score }) => (
-                <li key={id} className="battles__battle">
-                  <div className="battles__info">
-                    <span className="battles__opponent">{opponent}</span>
-                    <span className="battles__meta">
-                      {pack}
-                      <span className={`battles__diff battles__diff--${difficulty}`}>{difficulty}</span>
-                    </span>
-                  </div>
-                  <div className="battles__status">
-                    <span className="battles__score">{score[0]} – {score[1]}</span>
-                    <span className={`battles__turn battles__turn--${yourTurn ? 'yours' : 'theirs'}`}>
-                      {yourTurn ? 'Your turn' : 'Their turn'}
-                    </span>
-                  </div>
-                </li>
-              ))}
+              {ongoing.map((battle) => {
+                const [myScore, theirScore] = battleScores(battle, user?.id)
+                const myTurn = battle.current_player_id === user?.id
+                return (
+                  <li
+                    key={battle.id}
+                    className="battles__battle"
+                    onClick={() => navigate(`/battles/${battle.id}`)}
+                  >
+                    <div className="battles__info">
+                      <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
+                      <span className="battles__meta">
+                        {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
+                        <span className={`battles__diff battles__diff--${battle.difficulty}`}>
+                          {battle.difficulty}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="battles__status">
+                      <span className="battles__score">{myScore} – {theirScore}</span>
+                      {battle.current_player_id != null && (
+                        <span className={`battles__turn battles__turn--${myTurn ? 'yours' : 'theirs'}`}>
+                          {myTurn ? t('battles.yourTurn') : t('battles.theirTurn')}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </section>
 
@@ -85,8 +123,8 @@ export default function BattlesPage() {
 
         {!user && (
           <LockedOverlay
-            title="Challenge Friends"
-            message="Sign in to battle real opponents in pixelated guessing duels."
+            title={t('battles.lockedTitle')}
+            message={t('battles.lockedMessage')}
           />
         )}
       </div>
@@ -95,10 +133,10 @@ export default function BattlesPage() {
         <Button
           color="pink"
           fullWidth
-          onClick={() => user ? null : navigate('/register')}
+          onClick={() => !user && navigate('/register')}
         >
           {!user && <IconLock />}
-          Start New Battle
+          {t('battles.startNew')}
         </Button>
       </div>
 

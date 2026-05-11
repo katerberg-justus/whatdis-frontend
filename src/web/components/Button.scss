@@ -2,6 +2,9 @@
 @use '../styles/mixins' as *;
 
 .btn {
+
+  text-transform: uppercase;
+
   &--default { @include retro-btn($text); }
   &--blue    { @include retro-btn($blue); }
   &--pink    { @include retro-btn($pink); }
@@ -9,4 +12,6 @@
   &--muted   { @include retro-btn($text-muted); }
 
   &--full    { width: 100%; }
+
+  &__chevron { margin-left: auto; }
 }

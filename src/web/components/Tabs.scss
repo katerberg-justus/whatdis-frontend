@@ -1,0 +1,26 @@
+@use '../styles/variables' as *;
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid $bg-border;
+  margin-bottom: 1.5rem;
+
+  &__tab {
+    font-family: $font;
+    font-size: $text-xs;
+    color: $text-muted;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.625rem 1rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px; // sits on top of the container border
+    white-space: nowrap;
+
+    &:hover { color: $text; }
+
+    &--active {
+      color: $blue;
+      border-bottom-color: $blue;
+    }
+  }
+}

@@ -5,10 +5,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  height: calc(100dvh - 6.5rem);
+  // main-content padding: top = (status-bar + 4.5rem mobile / 1.5rem desktop) + bottom 1.5rem
+  height: calc(100dvh - #{$status-bar-height} - 6rem);
 
   @media (min-width: 768px) {
-    height: calc(100dvh - 3rem);
+    height: calc(100dvh - #{$status-bar-height} - 3rem);
   }
 
   // ── Meta bar ───────────────────────────────────────────────────────────────
@@ -36,6 +37,16 @@
     &--easy   { color: $green; border-color: $green; }
     &--medium { color: $blue;  border-color: $blue; }
     &--hard   { color: $pink;  border-color: $pink; }
+  }
+
+  &__trophy {
+    color: $green;
+    filter: drop-shadow(0 0 10px rgba($green, 0.5));
+  }
+
+  &__won-stat {
+    font-size: $text-xs;
+    color: $text-muted;
   }
 
   &__counter {

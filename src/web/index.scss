@@ -57,10 +57,10 @@ h1, h2, h3, h4, h5, h6 {
 .main-content {
   flex: 1;
   padding: 1.5rem;
-  padding-top: 4.5rem;
+  padding-top: calc(#{$status-bar-height} + 4.5rem);
 
   @media (min-width: 768px) {
-    padding-top: 1.5rem;
+    padding-top: calc(#{$status-bar-height} + 1.5rem);
     margin-left: $nav-width;
   }
 

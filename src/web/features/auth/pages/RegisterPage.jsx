@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
+import { useLang } from '../../../context/LangContext'
 import Button from '../../../components/Button'
 import Input from '../../../components/Input'
 import './AuthPage.scss'
@@ -8,6 +9,7 @@ import './AuthPage.scss'
 export default function RegisterPage() {
   const { register } = useAuth()
   const navigate     = useNavigate()
+  const { t }        = useLang()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirm,  setConfirm]  = useState('')
@@ -16,7 +18,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (password !== confirm) { setError('Passwords do not match'); return }
+    if (password !== confirm) { setError(t('register.passwordMismatch')); return }
     setError(null)
     setLoading(true)
     try {
@@ -32,11 +34,11 @@ export default function RegisterPage() {
   return (
     <div className="auth">
       <form className="auth__form" onSubmit={handleSubmit}>
-        <h1 className="auth__title">Register</h1>
+        <h1 className="auth__title">{t('register.title')}</h1>
         {error && <p className="auth__error">{error}</p>}
         <Input
           type="text"
-          placeholder="Username"
+          placeholder={t('register.usernamePlaceholder')}
           value={username}
           onChange={e => setUsername(e.target.value)}
           autoComplete="username"
@@ -44,7 +46,7 @@ export default function RegisterPage() {
         />
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={t('register.passwordPlaceholder')}
           value={password}
           onChange={e => setPassword(e.target.value)}
           autoComplete="new-password"
@@ -52,17 +54,17 @@ export default function RegisterPage() {
         />
         <Input
           type="password"
-          placeholder="Confirm Password"
+          placeholder={t('register.confirmPlaceholder')}
           value={confirm}
           onChange={e => setConfirm(e.target.value)}
           autoComplete="new-password"
           required
         />
         <Button color="pink" fullWidth disabled={loading}>
-          {loading ? 'Creating account...' : 'Create Account'}
+          {loading ? t('register.submitting') : t('register.submit')}
         </Button>
         <p className="auth__switch">
-          Already have an account? <Link to="/login">Sign In</Link>
+          {t('register.hasAccount')} <Link to="/login">{t('register.signIn')}</Link>
         </p>
       </form>
     </div>

@@ -3,4 +3,28 @@
 
 .input {
   @include retro-input;
+  // Press Start 2P has large descent metrics — shift text down to visually centre it
+  padding-top: calc(0.875rem + 1px);
+  padding-bottom: calc(0.875rem - 1px);
+
+  &--with-icon { padding-left: 2rem; }
+}
+
+.input-wrap {
+  position: relative;
+
+  &__icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-muted;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    font-size: $text-base;
+    line-height: 1;
+
+    &:not(:has(svg)) { margin-top: 1px; }
+  }
 }

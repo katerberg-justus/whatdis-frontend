@@ -1,0 +1,57 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.challenge-card {
+  @include card;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  cursor: pointer;
+
+  &:hover { border-color: $blue; }
+
+  // ── Difficulty badge ────────────────────────────────────────────────────────
+
+  &__badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-family: $font;
+    font-size: $text-xs;
+    line-height: 1;
+
+    &--green { color: $green; }
+    &--blue  { color: $blue;  }
+    &--pink  { color: $pink;  }
+  }
+
+  // ── Silhouette art area ─────────────────────────────────────────────────────
+
+  &__art {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  &__silhouette {
+    color: $bg-border;
+    width: 64px;
+    height: 64px;
+  }
+
+  // ── Label ───────────────────────────────────────────────────────────────────
+
+  &__label {
+    font-family: $font;
+    font-size: $text-xs;
+    color: $text;
+    text-align: center;
+  }
+}

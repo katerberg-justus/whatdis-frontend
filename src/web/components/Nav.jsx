@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router'
 import { useAuth } from '../context/AuthContext'
+import { useLang } from '../context/LangContext'
+import { useSubscription } from '../context/SubscriptionContext'
+import UpgradeDialog from './UpgradeDialog'
 import './Nav.scss'
 
 // Pixel-art icons — 16×16 viewBox, each logical pixel = 2×2 units
@@ -40,6 +43,13 @@ const IconBattles = () => (
   </svg>
 )
 
+// Upward arrow for upgrade — matches visual weight of other nav icons
+const IconUpgrade = () => (
+  <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M7 2h2v2H7zM6 4h4v2H6zM5 6h6v2H5zM4 8h8v2H4zM7 10h2v4H7z" />
+  </svg>
+)
+
 // Person: square head + body block + two legs
 const IconAccount = () => (
   <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" role="img">
@@ -48,15 +58,18 @@ const IconAccount = () => (
   </svg>
 )
 
-const mainLinks = [
-  { to: '/challenges', label: 'Challenges', icon: <IconChallenges /> },
-  { to: '/battles',    label: 'Battles',    icon: <IconBattles /> },
-]
-
 export default function Nav() {
   const [open, setOpen] = useState(false)
+  const [upgradeOpen, setUpgradeOpen] = useState(false)
   const close = () => setOpen(false)
   const { user } = useAuth()
+  const { t } = useLang()
+  const { isActive, subscription } = useSubscription()
+
+  const mainLinks = [
+    { to: '/challenges', label: t('nav.challenges'), icon: <IconChallenges /> },
+    { to: '/battles',    label: t('nav.battles'),    icon: <IconBattles /> },
+  ]
 
   return (
     <nav className={`nav${open ? ' nav--open' : ''}`}>
@@ -80,6 +93,17 @@ export default function Nav() {
               </NavLink>
             </li>
           ))}
+          {user && !isActive && subscription !== undefined && (
+            <li>
+              <button
+                className="nav__link nav__link--upgrade"
+                onClick={() => { setUpgradeOpen(true); close() }}
+              >
+                <span className="nav__icon"><IconUpgrade /></span>
+                <span>{t('nav.upgrade')}</span>
+              </button>
+            </li>
+          )}
         </ul>
 
         <ul className="nav__bottom">
@@ -87,17 +111,19 @@ export default function Nav() {
             {user ? (
               <NavLink to="/account" end className="nav__link nav__link--account" onClick={close}>
                 <span className="nav__icon"><IconAccount /></span>
-                <span>Account</span>
+                <span>{t('nav.account')}</span>
               </NavLink>
             ) : (
               <NavLink to="/register" end className="nav__link nav__link--account" onClick={close}>
                 <span className="nav__icon"><IconAccount /></span>
-                <span>Sign Up</span>
+                <span>{t('nav.signUp')}</span>
               </NavLink>
             )}
           </li>
         </ul>
       </div>
+
+      {upgradeOpen && <UpgradeDialog onClose={() => setUpgradeOpen(false)} />}
     </nav>
   )
 }

@@ -1,14 +1,16 @@
 @use 'variables' as *;
 
 // Shared control tokens — keep button and input pixel-identical
-$control-padding:   0.75rem 1rem;
+$control-padding:   0.875rem 1.125rem;
 $control-font-size: $text-xs;
+$input-font-size:   $text-sm;
 $control-line-height: 1;
 
 // Raised panel with border
 @mixin card {
   background: $bg-raised;
   border: 2px solid $bg-border;
+  box-shadow: 0 0 20px rgba($blue, 0.04);
 }
 
 // Retro outlined button — inherits $font, snaps on hover (no transition)
@@ -33,6 +35,17 @@ $control-line-height: 1;
   &:hover {
     background: $color;
     color: $bg;
+    box-shadow: 0 0 14px rgba($color, 0.45);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    &:hover {
+      background: $bg-surface;
+      color: $color;
+      box-shadow: none;
+    }
   }
 }
 
@@ -42,7 +55,7 @@ $control-line-height: 1;
   appearance: none;
   display: block;
   font-family: $font;
-  font-size: $control-font-size;
+  font-size: $input-font-size;
   line-height: $control-line-height;
   background: $bg-surface;
   border: 2px solid $bg-border;
@@ -58,5 +71,6 @@ $control-line-height: 1;
 
   &:focus {
     border-color: $blue;
+    box-shadow: 0 0 12px $blue-glow;
   }
 }

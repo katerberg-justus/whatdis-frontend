@@ -1,43 +1,56 @@
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
+import { apiGetPack, apiGetPackChallenges } from '@shared/api/challenges'
+import { apiCreateGame } from '@shared/api/games'
 import Button from '../../../components/Button'
+import ChallengeCard from '../../../components/ChallengeCard'
 import './PackChallengesPage.scss'
-
-const PACK_DATA = {
-  1: { name: 'Animals',  challenges: ['Elephant', 'Penguin', 'Chameleon', 'Platypus', 'Axolotl', 'Mantis Shrimp'] },
-  2: { name: 'Vehicles', challenges: ['Hovercraft', 'Zeppelin', 'Snowcat', 'Rickshaw', 'Hydrofoil', 'Tuk-tuk'] },
-  3: { name: 'Food',     challenges: ['Croissant', 'Dumpling', 'Pretzel', 'Baklava', 'Churro', 'Brigadeiro'] },
-  4: { name: 'Sports',   challenges: ['Curling', 'Sepak Takraw', 'Kabaddi', 'Pelota', 'Bandy', 'Tchoukball'] },
-  5: { name: 'Nature',   challenges: ['Stalactite', 'Fjord', 'Sinkhole', 'Atoll', 'Geiser', 'Permafrost'] },
-  6: { name: 'Tech',     challenges: ['Floppy Disk', 'Dot Matrix', 'Punch Card', 'Teletext', 'Trackball', 'CRT Monitor'] },
-  7: { name: 'Cities',   challenges: ['Reykjavik', 'Ulaanbaatar', 'Kathmandu', 'Ouagadougou', 'Antananarivo', 'Tegucigalpa'] },
-  8: { name: 'Anatomy',  challenges: ['Patella', 'Clavicle', 'Cochlea', 'Uvula', 'Tibia', 'Sternum'] },
-}
 
 export default function PackChallengesPage() {
   const { packId } = useParams()
   const navigate = useNavigate()
-  const pack = PACK_DATA[packId]
+  const [pack, setPack] = useState(null)
+  const [challenges, setChallenges] = useState([])
+  const [error, setError] = useState(false)
 
-  if (!pack) return <p className="pack-challenges__not-found">Pack not found.</p>
+  useEffect(() => {
+    Promise.all([apiGetPack(packId), apiGetPackChallenges(packId)])
+      .then(([p, ch]) => { setPack(p); setChallenges(ch) })
+      .catch(() => setError(true))
+  }, [packId])
+
+  async function handleChallengeClick(challenge) {
+    try {
+      const game = await apiCreateGame({ challenge_id: challenge.id })
+      navigate(`/games/${game.id}`, {
+        state: {
+          label:      pack?.name ?? '',
+          difficulty: challenge.difficulty,
+          guessLimit: challenge.guess_limit,
+        },
+      })
+    } catch {}
+  }
+
+  if (error) return <p className="pack-challenges__not-found">Pack not found.</p>
 
   return (
     <div className="pack-challenges">
 
       <div className="pack-challenges__header">
         <Button color="muted" onClick={() => navigate('/challenges')}>&lt; Back</Button>
-        <h2 className="pack-challenges__title">{pack.name}</h2>
+        <h2 className="pack-challenges__title">{pack?.name ?? ''}</h2>
       </div>
 
       <div className="pack-challenges__grid">
-        {pack.challenges.map((name, i) => (
-          <div
-            key={i}
-            className="pack-challenges__card"
-            onClick={() => navigate(`/challenges/${packId}-${i + 1}/games/1`)}
-          >
-            <span className="pack-challenges__card-number">#{i + 1}</span>
-            <span className="pack-challenges__card-name">{name}</span>
-          </div>
+        {challenges.map((challenge, i) => (
+          <ChallengeCard
+            key={challenge.id}
+            type={challenge.challenge_type ?? 'object'}
+            difficulty={challenge.difficulty}
+            label={`#${i + 1}`}
+            onClick={() => handleChallengeClick(challenge)}
+          />
         ))}
       </div>
 

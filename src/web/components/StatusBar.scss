@@ -1,0 +1,53 @@
+@use '../styles/variables' as *;
+
+.status-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $status-bar-height;
+  z-index: $nav-z - 1;
+
+  background: $bg-raised;
+  border-bottom: 2px solid $bg-border;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem 0 5rem;
+
+  @media (min-width: 768px) {
+    left: $nav-width;
+    padding: 0 1.5rem;
+  }
+
+  &__label {
+    font-size: $text-xs;
+    color: $text-muted;
+    flex-shrink: 0;
+  }
+
+  &__track {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  &__block {
+    display: block;
+    width: 10px;
+    height: 10px;
+    image-rendering: pixelated;
+
+    &--green { background: $green; }
+    &--blue  { background: $blue; }
+    &--pink  { background: $pink; }
+    &--empty { background: $bg-border; }
+  }
+
+  &__count {
+    font-size: $text-xs;
+    color: $text-muted;
+    flex-shrink: 0;
+  }
+}

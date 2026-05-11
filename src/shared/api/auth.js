@@ -11,5 +11,5 @@ export async function apiRegister(username, password) {
 }
 
 export async function apiLogout() {
-  await apiClient.post('/auth/logout')
+  await apiClient.delete('/auth/logout')
 }

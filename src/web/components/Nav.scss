@@ -8,7 +8,7 @@ $panel-transition: 0.25s ease;
   &__hamburger {
     position: fixed;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     width: $hamburger-size;
     height: $hamburger-size;
     background: $bg-raised;
@@ -96,9 +96,19 @@ $panel-transition: 0.25s ease;
     padding: 0.625rem 0.75rem;
 
     &:hover,
-    &.active        { background: $bg-surface; color: $blue-muted; }
+    &.active          { background: $bg-surface; color: $blue-muted; box-shadow: inset 2px 0 0 $blue, inset 0 0 20px rgba($blue, 0.06); }
     &--account:hover,
-    &--account.active { background: $bg-surface; color: $pink-muted; }
+    &--account.active { background: $bg-surface; color: $pink-muted; box-shadow: inset 2px 0 0 $pink, inset 0 0 20px rgba($pink, 0.06); }
+    &--upgrade {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: $font;
+      text-transform: uppercase;
+      color: $green;
+      &:hover { background: $bg-surface; color: $green; box-shadow: inset 2px 0 0 $green, inset 0 0 20px rgba($green, 0.06); }
+    }
   }
 
   &__icon {

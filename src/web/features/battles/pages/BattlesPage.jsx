@@ -55,7 +55,6 @@ export default function BattlesPage() {
 
   return (
     <div className="battles">
-
       <div className="locked-wrap">
         <div className={user ? undefined : 'locked-wrap__content'}>
 
@@ -86,37 +85,41 @@ export default function BattlesPage() {
 
           <section className="battles__section">
             <h2 className="battles__section-title">{t('battles.ongoing')}</h2>
-            <ul className="battles__list">
-              {ongoing.map((battle) => {
-                const [myScore, theirScore] = battleScores(battle, user?.id)
-                const myTurn = battle.current_player_id === user?.id
-                return (
-                  <li
-                    key={battle.id}
-                    className="battles__battle"
-                    onClick={() => navigate(`/battles/${battle.id}`)}
-                  >
-                    <div className="battles__info">
-                      <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
-                      <span className="battles__meta">
-                        {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
-                        <span className={`battles__diff battles__diff--${battle.difficulty}`}>
-                          {battle.difficulty}
+            {ongoing.length === 0 ? (
+              <p className="battles__empty">{t('battles.noOngoing')}</p>
+            ) : (
+              <ul className="battles__list">
+                {ongoing.map((battle) => {
+                  const [myScore, theirScore] = battleScores(battle, user?.id)
+                  const myTurn = battle.current_player_id === user?.id
+                  return (
+                    <li
+                      key={battle.id}
+                      className="battles__battle"
+                      onClick={() => navigate(`/battles/${battle.id}`)}
+                    >
+                      <div className="battles__info">
+                        <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
+                        <span className="battles__meta">
+                          {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
+                          <span className={`battles__diff battles__diff--${battle.difficulty}`}>
+                            {battle.difficulty}
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                    <div className="battles__status">
-                      <span className="battles__score">{myScore} – {theirScore}</span>
-                      {battle.current_player_id != null && (
-                        <span className={`battles__turn battles__turn--${myTurn ? 'yours' : 'theirs'}`}>
-                          {myTurn ? t('battles.yourTurn') : t('battles.theirTurn')}
-                        </span>
-                      )}
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
+                      </div>
+                      <div className="battles__status">
+                        <span className="battles__score">{myScore} – {theirScore}</span>
+                        {battle.current_player_id != null && (
+                          <span className={`battles__turn battles__turn--${myTurn ? 'yours' : 'theirs'}`}>
+                            {myTurn ? t('battles.yourTurn') : t('battles.theirTurn')}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
           </section>
 
         </div>
@@ -139,7 +142,6 @@ export default function BattlesPage() {
           {t('battles.startNew')}
         </Button>
       </div>
-
     </div>
   )
 }

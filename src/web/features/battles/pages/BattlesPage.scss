@@ -101,6 +101,36 @@ $footer-height: 4rem;
     &--theirs { color: $text-muted; }
   }
 
+  // ── Empty / feedback states ───────────────────────────────────────────────
+
+  &__empty {
+    font-size: $text-xs;
+    color: $text-muted;
+    padding: 1rem 0;
+  }
+
+  &__error   { font-size: $text-xs; color: $pink;  margin-top: 0.75rem; }
+  &__success { font-size: $text-xs; color: $green; margin-top: 0.75rem; }
+
+  // ── Result badge (history) ────────────────────────────────────────────────
+
+  &__result {
+    font-size: $text-xs;
+
+    &--win  { color: $green; }
+    &--loss { color: $pink; }
+    &--draw { color: $text-muted; }
+  }
+
+  // ── Friends invite form ───────────────────────────────────────────────────
+
+  .friends__invite-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
   // ── Fixed footer ──────────────────────────────────────────────────────────
 
   &__footer {

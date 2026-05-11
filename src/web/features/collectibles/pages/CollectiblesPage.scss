@@ -1,0 +1,92 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.collectibles {
+
+  &__sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  &__section-title {
+    font-size: $text-xs;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+
+  &__empty {
+    font-size: $text-xs;
+    color: $text-muted;
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  // ── Achievement grid ───────────────────────────────────────────────────────
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+
+    @media (min-width: 480px) { grid-template-columns: repeat(3, 1fr); }
+    @media (min-width: 768px) { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  &__card {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem;
+    text-align: center;
+
+    &--locked {
+      opacity: 0.35;
+      filter: grayscale(1);
+    }
+  }
+
+  &__card-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  &__card-name {
+    font-size: $text-xs;
+    color: $text;
+
+    &--blur {
+      filter: blur(4px);
+      user-select: none;
+      color: $text-muted;
+    }
+  }
+
+  &__card-desc {
+    font-size: $text-xs;
+    color: $text-muted;
+    line-height: $leading;
+
+    &--blur {
+      filter: blur(4px);
+      user-select: none;
+    }
+  }
+
+  &__card-date {
+    font-size: $text-xs;
+    color: $green;
+    margin-top: auto;
+  }
+
+  &__card-locked {
+    font-size: $text-xs;
+    color: $text-muted;
+    margin-top: auto;
+    text-transform: uppercase;
+  }
+}

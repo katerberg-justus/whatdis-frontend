@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { apiLogin, apiRegister, apiLogout } from '@shared/api/auth'
+import { apiLogin, apiGuestAuth, apiClaimAccount, apiLogout } from '@shared/api/auth'
 
 const AuthContext = createContext(null)
 
@@ -9,8 +9,14 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const stored = localStorage.getItem('user')
-    if (stored) setUser(JSON.parse(stored))
-    setLoading(false)
+    if (stored) {
+      setUser(JSON.parse(stored))
+      setLoading(false)
+      return
+    }
+    // No logged-in user — establish a guest session so cookies are set
+    // and unauthenticated users can still play daily challenges
+    apiGuestAuth().catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const persist = (data, username) => {
@@ -24,9 +30,9 @@ export function AuthProvider({ children }) {
     persist(data, username)
   }
 
-  const register = async (username, password) => {
-    await apiRegister(username, password)
-    await login(username, password)
+  const register = async (name, email, password) => {
+    await apiClaimAccount(name, email, password)
+    await login(name, password)
   }
 
   const logout = async () => {

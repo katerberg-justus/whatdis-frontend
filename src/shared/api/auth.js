@@ -5,8 +5,12 @@ export async function apiLogin(username, password) {
   return data
 }
 
-export async function apiRegister(username, password) {
-  const { data } = await apiClient.post('/users', { username, password })
+export async function apiGuestAuth() {
+  await authClient.post('/auth/guest')
+}
+
+export async function apiClaimAccount(name, email, password) {
+  const { data } = await apiClient.post('/me/claim', { name, email, password })
   return data
 }
 

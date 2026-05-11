@@ -49,17 +49,27 @@ function ObjectSvg() {
   )
 }
 
+const LockSvg = () => (
+  <svg viewBox="0 0 10 12" width="10" height="12" fill="currentColor" shapeRendering="crispEdges">
+    <rect x="2" y="0" width="6" height="2" />
+    <rect x="2" y="2" width="2" height="3" />
+    <rect x="6" y="2" width="2" height="3" />
+    <rect x="0" y="5" width="10" height="7" />
+  </svg>
+)
+
 const SILHOUETTES = { person: PersonSvg, object: ObjectSvg }
 
-export default function ChallengeCard({ type, difficulty, label, onClick }) {
+export default function ChallengeCard({ type, difficulty, label, onClick, locked }) {
   const Silhouette = SILHOUETTES[type] ?? ObjectSvg
   const mod = DIFF_MOD[difficulty] ?? 'blue'
 
   return (
-    <div className="challenge-card" onClick={onClick}>
+    <div className={['challenge-card', locked && 'challenge-card--locked'].filter(Boolean).join(' ')} onClick={locked ? undefined : onClick}>
       <span className={`challenge-card__badge challenge-card__badge--${mod}`}>
         {DIFF_LABEL[difficulty] ?? difficulty}
       </span>
+      {locked && <span className="challenge-card__lock"><LockSvg /></span>}
       <div className="challenge-card__art">
         <Silhouette />
       </div>

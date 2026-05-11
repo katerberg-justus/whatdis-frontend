@@ -38,7 +38,7 @@ export default function PackChallengesPage() {
     <div className="pack-challenges">
 
       <div className="pack-challenges__header">
-        <Button color="muted" onClick={() => navigate('/challenges')}>&lt; Back</Button>
+        <Button color="muted" icon={null} onClick={() => navigate('/challenges')}>&lt; Back</Button>
         <h2 className="pack-challenges__title">{pack?.name ?? ''}</h2>
       </div>
 
@@ -49,6 +49,7 @@ export default function PackChallengesPage() {
             type={challenge.challenge_type ?? 'object'}
             difficulty={challenge.difficulty}
             label={`#${i + 1}`}
+            locked={challenge.is_locked}
             onClick={() => handleChallengeClick(challenge)}
           />
         ))}

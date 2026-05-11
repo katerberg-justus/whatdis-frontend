@@ -32,19 +32,42 @@ export default function GamePage() {
   const [messages, setMessages]   = useState([])
   const [input,    setInput]      = useState('')
   const [won,      setWon]        = useState(false)
+  const [elapsed,  setElapsed]    = useState(0)
+  const [timerOn,  setTimerOn]    = useState(false)
 
   useEffect(() => {
     apiGetGuesses(gameId)
-      .then(guesses => setMessages(guesses.map(g => ({ question: g.content, answer: g.response }))))
+      .then(guesses => {
+        setMessages(guesses.map(g => ({ question: g.content, answer: g.response })))
+        if (guesses.length > 0 && guesses[0].created_at) {
+          const start = new Date(guesses[0].created_at).getTime()
+          setElapsed(Math.floor((Date.now() - start) / 1000))
+          setTimerOn(true)
+        }
+      })
       .catch(() => {})
   }, [gameId])
 
   const remaining = state?.guessLimit != null ? state.guessLimit - messages.length : null
+  const done = won || (remaining !== null && remaining <= 0)
+
+  useEffect(() => {
+    if (!timerOn || done) return
+    const id = setInterval(() => setElapsed(s => s + 1), 1000)
+    return () => clearInterval(id)
+  }, [timerOn, done])
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60)
+    const sec = s % 60
+    return `${m}:${sec.toString().padStart(2, '0')}`
+  }
 
   async function handleAsk() {
-    if (!input.trim() || won) return
+    if (!input.trim() || done) return
     const question = input.trim()
     setInput('')
+    if (!timerOn) setTimerOn(true)
     depleteEnergy()
     setMessages(prev => [...prev, { question, answer: '...' }])
     try {
@@ -74,33 +97,33 @@ export default function GamePage() {
     <div className="game">
 
       <div className="game__meta">
-        <span className="game__pack">{label}</span>
         <span className={`game__diff game__diff--${difficulty}`}>
           {DIFF_LABEL[difficulty] ?? difficulty}
         </span>
-        {remaining != null && (
-          <span className="game__counter">
-            <span className={remaining <= 2 ? 'game__counter--low' : ''}>{remaining}</span>
-            &nbsp;{t('game.left')}
+        <span className="game__pack">{label}</span>
+        {timerOn && (
+          <span className={`game__timer${done ? ' game__timer--done' : ''}`}>
+            {formatTime(elapsed)}
           </span>
         )}
       </div>
 
-      <ChatWindow messages={messages} />
+      <ChatWindow messages={messages} emptyLabel={t('game.emptyChat')} />
 
       <div className="game__controls">
         <Input
           placeholder={t('game.inputPlaceholder')}
           aria-label="Question input"
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={e => setInput(e.target.value.slice(0, 50))}
           onKeyDown={handleKeyDown}
-          disabled={won}
+          disabled={done}
+          maxLength={50}
         />
-        <Button color="blue" onClick={handleAsk} disabled={won}>{t('game.ask')}</Button>
+        <Button color="blue" onClick={handleAsk} disabled={done || input.trim().length < 2}>{t('game.ask')}</Button>
       </div>
 
-      {won && (
+      {done && won && (
         <Dialog title={t('game.wonTitle')}>
           <TrophySvg />
           <p className="game__won-stat">

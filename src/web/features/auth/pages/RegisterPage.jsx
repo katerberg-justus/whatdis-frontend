@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const navigate     = useNavigate()
   const { t }        = useLang()
   const [username, setUsername] = useState('')
+  const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [confirm,  setConfirm]  = useState('')
   const [error,    setError]    = useState(null)
@@ -22,7 +23,7 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
     try {
-      await register(username, password)
+      await register(username, email, password)
       navigate('/challenges')
     } catch (err) {
       setError(err.message)
@@ -42,6 +43,14 @@ export default function RegisterPage() {
           value={username}
           onChange={e => setUsername(e.target.value)}
           autoComplete="username"
+          required
+        />
+        <Input
+          type="email"
+          placeholder={t('register.emailPlaceholder')}
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          autoComplete="email"
           required
         />
         <Input

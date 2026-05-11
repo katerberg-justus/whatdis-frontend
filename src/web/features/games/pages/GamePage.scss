@@ -24,9 +24,8 @@
   }
 
   &__pack {
-    font-size: $text-xs;
+    font-size: $text-sm;
     color: $text;
-    flex: 1;
   }
 
   &__diff {
@@ -49,11 +48,12 @@
     color: $text-muted;
   }
 
-  &__counter {
+  &__timer {
     font-size: $text-xs;
     color: $text-muted;
+    margin-left: auto;
 
-    &--low { color: $pink; }
+    &--done { color: $green; }
   }
 
   // ── Controls ───────────────────────────────────────────────────────────────

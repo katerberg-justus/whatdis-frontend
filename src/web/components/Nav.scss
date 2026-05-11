@@ -64,7 +64,7 @@ $panel-transition: 0.25s ease;
     display: flex;
     gap: 0.25em;
     font-size: $text-lg;
-    margin: 0 auto 2.5rem;
+    margin: 0.5rem auto 0;
     max-width: 64px;
     max-height: 64px;
 
@@ -75,15 +75,17 @@ $panel-transition: 0.25s ease;
   // ── Link lists ────────────────────────────────────────────────────────────────
   &__links {
     list-style: none;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 1.75rem;
   }
 
   &__bottom {
     list-style: none;
-    margin-top: auto;
-    padding-top: 1.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.5rem;
   }
 
   // ── Individual link ───────────────────────────────────────────────────────────

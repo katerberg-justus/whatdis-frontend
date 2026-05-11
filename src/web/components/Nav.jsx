@@ -50,6 +50,14 @@ const IconUpgrade = () => (
   </svg>
 )
 
+// Trophy: blue cup + pink handles + pink stem/base
+const IconCollectibles = () => (
+  <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#00A6FF" d="M4 1h8v6H4zM3 3h1v3H3zM12 3h1v3H12zM4 7h8v2H4z" />
+    <path fill="#FF007B" d="M2 3h1v3H2zM13 3h1v3H13zM6 9h4v2H6zM5 11h6v1H5zM4 12h8v1H4zM5 13h6v2H5z" />
+  </svg>
+)
+
 // Person: square head + body block + two legs
 const IconAccount = () => (
   <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" role="img">
@@ -67,8 +75,9 @@ export default function Nav() {
   const { isActive, subscription } = useSubscription()
 
   const mainLinks = [
-    { to: '/challenges', label: t('nav.challenges'), icon: <IconChallenges /> },
-    { to: '/battles',    label: t('nav.battles'),    icon: <IconBattles /> },
+    { to: '/challenges',   label: t('nav.challenges'),   icon: <IconChallenges /> },
+    { to: '/battles',      label: t('nav.battles'),      icon: <IconBattles /> },
+    { to: '/collectibles', label: t('nav.collectibles'), icon: <IconCollectibles /> },
   ]
 
   return (

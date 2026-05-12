@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import {
@@ -9,24 +10,29 @@ import {
   apiRemoveFriend,
 } from '@shared/api/friends'
 import Button from '../../../components/Button'
+import IconButton from '../../../components/IconButton'
+import { TrashIcon, EyeIcon } from '../../../components/icons'
+import ChallengeDialog from '../../../components/ChallengeDialog'
 import Input from '../../../components/Input'
 import './BattlesPage.scss'
 
 export default function FriendsPage() {
-  const { user } = useAuth()
-  const { t }    = useLang()
+  const { user }   = useAuth()
+  const { t }      = useLang()
+  const navigate   = useNavigate()
 
-  const [friends,  setFriends]  = useState([])
-  const [requests, setRequests] = useState([])
-  const [email,    setEmail]    = useState('')
-  const [sending,  setSending]  = useState(false)
-  const [error,    setError]    = useState('')
-  const [success,  setSuccess]  = useState('')
+  const [friends,   setFriends]   = useState([])
+  const [requests,  setRequests]  = useState([])
+  const [email,     setEmail]     = useState('')
+  const [sending,   setSending]   = useState(false)
+  const [error,     setError]     = useState('')
+  const [success,   setSuccess]   = useState('')
+  const [challenging, setChallenging] = useState(null)
 
   const load = useCallback(() => {
     if (!user) return
-    apiGetFriends().then(setFriends).catch(() => {})
-    apiGetFriendRequests().then(setRequests).catch(() => {})
+    apiGetFriends().then(data => setFriends(data.filter(f => f.status === 'accepted'))).catch(() => {})
+    apiGetFriendRequests().then(data => setRequests(data.filter(r => r.direction === 'received'))).catch(() => {})
   }, [user])
 
   useEffect(() => { load() }, [load])
@@ -58,6 +64,7 @@ export default function FriendsPage() {
   }
 
   return (
+    <>
     <div className="battles">
 
           {/* Incoming requests */}
@@ -68,12 +75,12 @@ export default function FriendsPage() {
                 {requests.map((req) => (
                   <li key={req.id} className="battles__invite">
                     <div className="battles__info">
-                      <span className="battles__opponent">{req.sender?.username ?? req.username}</span>
-                      <span className="battles__meta">{req.sender?.email ?? req.email}</span>
+                      <span className="battles__opponent">{req.friend.name}</span>
+                      <span className="battles__meta">{req.friend.email}</span>
                     </div>
                     <div className="battles__actions">
                       <Button color="green" onClick={() => handleAccept(req.id)}>{t('battles.accept')}</Button>
-                      <Button color="muted" onClick={() => handleRemove(req.id)}>{t('battles.decline')}</Button>
+                      <IconButton icon={<TrashIcon />} onClick={() => handleRemove(req.id)} aria-label={t('battles.decline')} />
                     </div>
                   </li>
                 ))}
@@ -91,12 +98,11 @@ export default function FriendsPage() {
                 {friends.map((f) => (
                   <li key={f.id} className="battles__invite">
                     <div className="battles__info">
-                      <span className="battles__opponent">{f.username}</span>
+                      <span className="battles__opponent">{f.friend.name}</span>
                     </div>
                     <div className="battles__actions">
-                      <Button color="muted" onClick={() => handleRemove(f.friendship_id ?? f.id)}>
-                        {t('friends.remove')}
-                      </Button>
+                      <Button color="pink" icon={null} onClick={() => setChallenging(f)}>{t('battles.challenge')}</Button>
+                      <IconButton icon={<EyeIcon />} onClick={() => navigate(`/friends/${f.id}`)} />
                     </div>
                   </li>
                 ))}
@@ -123,5 +129,13 @@ export default function FriendsPage() {
           </section>
 
     </div>
+
+    {challenging && (
+      <ChallengeDialog
+        friend={challenging.friend}
+        onClose={() => setChallenging(null)}
+      />
+    )}
+    </>
   )
 }

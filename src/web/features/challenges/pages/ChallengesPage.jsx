@@ -37,13 +37,16 @@ export default function ChallengesPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { t }        = useLang()
-  const { isActive } = useSubscription()
+  const { isActive, subscription } = useSubscription()
   const [packs,         setPacks]         = useState([])
   const [dailies,       setDailies]       = useState([])
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
 
   useEffect(() => {
-    apiGetPacks().then(data => setPacks(data.filter(p => !p.is_daily && !/daily/i.test(p.name)))).catch(() => {})
+    apiGetPacks().then(data => setPacks(data.filter(p => {
+      const total = p.total_count ?? 0
+      return total > 0 && !p.is_daily && !/daily/i.test(p.name)
+    }))).catch(() => {})
     apiGetDailyChallenges().then(setDailies).catch(() => {})
   }, [])
 
@@ -79,6 +82,7 @@ export default function ChallengesPage() {
                 type={daily.challenge_type}
                 difficulty={daily.difficulty}
                 label={TYPE_LABEL[daily.challenge_type] ?? `Daily ${daily.challenge_type}`}
+                completed={daily.completed}
                 onClick={() => playDaily(daily)}
               />
             ))}
@@ -86,7 +90,7 @@ export default function ChallengesPage() {
         </section>
       )}
 
-      {!isActive && (
+      {user && !isActive && subscription !== undefined && (
         <Banner
           variant="cta"
           title={t('upgrade.title')}
@@ -110,7 +114,10 @@ export default function ChallengesPage() {
                 return (
                   <div
                     key={pack.id}
-                    className={['challenges__pack-card', pack.is_locked && !pack.subscription_access && 'challenges__pack-card--locked'].filter(Boolean).join(' ')}
+                    className={[
+                      'challenges__pack-card',
+                      pack.is_locked && !pack.subscription_access && 'challenges__pack-card--locked',
+                    ].filter(Boolean).join(' ')}
                     onClick={() => {
                       if (pack.subscription_access && !isActive) { setUpgradeOpen(true); return }
                       if (!pack.is_locked) navigate(`/packs/${pack.id}/challenges`)
@@ -118,7 +125,12 @@ export default function ChallengesPage() {
                   >
                     {pack.is_locked && <LockBadge />}
                     {pack.is_locked && <QuestionMark />}
-                    <span className="challenges__pack-name">{pack.name}</span>
+                    <div className="challenges__pack-copy">
+                      <span className="challenges__pack-name">{pack.name}</span>
+                      {pack.description && (
+                        <span className="challenges__pack-description">{pack.description}</span>
+                      )}
+                    </div>
                     <span className="challenges__pack-count">
                       {completed != null ? `${completed}/${total}` : total}
                     </span>

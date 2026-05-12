@@ -19,12 +19,14 @@ export default function PackChallengesPage() {
       .catch(() => setError(true))
   }, [packId])
 
-  async function handleChallengeClick(challenge) {
+  async function handleChallengeClick(challenge, position) {
     try {
       const game = await apiCreateGame({ challenge_id: challenge.id })
       navigate(`/games/${game.id}`, {
         state: {
           label:      pack?.name ?? '',
+          packId,
+          position,
           difficulty: challenge.difficulty,
           guessLimit: challenge.guess_limit,
         },
@@ -39,7 +41,10 @@ export default function PackChallengesPage() {
 
       <div className="pack-challenges__header">
         <Button color="muted" icon={null} onClick={() => navigate('/challenges')}>&lt; Back</Button>
-        <h2 className="pack-challenges__title">{pack?.name ?? ''}</h2>
+        <div className="pack-challenges__heading">
+          <h2 className="pack-challenges__title">{pack?.name ?? ''}</h2>
+          {pack?.description && <p className="pack-challenges__description">{pack.description}</p>}
+        </div>
       </div>
 
       <div className="pack-challenges__grid">
@@ -49,8 +54,11 @@ export default function PackChallengesPage() {
             type={challenge.challenge_type ?? 'object'}
             difficulty={challenge.difficulty}
             label={`#${i + 1}`}
+            subject={challenge.subject}
+            icon={challenge.icon}
             locked={challenge.is_locked}
-            onClick={() => handleChallengeClick(challenge)}
+            completed={challenge.completed}
+            onClick={() => handleChallengeClick(challenge, i + 1)}
           />
         ))}
       </div>

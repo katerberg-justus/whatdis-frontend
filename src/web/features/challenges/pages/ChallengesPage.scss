@@ -61,7 +61,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem;
+    padding: 0.75rem calc(0.75rem + 10px);
     text-align: center;
     cursor: pointer;
 
@@ -88,7 +88,15 @@
     color: $pink;
   }
 
-  &__pack-name  { font-size: $text-xs; color: $text; }
+  &__pack-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  &__pack-name  { font-size: $text-sm; color: $text; }
+  &__pack-description { font-size: $text-xs; color: $text-muted; }
   &__pack-count { font-size: $text-xs; color: $text-muted; }
 
   // ── Progress bar ──────────────────────────────────────────────────────────

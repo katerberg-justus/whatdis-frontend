@@ -53,6 +53,7 @@ export default function BattlePage() {
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState(null)
   const pollRef = useRef(null)
+  const inputRef = useRef(null)
 
   const loadBattle = useCallback(async () => {
     try {
@@ -144,6 +145,7 @@ export default function BattlePage() {
       <ChatWindow
         messages={messages}
         emptyLabel={isMyTurn ? t('battles.askFirst') : t('battles.waiting')}
+        inputRef={inputRef}
       />
 
       {!isFinished && !isPending && (
@@ -167,6 +169,7 @@ export default function BattlePage() {
 
           <div className="battle__input-row">
             <Input
+              ref={inputRef}
               placeholder={isMyTurn ? t('game.inputPlaceholder') : t('battles.waiting')}
               value={input}
               onChange={e => setInput(e.target.value.slice(0, 50))}

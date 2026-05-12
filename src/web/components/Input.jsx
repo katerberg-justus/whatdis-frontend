@@ -1,8 +1,10 @@
+import { forwardRef } from 'react'
 import './Input.scss'
 
-export default function Input({ className = '', icon, ...props }) {
+const Input = forwardRef(function Input({ className = '', icon, ...props }, ref) {
   const inputEl = (
     <input
+      ref={ref}
       className={['input', icon && 'input--with-icon', className].filter(Boolean).join(' ')}
       {...props}
     />
@@ -16,4 +18,6 @@ export default function Input({ className = '', icon, ...props }) {
       {inputEl}
     </div>
   )
-}
+})
+
+export default Input

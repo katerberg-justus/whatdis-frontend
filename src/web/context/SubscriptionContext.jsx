@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useAuth } from './AuthContext'
-import { apiGetSubscription, apiStartCheckout, apiCancelSubscription } from '@shared/api/subscriptions'
+import { apiMe } from '@shared/api/users'
+import { apiStartCheckout, apiCancelSubscription } from '@shared/api/subscriptions'
 
 const SubscriptionContext = createContext(null)
 
@@ -10,9 +11,8 @@ export function SubscriptionProvider({ children }) {
   const [subscription, setSubscription] = useState(undefined)
 
   const refresh = useCallback(() => {
-    if (!user) { setSubscription(null); return }
-    apiGetSubscription()
-      .then(setSubscription)
+    apiMe()
+      .then(data => setSubscription(data.subscription ?? null))
       .catch(() => setSubscription(null))
   }, [user?.id ?? user?.username])
 

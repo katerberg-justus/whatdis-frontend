@@ -12,6 +12,7 @@ import BattlesPage from './features/battles/pages/BattlesPage'
 import FriendsPage from './features/battles/pages/FriendsPage'
 import BattlesHistoryPage from './features/battles/pages/BattlesHistoryPage'
 import BattlePage from './features/battles/pages/BattlePage'
+import FriendPage from './features/battles/pages/FriendPage'
 import AccountLayout from './features/account/pages/AccountLayout'
 import ProfilePage from './features/account/pages/ProfilePage'
 import SettingsPage from './features/account/pages/SettingsPage'
@@ -45,6 +46,7 @@ function Layout() {
             <Route path="history" element={<BattlesHistoryPage />} />
           </Route>
           <Route path="/battles/:battleId" element={<BattlePage />} />
+          <Route path="/friends/:friendshipId" element={<FriendPage />} />
           <Route path="/account" element={<AccountLayout />}>
             <Route index element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />

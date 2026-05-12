@@ -19,9 +19,20 @@
     }
   }
 
+  &__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
   &__title {
     font-size: $text-sm;
     color: $text;
+  }
+
+  &__description {
+    font-size: $text-xs;
+    color: $text-muted;
   }
 
   // ── Grid ───────────────────────────────────────────────────────────────────

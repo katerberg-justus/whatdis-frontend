@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router'
 import { apiGetGuesses, apiSubmitGuess } from '@shared/api/games'
 import { useLang } from '../../../context/LangContext'
@@ -6,6 +6,8 @@ import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
 import Input from '../../../components/Input'
 import Dialog from '../../../components/Dialog'
+import IconButton from '../../../components/IconButton'
+import { BackIcon } from '../../../components/icons'
 import { useEnergy } from '../../../context/EnergyContext'
 import './GamePage.scss'
 
@@ -34,6 +36,8 @@ export default function GamePage() {
   const [won,      setWon]        = useState(false)
   const [elapsed,  setElapsed]    = useState(0)
   const [timerOn,  setTimerOn]    = useState(false)
+  const [loading,  setLoading]    = useState(false)
+  const inputRef                  = useRef(null)
 
   useEffect(() => {
     apiGetGuesses(gameId)
@@ -64,19 +68,32 @@ export default function GamePage() {
   }
 
   async function handleAsk() {
-    if (!input.trim() || done) return
+    if (!input.trim() || done || loading) return
     const question = input.trim()
     setInput('')
     if (!timerOn) setTimerOn(true)
     depleteEnergy()
-    setMessages(prev => [...prev, { question, answer: '...' }])
+    setLoading(true)
+    setMessages(prev => [...prev, { question, answer: '...', finalAnswer: null }])
     try {
       const guess = await apiSubmitGuess(gameId, question)
-      setMessages(prev => [...prev.slice(0, -1), { question: guess.content, answer: guess.response }])
+      // Keep the pending entry so the ChatWindow can animate the spinner stopping on the final answer.
+      setMessages(prev => {
+        if (prev.length === 0) return prev
+        const copy = prev.slice()
+        copy[copy.length - 1] = {
+          ...copy[copy.length - 1],
+          question: guess.content,
+          finalAnswer: guess.response,
+        }
+        return copy
+      })
       syncEnergy(guess.energy_remaining)
       if (guess.response === 'win') setWon(true)
     } catch {
       setMessages(prev => prev.slice(0, -1))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -91,16 +108,28 @@ export default function GamePage() {
   }
 
   const label      = state?.label ?? ''
+  const packId     = state?.packId
+  const position   = state?.position
   const difficulty = state?.difficulty ?? ''
+  const backTo     = packId ? `/packs/${packId}/challenges` : '/challenges'
 
   return (
     <div className="game">
 
       <div className="game__meta">
+        <IconButton
+          className="game__back"
+          icon={<BackIcon />}
+          onClick={() => navigate(backTo)}
+          aria-label="Back"
+        />
         <span className={`game__diff game__diff--${difficulty}`}>
           {DIFF_LABEL[difficulty] ?? difficulty}
         </span>
-        <span className="game__pack">{label}</span>
+        <span className="game__pack">
+          {label}
+          {position != null && <span className="game__position"> #{position}</span>}
+        </span>
         {timerOn && (
           <span className={`game__timer${done ? ' game__timer--done' : ''}`}>
             {formatTime(elapsed)}
@@ -108,10 +137,11 @@ export default function GamePage() {
         )}
       </div>
 
-      <ChatWindow messages={messages} emptyLabel={t('game.emptyChat')} />
+      <ChatWindow messages={messages} emptyLabel={t('game.emptyChat')} inputRef={inputRef} />
 
       <div className="game__controls">
         <Input
+          ref={inputRef}
           placeholder={t('game.inputPlaceholder')}
           aria-label="Question input"
           value={input}
@@ -120,7 +150,7 @@ export default function GamePage() {
           disabled={done}
           maxLength={50}
         />
-        <Button color="blue" onClick={handleAsk} disabled={done || input.trim().length < 2}>{t('game.ask')}</Button>
+        <Button color="blue" onClick={handleAsk} disabled={done || loading || input.trim().length < 2}>{t('game.ask')}</Button>
       </div>
 
       {done && won && (

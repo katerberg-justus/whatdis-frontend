@@ -81,6 +81,24 @@
     font-size: $text-xs;
     flex-shrink: 0;
     text-transform: uppercase;
+    text-align: right;
+
+    &--yes        { color: $green; }
+    &--no         { color: $pink; }
+    &--partly,
+    &--indecisive { color: $blue; }
+    &--possible,
+    &--possibly_not { color: $orange; }
+    &--refusal    { color: $text-muted; }
+    &--win        { color: $green; }
+
+    &--loading { color: $text-muted; }
+  }
+
+  // Fast in-place answer cycling while a response is pending.
+  &__answer-text {
+    display: inline-block;
+    min-width: 7ch; // reduce layout jitter while cycling
 
     &--yes        { color: $green; }
     &--no         { color: $pink; }

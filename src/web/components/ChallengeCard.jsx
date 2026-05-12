@@ -58,22 +58,40 @@ const LockSvg = () => (
   </svg>
 )
 
+const CheckSvg = () => (
+  <svg viewBox="0 0 14 12" width="14" height="12" fill="currentColor" shapeRendering="crispEdges">
+    <rect x="0" y="4" width="4" height="4" />
+    <rect x="2" y="6" width="4" height="4" />
+    <rect x="4" y="8" width="4" height="4" />
+    <rect x="6" y="6" width="4" height="4" />
+    <rect x="8" y="4" width="4" height="4" />
+    <rect x="10" y="2" width="4" height="4" />
+    <rect x="10" y="0" width="4" height="4" />
+  </svg>
+)
+
 const SILHOUETTES = { person: PersonSvg, object: ObjectSvg }
 
-export default function ChallengeCard({ type, difficulty, label, onClick, locked }) {
+export default function ChallengeCard({ type, difficulty, label, subject, icon, onClick, locked, completed }) {
   const Silhouette = SILHOUETTES[type] ?? ObjectSvg
   const mod = DIFF_MOD[difficulty] ?? 'blue'
+  const showSubject = completed && subject
 
   return (
-    <div className={['challenge-card', locked && 'challenge-card--locked'].filter(Boolean).join(' ')} onClick={locked ? undefined : onClick}>
+    <div className={['challenge-card', locked && 'challenge-card--locked', completed && 'challenge-card--completed'].filter(Boolean).join(' ')} onClick={locked ? undefined : onClick}>
       <span className={`challenge-card__badge challenge-card__badge--${mod}`}>
         {DIFF_LABEL[difficulty] ?? difficulty}
       </span>
-      {locked && <span className="challenge-card__lock"><LockSvg /></span>}
+      {completed ? <span className="challenge-card__check"><CheckSvg /></span> : locked && <span className="challenge-card__lock"><LockSvg /></span>}
       <div className="challenge-card__art">
-        <Silhouette />
+        {completed && icon ? <span className="challenge-card__icon">{icon}</span> : <Silhouette />}
       </div>
-      {label && <span className="challenge-card__label">{label}</span>}
+      {label && (
+        <span className="challenge-card__label">
+          {showSubject && <span className="challenge-card__subject">{subject}</span>}
+          <span className={showSubject ? 'challenge-card__position' : undefined}>{label}</span>
+        </span>
+      )}
     </div>
   )
 }

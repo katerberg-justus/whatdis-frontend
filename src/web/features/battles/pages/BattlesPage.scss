@@ -37,6 +37,9 @@ $footer-height: 4rem;
     gap: 1rem;
     padding: 1rem;
     flex-wrap: wrap;
+  }
+
+  &__battle {
     cursor: pointer;
 
     &:hover { border-color: $blue; }

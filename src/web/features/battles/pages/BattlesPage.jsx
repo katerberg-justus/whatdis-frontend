@@ -7,9 +7,8 @@ import Button from '../../../components/Button'
 import './BattlesPage.scss'
 
 function battleOpponent(battle, userId) {
-  return battle.challenger?.id === userId
-    ? battle.challenged?.username
-    : battle.challenger?.username
+  const opp = battle.challenger?.id === userId ? battle.challenged : battle.challenger
+  return opp?.name ?? opp?.username
 }
 
 function battleScores(battle, userId) {

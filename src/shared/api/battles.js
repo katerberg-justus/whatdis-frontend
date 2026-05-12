@@ -1,5 +1,10 @@
 import { apiClient } from './clients'
 
+export async function apiCreateBattle(payload) {
+  const { data } = await apiClient.post('/battles', payload)
+  return data
+}
+
 export async function apiGetBattles() {
   const { data } = await apiClient.get('/battles')
   return Array.isArray(data) ? data : (data.battles ?? [])

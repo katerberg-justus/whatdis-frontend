@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { apiLogin, apiGuestAuth, apiClaimAccount, apiLogout } from '@shared/api/auth'
+import { apiMe } from '@shared/api/users'
 
 const AuthContext = createContext(null)
 
@@ -14,14 +15,22 @@ export function AuthProvider({ children }) {
       setLoading(false)
       return
     }
-    // No logged-in user — establish a guest session only if one doesn't already exist
+    // Previously authenticated users should go to login, not get a guest session
+    if (localStorage.getItem('logged_out')) { setLoading(false); return }
     const hasSession = document.cookie.match(/(?:^|;\s*)csrf_access_token=/)
-    if (hasSession) { setLoading(false); return }
+    if (hasSession) {
+      apiMe()
+        .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data) })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+      return
+    }
     apiGuestAuth().catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const persist = (data, username) => {
     const u = data?.user ?? { username }
+    localStorage.removeItem('logged_out')
     localStorage.setItem('user', JSON.stringify(u))
     setUser(u)
   }
@@ -39,7 +48,8 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try { await apiLogout() } catch {}
     localStorage.removeItem('user')
-    setUser(null)
+    localStorage.setItem('logged_out', '1')
+    window.location.replace('/login')
   }
 
   if (loading) return null

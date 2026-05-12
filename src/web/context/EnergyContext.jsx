@@ -10,7 +10,6 @@ export function EnergyProvider({ children }) {
   const [maxEnergy, setMaxEnergy] = useState(10)
 
   useEffect(() => {
-    if (!user) { setEnergy(null); return }
     apiMe()
       .then(data => {
         const e = data.energy ?? null

@@ -1,0 +1,10 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.icon-btn {
+  @include retro-btn($text-muted);
+  min-width: unset;
+  padding: 0.875rem;
+
+  svg { display: block; width: 16px; height: 16px; }
+}

@@ -6,6 +6,7 @@ import { useSubscription } from '../../../context/SubscriptionContext'
 import { apiGetPacks, apiGetDailyChallenges } from '@shared/api/challenges'
 import { apiCreateGame } from '@shared/api/games'
 import Button from '../../../components/Button'
+import Banner from '../../../components/Banner'
 import ChallengeCard from '../../../components/ChallengeCard'
 import LockedOverlay from '../../../components/LockedOverlay'
 import UpgradeDialog from '../../../components/UpgradeDialog'
@@ -83,6 +84,16 @@ export default function ChallengesPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {!isActive && (
+        <Banner
+          variant="cta"
+          title={t('upgrade.title')}
+          message={t('upgrade.perk2desc')}
+          cta={t('upgrade.cta')}
+          onCta={() => user ? setUpgradeOpen(true) : navigate('/register')}
+        />
       )}
 
       <section>

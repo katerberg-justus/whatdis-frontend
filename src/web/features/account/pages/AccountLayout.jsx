@@ -6,8 +6,9 @@ export default function AccountLayout() {
   const { t } = useLang()
 
   const tabs = [
-    { to: '/account',          label: t('profile.title'),  end: true },
-    { to: '/account/settings', label: t('settings.title') },
+    { to: '/account',              label: t('profile.title'),       end: true },
+    { to: '/account/settings',     label: t('settings.title') },
+    { to: '/account/subscription', label: t('subscription.title') },
   ]
 
   return (

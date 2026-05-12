@@ -10,7 +10,6 @@ import {
 } from '@shared/api/friends'
 import Button from '../../../components/Button'
 import Input from '../../../components/Input'
-import LockedOverlay from '../../../components/LockedOverlay'
 import './BattlesPage.scss'
 
 export default function FriendsPage() {
@@ -60,8 +59,6 @@ export default function FriendsPage() {
 
   return (
     <div className="battles">
-      <div className="locked-wrap">
-        <div className={user ? undefined : 'locked-wrap__content'}>
 
           {/* Incoming requests */}
           {requests.length > 0 && (
@@ -125,15 +122,6 @@ export default function FriendsPage() {
             {success && <p className="battles__success">{success}</p>}
           </section>
 
-        </div>
-
-        {!user && (
-          <LockedOverlay
-            title={t('battles.lockedTitle')}
-            message={t('battles.lockedMessage')}
-          />
-        )}
-      </div>
     </div>
   )
 }

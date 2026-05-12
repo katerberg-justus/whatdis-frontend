@@ -61,6 +61,14 @@
     flex: 1;
   }
 
+  &__author {
+    font-size: $text-xs;
+    flex-shrink: 0;
+
+    &--me   { color: $green; }
+    &--them { color: $blue; }
+  }
+
   &__prompt {
     color: $bg-border;
     flex-shrink: 0;

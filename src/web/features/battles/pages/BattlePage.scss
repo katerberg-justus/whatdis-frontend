@@ -1,0 +1,132 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.battle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: calc(100dvh - #{$status-bar-height} - 6rem);
+
+  @media (min-width: 768px) {
+    height: calc(100dvh - #{$status-bar-height} - 3rem);
+  }
+
+  // ── Meta bar ───────────────────────────────────────────────────────────────
+
+  &__meta {
+    @include card;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    flex-shrink: 0;
+  }
+
+  &__back {
+    background: none;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    font-size: $text-sm;
+    padding: 0;
+    flex-shrink: 0;
+    line-height: 1;
+
+    &:hover { color: $text; }
+  }
+
+  &__vs {
+    font-size: $text-sm;
+    color: $text;
+    flex: 1;
+  }
+
+  &__vs-sep {
+    color: $text-muted;
+    font-size: $text-xs;
+  }
+
+  &__status {
+    font-size: $text-xs;
+    flex-shrink: 0;
+
+    &--yours  { color: $green; }
+    &--theirs { color: $text-muted; }
+    &--won    { color: $green; }
+    &--lost   { color: $pink; }
+  }
+
+  // ── Controls ───────────────────────────────────────────────────────────────
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  // ── Response picker ────────────────────────────────────────────────────────
+
+  &__responses {
+    display: flex;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  &__resp {
+    font-family: $font;
+    font-size: $text-xs;
+    text-transform: uppercase;
+    padding: 0.25rem 0.5rem;
+    background: $bg-raised;
+    border: 2px solid $bg-border;
+    color: $text-muted;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+
+    &--active {
+      &.battle__resp--yes          { color: $green;  border-color: $green;  }
+      &.battle__resp--no           { color: $pink;   border-color: $pink;   }
+      &.battle__resp--indecisive   { color: $blue;   border-color: $blue;   }
+      &.battle__resp--possible,
+      &.battle__resp--possibly_not { color: $orange; border-color: $orange; }
+      &.battle__resp--refusal      { color: $text-muted; border-color: $text-muted; }
+    }
+  }
+
+  // ── Input row ──────────────────────────────────────────────────────────────
+
+  &__input-row {
+    display: flex;
+    gap: 0.5rem;
+
+    .btn {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  }
+
+  &__error {
+    font-size: $text-xs;
+    color: $pink;
+  }
+
+  // ── Finished result ────────────────────────────────────────────────────────
+
+  &__result {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  &__result-label {
+    font-size: $text-sm;
+
+    &--win  { color: $green; }
+    &--loss { color: $pink;  }
+  }
+}

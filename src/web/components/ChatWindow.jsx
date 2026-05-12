@@ -16,14 +16,19 @@ export default function ChatWindow({ messages, emptyLabel }) {
         <p className="chat__empty">{emptyLabel}</p>
       ) : (
         <div className="chat__log">
-          {messages.map(({ question, answer }, i) => (
+          {messages.map(({ question, answer, author, isMe }, i) => (
             <div key={i} className="chat__entry">
               <span className="chat__question">
+                {author != null && (
+                  <span className={`chat__author chat__author--${isMe ? 'me' : 'them'}`}>
+                    {author}
+                  </span>
+                )}
                 <span className="chat__prompt">&gt;</span>
                 {question}
               </span>
               <span className={`chat__answer chat__answer--${answer}`}>
-                {t(`game.response.${answer}`) }
+                {t(`game.response.${answer}`)}
               </span>
             </div>
           ))}

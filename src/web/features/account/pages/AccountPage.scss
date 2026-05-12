@@ -45,6 +45,44 @@
     gap: 0.5rem;
   }
 
+  &__sub-status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.875rem 1rem;
+    border: 2px solid rgba($green, 0.25);
+    background: rgba($green, 0.04);
+  }
+
+  &__sub-plan {
+    font-size: $text-sm;
+    color: $green;
+  }
+
+  &__sub-meta {
+    font-size: $text-xs;
+    color: $text-muted;
+  }
+
+  &__sub-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  &__sub-confirm-msg {
+    font-size: $text-xs;
+    color: $text-muted;
+    line-height: $leading;
+    margin: 0;
+  }
+
+  &__sub-confirm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   &__lang-btn {
     font-family: $font;
     font-size: $text-xs;

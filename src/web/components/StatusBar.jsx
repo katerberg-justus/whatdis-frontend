@@ -1,11 +1,27 @@
 import { useEnergy } from '../context/EnergyContext'
 import './StatusBar.scss'
 
+const EnergyDrinkIcon = () => (
+  <div className="status-bar__can">
+    <svg viewBox="0 0 10 14" width="15" height="21" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges" aria-hidden="true">
+      <rect x="1" y="0"  width="8" height="1" fill="#00A6FF" />
+      <rect x="0" y="1"  width="10" height="1" fill="#00A6FF" />
+      <rect x="0" y="2"  width="10" height="10" fill="#00A6FF" />
+      <rect x="3" y="4"  width="4" height="1" fill="#FF007B" />
+      <rect x="0" y="5"  width="10" height="3" fill="#FF007B" />
+      <rect x="3" y="8"  width="4" height="1" fill="#FF007B" />
+      <rect x="0" y="12" width="10" height="1" fill="#00A6FF" />
+      <rect x="1" y="13" width="8" height="1" fill="#00A6FF" />
+    </svg>
+    <span className="status-bar__can-nrg">NRG</span>
+  </div>
+)
+
 const BLOCK_COUNT = 10
 
 function energyColor(ratio) {
-  if (ratio > 0.6) return 'green'
-  if (ratio > 0.3) return 'blue'
+  if (ratio > 0.6) return 'blue'
+  if (ratio > 0.3) return 'green'
   return 'pink'
 }
 
@@ -20,7 +36,7 @@ export default function StatusBar() {
 
   return (
     <div className="status-bar">
-      <span className="status-bar__label">NRG</span>
+      <EnergyDrinkIcon />
       <div className="status-bar__track" aria-label={`${energy} of ${maxEnergy} energy`}>
         {Array.from({ length: BLOCK_COUNT }, (_, i) => (
           <span

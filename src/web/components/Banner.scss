@@ -1,0 +1,51 @@
+@use '../styles/variables' as *;
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid;
+  flex-wrap: wrap;
+
+  // ── CTA — green dominant ────────────────────────────────────────────────────
+
+  &--cta {
+    background: rgba($green, 0.06);
+    border-color: $green;
+    box-shadow: 0 0 20px rgba($green, 0.1);
+  }
+
+  // ── Muted — background surface, green border ────────────────────────────────
+
+  &--muted {
+    background: $bg-raised;
+    border-color: rgba($green, 0.3);
+  }
+
+  // ── Content ─────────────────────────────────────────────────────────────────
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $text-sm;
+    color: $green;
+    margin: 0;
+
+    .banner--muted & { color: $text; }
+  }
+
+  &__message {
+    font-size: $text-xs;
+    color: $text-muted;
+    line-height: $leading;
+    margin: 0;
+  }
+}

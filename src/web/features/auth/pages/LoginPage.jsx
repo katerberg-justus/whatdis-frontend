@@ -32,7 +32,11 @@ export default function LoginPage() {
       await login(username, password)
       navigate('/challenges')
     } catch (err) {
-      setError(err.message)
+      setError(
+        err.response?.status === 401
+          ? t('login.invalidCredentials')
+          : err.message
+      )
     } finally {
       setLoading(false)
     }

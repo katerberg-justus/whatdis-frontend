@@ -14,8 +14,9 @@ export function AuthProvider({ children }) {
       setLoading(false)
       return
     }
-    // No logged-in user — establish a guest session so cookies are set
-    // and unauthenticated users can still play daily challenges
+    // No logged-in user — establish a guest session only if one doesn't already exist
+    const hasSession = document.cookie.match(/(?:^|;\s*)csrf_access_token=/)
+    if (hasSession) { setLoading(false); return }
     apiGuestAuth().catch(() => {}).finally(() => setLoading(false))
   }, [])
 

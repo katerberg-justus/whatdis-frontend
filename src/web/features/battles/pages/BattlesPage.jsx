@@ -4,17 +4,7 @@ import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { apiGetBattles, apiAcceptBattle, apiDeclineBattle } from '@shared/api/battles'
 import Button from '../../../components/Button'
-import LockedOverlay from '../../../components/LockedOverlay'
 import './BattlesPage.scss'
-
-const IconLock = () => (
-  <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges">
-    <rect x="5" y="0" width="6" height="2" />
-    <rect x="5" y="2" width="2" height="4" />
-    <rect x="9" y="2" width="2" height="4" />
-    <rect x="1" y="5" width="14" height="11" />
-  </svg>
-)
 
 function battleOpponent(battle, userId) {
   return battle.challenger?.id === userId
@@ -55,8 +45,6 @@ export default function BattlesPage() {
 
   return (
     <div className="battles">
-      <div className="locked-wrap">
-        <div className={user ? undefined : 'locked-wrap__content'}>
 
           {invites.length > 0 && (
             <section className="battles__section">
@@ -122,26 +110,6 @@ export default function BattlesPage() {
             )}
           </section>
 
-        </div>
-
-        {!user && (
-          <LockedOverlay
-            title={t('battles.lockedTitle')}
-            message={t('battles.lockedMessage')}
-          />
-        )}
-      </div>
-
-      <div className="battles__footer">
-        <Button
-          color="pink"
-          fullWidth
-          onClick={() => !user && navigate('/register')}
-        >
-          {!user && <IconLock />}
-          {t('battles.startNew')}
-        </Button>
-      </div>
     </div>
   )
 }

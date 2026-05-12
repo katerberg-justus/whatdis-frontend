@@ -15,6 +15,7 @@ import BattlePage from './features/battles/pages/BattlePage'
 import AccountLayout from './features/account/pages/AccountLayout'
 import ProfilePage from './features/account/pages/ProfilePage'
 import SettingsPage from './features/account/pages/SettingsPage'
+import SubscriptionPage from './features/account/pages/SubscriptionPage'
 import PackChallengesPage from './features/packs/pages/PackChallengesPage'
 import CollectiblesLayout from './features/collectibles/pages/CollectiblesLayout'
 import StickersPage from './features/collectibles/pages/StickersPage'
@@ -43,10 +44,11 @@ function Layout() {
             <Route path="friends" element={<FriendsPage />} />
             <Route path="history" element={<BattlesHistoryPage />} />
           </Route>
-          <Route path="/challenges/:challengeId/battle/:battleId" element={<BattlePage />} />
+          <Route path="/battles/:battleId" element={<BattlePage />} />
           <Route path="/account" element={<AccountLayout />}>
             <Route index element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="subscription" element={<SubscriptionPage />} />
           </Route>
           <Route path="/packs/:packId/challenges" element={<PackChallengesPage />} />
           <Route path="/collectibles" element={<CollectiblesLayout />}>

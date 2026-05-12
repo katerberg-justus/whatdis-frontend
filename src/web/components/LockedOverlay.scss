@@ -2,6 +2,7 @@
 
 .locked-wrap {
   position: relative;
+  min-height: 60vh;
 
   &__content {
     filter: blur(3px);

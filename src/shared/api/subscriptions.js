@@ -8,8 +8,12 @@ export async function apiGetSubscription() {
 export async function apiStartCheckout(planId) {
   const { data } = await apiClient.post('/subscriptions/checkout', {
     plan_id:     planId,
-    success_url: `${window.location.origin}/account`,
-    cancel_url:  `${window.location.origin}/account`,
+    success_url: `${window.location.origin}/account/subscription`,
+    cancel_url:  `${window.location.origin}/account/subscription`,
   })
   return data
+}
+
+export async function apiCancelSubscription() {
+  await apiClient.delete('/me/subscription')
 }

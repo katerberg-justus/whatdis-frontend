@@ -33,10 +33,15 @@ apiClient.interceptors.response.use(
     const original = err.config
     if (err.response?.status === 401 && !original._retry) {
       original._retry = true
+      const refreshCsrf = getCsrfToken('csrf_refresh_token')
+      if (!refreshCsrf) {
+        localStorage.removeItem('user')
+        window.location.href = '/login'
+        return Promise.reject(err)
+      }
       try {
-        const refreshCsrf = getCsrfToken('csrf_refresh_token')
-        await authClient.post('/auth/refresh', null, {
-          headers: refreshCsrf ? { 'X-CSRF-TOKEN': refreshCsrf } : {},
+        await authClient.post('/auth/refresh', {}, {
+          headers: { 'X-CSRF-TOKEN': refreshCsrf },
         })
         return apiClient(original)
       } catch {

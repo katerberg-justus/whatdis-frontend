@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { apiGetBattles } from '@shared/api/battles'
-import LockedOverlay from '../../../components/LockedOverlay'
 import './BattlesPage.scss'
 
 function battleOpponent(battle, userId) {
@@ -30,14 +29,12 @@ export default function BattlesHistoryPage() {
 
   useEffect(() => {
     if (!user) return
-    apiGetBattles().then(all => setBattles(all.filter(b => b.status === 'completed'))).catch(() => {})
+    apiGetBattles().then(all => setBattles(all.filter(b => b.status === 'finished'))).catch(() => {})
   }, [user])
 
   return (
     <div className="battles">
-      <div className="locked-wrap">
-        <div className={user ? undefined : 'locked-wrap__content'}>
-          <section className="battles__section">
+      <section className="battles__section">
             <h2 className="battles__section-title">{t('battles.tabHistory')}</h2>
             {battles.length === 0 ? (
               <p className="battles__empty">{t('battles.noHistory')}</p>
@@ -69,16 +66,7 @@ export default function BattlesHistoryPage() {
                 })}
               </ul>
             )}
-          </section>
-        </div>
-
-        {!user && (
-          <LockedOverlay
-            title={t('battles.lockedTitle')}
-            message={t('battles.lockedMessage')}
-          />
-        )}
-      </div>
+      </section>
     </div>
   )
 }

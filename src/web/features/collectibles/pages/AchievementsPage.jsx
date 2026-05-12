@@ -30,32 +30,31 @@ export default function AchievementsPage() {
     return acc
   }, [])
 
-  // Uncategorised fallback
-  const known = new Set(CATEGORY_ORDER)
-  const rest = all.filter(a => !known.has(a.category))
-  if (rest.length) grouped.push({ cat: 'other', items: rest })
-
   return (
     <div className="collectibles__sections">
-      {grouped.map(({ cat, items }) => (
+      {grouped.map(({ cat, items }) => {
+        const nextId = items.find(a => !earnedMap[a.id])?.id
+        return (
         <section key={cat} className="collectibles__section">
           <h2 className="collectibles__section-title">{t(`collectibles.cat.${cat}`)}</h2>
           <div className="collectibles__grid">
             {items.map((achievement) => {
               const userAchievement = earnedMap[achievement.id]
               const isEarned = Boolean(userAchievement)
+              const isNext   = !isEarned && achievement.id === nextId
+              const isHidden = !isEarned && !isNext
 
               return (
                 <div
                   key={achievement.id}
-                  className={['collectibles__card', !isEarned && 'collectibles__card--locked'].filter(Boolean).join(' ')}
+                  className={['collectibles__card', isHidden && 'collectibles__card--locked'].filter(Boolean).join(' ')}
                 >
-                  <span className="collectibles__card-icon">{isEarned ? achievement.icon : '?'}</span>
-                  <span className={`collectibles__card-name${!isEarned ? ' collectibles__card-name--blur' : ''}`}>
-                    {isEarned ? achievement.name : 'Hidden Achievement'}
+                  <span className="collectibles__card-icon">{isHidden ? '?' : achievement.icon}</span>
+                  <span className={`collectibles__card-name${isHidden ? ' collectibles__card-name--blur' : ''}`}>
+                    {isHidden ? 'Hidden Achievement' : achievement.name}
                   </span>
-                  <span className={`collectibles__card-desc${!isEarned ? ' collectibles__card-desc--blur' : ''}`}>
-                    {isEarned ? achievement.description : 'Keep playing to unlock this secret achievement.'}
+                  <span className={`collectibles__card-desc${isHidden ? ' collectibles__card-desc--blur' : ''}`}>
+                    {isHidden ? 'Keep playing to unlock this secret achievement.' : achievement.description}
                   </span>
                   {isEarned ? (
                     <span className="collectibles__card-date">{formatDate(userAchievement.earned_at)}</span>
@@ -67,7 +66,8 @@ export default function AchievementsPage() {
             })}
           </div>
         </section>
-      ))}
+        )
+      })}
     </div>
   )
 }

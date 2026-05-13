@@ -4,6 +4,7 @@ import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import Button from '../../../components/Button'
 import Input from '../../../components/Input'
+import Logo from '../../../components/Logo'
 import './AuthPage.scss'
 
 export default function RegisterPage() {
@@ -35,6 +36,7 @@ export default function RegisterPage() {
   return (
     <div className="auth">
       <form className="auth__form" onSubmit={handleSubmit}>
+        <div className="auth__logo"><Logo /></div>
         <h1 className="auth__title">{t('register.title')}</h1>
         {error && <p className="auth__error">{error}</p>}
         <Input

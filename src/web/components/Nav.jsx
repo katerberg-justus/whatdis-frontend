@@ -4,35 +4,10 @@ import { useAuth } from '../context/AuthContext'
 import { useLang } from '../context/LangContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import UpgradeDialog from './UpgradeDialog'
+import Logo from './Logo'
 import './Nav.scss'
 
 // Pixel-art icons — 16×16 viewBox, each logical pixel = 2×2 units
-
-const logoPinkPixels = 'M3.00 28.65h4.50v2.25h-4.50z M14.25 28.65h4.50v2.25h-4.50z M27.75 28.65h4.50v2.25h-4.50z M39.00 28.65h4.50v2.25h-4.50z M54.75 28.65h11.25v2.25h-11.25z M77.25 28.65h15.75v2.25h-15.75z M3.00 30.90h4.50v2.25h-4.50z M14.25 30.90h4.50v2.25h-4.50z M27.75 30.90h4.50v2.25h-4.50z M39.00 30.90h4.50v2.25h-4.50z M52.50 30.90h4.50v2.25h-4.50z M63.75 30.90h4.50v2.25h-4.50z M81.75 30.90h6.75v2.25h-6.75z M3.00 33.15h4.50v2.25h-4.50z M14.25 33.15h4.50v2.25h-4.50z M27.75 33.15h4.50v2.25h-4.50z M39.00 33.15h4.50v2.25h-4.50z M52.50 33.15h4.50v2.25h-4.50z M63.75 33.15h4.50v2.25h-4.50z M81.75 33.15h6.75v2.25h-6.75z M3.00 35.40h4.50v2.25h-4.50z M9.75 35.40h2.25v2.25h-2.25z M14.25 35.40h4.50v2.25h-4.50z M27.75 35.40h15.75v2.25h-15.75z M52.50 35.40h15.75v2.25h-15.75z M81.75 35.40h6.75v2.25h-6.75z M3.00 37.65h15.75v2.25h-15.75z M27.75 37.65h4.50v2.25h-4.50z M39.00 37.65h4.50v2.25h-4.50z M52.50 37.65h4.50v2.25h-4.50z M63.75 37.65h4.50v2.25h-4.50z M81.75 37.65h6.75v2.25h-6.75z M3.00 39.90h6.75v2.25h-6.75z M12.00 39.90h6.75v2.25h-6.75z M27.75 39.90h4.50v2.25h-4.50z M39.00 39.90h4.50v2.25h-4.50z M52.50 39.90h4.50v2.25h-4.50z M63.75 39.90h4.50v2.25h-4.50z M81.75 39.90h6.75v2.25h-6.75z M3.00 42.15h4.50v2.25h-4.50z M14.25 42.15h4.50v2.25h-4.50z M27.75 42.15h4.50v2.25h-4.50z M39.00 42.15h4.50v2.25h-4.50z M52.50 42.15h4.50v2.25h-4.50z M63.75 42.15h4.50v2.25h-4.50z M81.75 42.15h6.75v2.25h-6.75z M60.94 51.60h11.25v2.25h-11.25z M58.69 53.85h4.50v2.25h-4.50z M69.94 53.85h4.50v2.25h-4.50z M69.94 56.10h4.50v2.25h-4.50z M67.69 58.35h4.50v2.25h-4.50z M63.19 60.60h4.50v2.25h-4.50z M63.19 65.10h4.50v2.25h-4.50z'
-const logoBluePixels = 'M3.00 51.60h11.25v2.25h-11.25z M21.56 51.60h15.75v2.25h-15.75z M42.38 51.60h13.50v2.25h-13.50z M81.75 51.60h6.75v2.25h-6.75z M3.00 53.85h4.50v2.25h-4.50z M12.00 53.85h4.50v2.25h-4.50z M26.06 53.85h6.75v2.25h-6.75z M40.12 53.85h4.50v2.25h-4.50z M81.75 53.85h6.75v2.25h-6.75z M3.00 56.10h4.50v2.25h-4.50z M14.25 56.10h4.50v2.25h-4.50z M26.06 56.10h6.75v2.25h-6.75z M40.12 56.10h4.50v2.25h-4.50z M81.75 56.10h6.75v2.25h-6.75z M3.00 58.35h4.50v2.25h-4.50z M14.25 58.35h4.50v2.25h-4.50z M26.06 58.35h6.75v2.25h-6.75z M42.38 58.35h11.25v2.25h-11.25z M81.75 58.35h6.75v2.25h-6.75z M3.00 60.60h4.50v2.25h-4.50z M14.25 60.60h4.50v2.25h-4.50z M26.06 60.60h6.75v2.25h-6.75z M51.38 60.60h4.50v2.25h-4.50z M81.75 60.60h6.75v2.25h-6.75z M3.00 62.85h4.50v2.25h-4.50z M12.00 62.85h4.50v2.25h-4.50z M26.06 62.85h6.75v2.25h-6.75z M51.38 62.85h4.50v2.25h-4.50z M3.00 65.10h11.25v2.25h-11.25z M21.56 65.10h15.75v2.25h-15.75z M40.12 65.10h13.50v2.25h-13.50z M81.75 65.10h6.75v2.25h-6.75z'
-
-const IconLogo = () => (
-
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="100" height="100" shapeRendering="crispEdges">
-    <g transform="translate(3.38 3.38)" opacity="0.5">
-      <path fill="#9C0059" d={logoPinkPixels} />
-      <path fill="#0068AA" d={logoBluePixels} />
-    </g>
-    <g transform="translate(1.12 1.12)" opacity="0.75">
-      <path fill="#D50071" d={logoPinkPixels} />
-      <path fill="#0089D6" d={logoBluePixels} />
-    </g>
-    <g transform="translate(-1.12 -1.12)" opacity="0.82">
-      <path fill="#FF4DAA" d={logoPinkPixels} />
-      <path fill="#4FC7FF" d={logoBluePixels} />
-    </g>
-    <path fill="#FF007B" d={logoPinkPixels} />
-    <path fill="#00A6FF" d={logoBluePixels} />
-    <path fill="#FF86C8" d="M3 28.65h4.5v2.25H3z M27.75 28.65h4.5v2.25h-4.5z M54.75 28.65H66v2.25H54.75z M77.25 28.65H93v2.25H77.25z M60.94 51.6h11.25v2.25H60.94z" opacity="0.72" />
-    <path fill="#8ADEFF" d="M3 51.6h11.25v2.25H3z M21.56 51.6h15.75v2.25H21.56z M42.38 51.6h13.5v2.25h-13.5z M81.75 51.6h6.75v2.25h-6.75z" opacity="0.72" />
-  </svg>
-
-)
 
 // Flag / pennant
 const IconChallenges = () => (
@@ -125,7 +100,7 @@ export default function Nav() {
 
       <div className="nav__panel">
         <div className="nav__logo">
-          {IconLogo()}
+          <Logo />
         </div>
 
         <ul className="nav__links">

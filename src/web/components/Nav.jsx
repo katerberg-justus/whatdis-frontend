@@ -107,6 +107,7 @@ export default function Nav() {
   const { user } = useAuth()
   const { t } = useLang()
   const { isActive, subscription } = useSubscription()
+  const isGuest = !user || user.is_guest
 
   const mainLinks = [
     { to: '/challenges',   label: t('nav.challenges'),   icon: <IconChallenges /> },
@@ -136,7 +137,7 @@ export default function Nav() {
               </NavLink>
             </li>
           ))}
-          {user && !isActive && subscription !== undefined && (
+          {!isGuest && !isActive && subscription !== undefined && (
             <li>
               <button
                 className="nav__link nav__link--upgrade"
@@ -151,15 +152,15 @@ export default function Nav() {
 
         <ul className="nav__bottom">
           <li>
-            {user ? (
-              <NavLink to="/account" end className="nav__link nav__link--account" onClick={close}>
-                <span className="nav__icon"><IconAccount /></span>
-                <span>{t('nav.account')}</span>
-              </NavLink>
-            ) : (
+            {isGuest ? (
               <NavLink to="/register" end className="nav__link nav__link--account" onClick={close}>
                 <span className="nav__icon"><IconAccount /></span>
                 <span>{t('nav.signUp')}</span>
+              </NavLink>
+            ) : (
+              <NavLink to="/account" end className="nav__link nav__link--account" onClick={close}>
+                <span className="nav__icon"><IconAccount /></span>
+                <span>{t('nav.account')}</span>
               </NavLink>
             )}
           </li>

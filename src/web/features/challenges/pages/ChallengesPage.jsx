@@ -68,8 +68,9 @@ export default function ChallengesPage() {
   const dailyCards = dailiesLoading && dailies.length === 0
     ? [{ id: 'daily-placeholder', difficulty: 'medium', completed: false, isPlaceholder: true }]
     : dailies
-  const showUpgradeBanner = user && !isActive && subscription !== undefined
-  const showSignUpBanner = !user
+  const isGuest = !user || user.is_guest
+  const showUpgradeBanner = !isGuest && !isActive && subscription !== undefined
+  const showSignUpBanner = isGuest
 
   useEffect(() => {
     apiGetPacks().then(data => setPacks(data.filter(p => {
@@ -131,7 +132,7 @@ export default function ChallengesPage() {
       <section>
         <h2 className="challenges__section-title">{t('challenges.packsSection')}</h2>
         <div className="locked-wrap">
-          <div className={user ? undefined : 'locked-wrap__content'}>
+          <div className={isGuest ? 'locked-wrap__content' : undefined}>
             <div className="challenges__packs">
               {packs.map((pack, i) => {
                 const total     = pack.total_count ?? 0
@@ -174,7 +175,7 @@ export default function ChallengesPage() {
               })}
             </div>
           </div>
-          {!user && (
+          {isGuest && (
             <LockedOverlay
               title={t('challenges.lockedTitle')}
               message={t('challenges.lockedMessage')}

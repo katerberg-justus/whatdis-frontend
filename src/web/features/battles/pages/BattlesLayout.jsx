@@ -19,6 +19,7 @@ export default function BattlesLayout() {
   const { t }      = useLang()
   const { user }   = useAuth()
   const navigate   = useNavigate()
+  const isGuest    = !user || user.is_guest
 
   const tabs = [
     { to: '/battles',         label: t('battles.tabBattles'),  end: true },
@@ -29,11 +30,11 @@ export default function BattlesLayout() {
   return (
     <>
     <div className="locked-wrap">
-      <div className={user ? undefined : 'locked-wrap__content'}>
+      <div className={isGuest ? 'locked-wrap__content' : undefined}>
         <Tabs tabs={tabs} />
         <Outlet />
       </div>
-      {!user && (
+      {isGuest && (
         <LockedOverlay
           title={t('battles.lockedTitle')}
           message={t('battles.lockedMessage')}
@@ -45,9 +46,9 @@ export default function BattlesLayout() {
       <Button
         color="pink"
         fullWidth
-        onClick={() => navigate(user ? '/battles/friends' : '/register')}
+        onClick={() => navigate(isGuest ? '/register' : '/battles/friends')}
       >
-        {!user && <IconLock />}
+        {isGuest && <IconLock />}
         {t('battles.startNew')}
       </Button>
     </div>

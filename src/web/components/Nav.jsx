@@ -53,8 +53,8 @@ const IconUpgrade = () => (
 // Trophy: blue cup + pink handles + pink stem/base
 const IconCollectibles = () => (
   <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#00A6FF" d="M4 1h8v6H4zM3 3h1v3H3zM12 3h1v3H12zM4 7h8v2H4z" />
-    <path fill="#FF007B" d="M2 3h1v3H2zM13 3h1v3H13zM6 9h4v2H6zM5 11h6v1H5zM4 12h8v1H4zM5 13h6v2H5z" />
+    <path fill="#00A6FF" d="M4 2h8v1H4zM4 3h8v3H4zM5 6h6v1H5zM6 7h4v1H6z" />
+    <path fill="#FF007B" d="M2 3h2v1H2zM12 3h2v1h-2zM2 4h1v3H2zM13 4h1v3h-1zM3 7h2v1H3zM11 7h2v1h-2zM7 8h2v3H7zM5 11h6v1H5zM4 12h8v2H4zM3 14h10v1H3z" />
   </svg>
 )
 

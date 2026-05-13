@@ -145,10 +145,10 @@ export default function GamePage() {
           placeholder={t('game.inputPlaceholder')}
           aria-label="Question input"
           value={input}
-          onChange={e => setInput(e.target.value.slice(0, 50))}
+          onChange={e => setInput(e.target.value.slice(0, 80))}
           onKeyDown={handleKeyDown}
           disabled={done}
-          maxLength={50}
+          maxLength={80}
         />
         <Button color="blue" onClick={handleAsk} disabled={done || loading || input.trim().length < 2}>{t('game.ask')}</Button>
       </div>

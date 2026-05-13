@@ -7,12 +7,14 @@ $panel-transition: 0.25s ease;
   // ── Hamburger button (mobile only) ──────────────────────────────────────────
   &__hamburger {
     position: fixed;
-    top: 1rem;
-    right: 1rem;
+    top: 0;
+    right: 0;
     width: $hamburger-size;
-    height: $hamburger-size;
+    height: $status-bar-height;
     background: $bg-raised;
-    border: 2px solid $bg-border;
+    border: none;
+    border-left: 3px solid $bg-border;
+    box-shadow: inset 0 -2px 0 $bg-border;
     cursor: pointer;
     display: flex;
     flex-direction: column;

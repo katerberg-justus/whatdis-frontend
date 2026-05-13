@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
 import { AuthProvider } from './context/AuthContext'
 import { LangProvider } from './context/LangContext'
+import { CurrencyProvider } from './context/CurrencyContext'
 import { EnergyProvider } from './context/EnergyContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
 import Nav from './components/Nav'
@@ -70,11 +71,13 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <LangProvider>
-          <SubscriptionProvider>
-            <EnergyProvider>
-              <Layout />
-            </EnergyProvider>
-          </SubscriptionProvider>
+          <CurrencyProvider>
+            <SubscriptionProvider>
+              <EnergyProvider>
+                <Layout />
+              </EnergyProvider>
+            </SubscriptionProvider>
+          </CurrencyProvider>
         </LangProvider>
       </AuthProvider>
     </BrowserRouter>

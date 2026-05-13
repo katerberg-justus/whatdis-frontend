@@ -50,12 +50,7 @@ apiClient.interceptors.response.use(
       if (!refreshCsrf) {
         debugAuthFailure('Missing refresh CSRF before /auth/refresh', err)
         localStorage.removeItem('user')
-
-        // Temporary: do not redirect instantly while debugging
-        setTimeout(() => {
-          window.location.href = '/login'
-        }, 10000)
-
+        window.location.href = '/login'
         return Promise.reject(err)
       }
 
@@ -68,12 +63,7 @@ apiClient.interceptors.response.use(
       } catch (refreshErr) {
         debugAuthFailure('Refresh failed', refreshErr)
         localStorage.removeItem('user')
-
-        // Temporary: do not redirect instantly while debugging
-        setTimeout(() => {
-          window.location.href = '/login'
-        }, 10000)
-
+        window.location.href = '/login'
         return Promise.reject(refreshErr)
       }
     }

@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { useLang } from '../context/LangContext'
+import { useCurrency } from '../context/CurrencyContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import Dialog from './Dialog'
 import Button from './Button'
 import './UpgradeDialog.scss'
 
 const PLANS = [
-  { id: 'pro_weekly',  key: 'upgrade.weekly',  price: '€0.99'  },
-  { id: 'pro_monthly', key: 'upgrade.monthly', price: '€1.99'  },
-  { id: 'pro_yearly',  key: 'upgrade.yearly',  price: '€19.99' },
+  { id: 'pro_weekly',  key: 'upgrade.weekly',  prices: { EUR: '€0.99',  USD: '$1.19',  GBP: '£0.89'  } },
+  { id: 'pro_monthly', key: 'upgrade.monthly', prices: { EUR: '€1.99',  USD: '$2.49',  GBP: '£1.79'  } },
+  { id: 'pro_yearly',  key: 'upgrade.yearly',  prices: { EUR: '€19.99', USD: '$24.99', GBP: '£17.99' } },
 ]
 
 const PERKS = [
@@ -19,13 +20,14 @@ const PERKS = [
 
 export default function UpgradeDialog({ onClose }) {
   const { t }             = useLang()
+  const { currency }      = useCurrency()
   const { startCheckout } = useSubscription()
   const [selected, setSelected] = useState('pro_monthly')
   const [loading,  setLoading]  = useState(false)
 
   const handleUpgrade = async () => {
     setLoading(true)
-    try { await startCheckout(selected) } catch { setLoading(false) }
+    try { await startCheckout(selected, currency) } catch { setLoading(false) }
   }
 
   return (
@@ -39,7 +41,7 @@ export default function UpgradeDialog({ onClose }) {
         ))}
       </ul>
       <div className="upgrade__plans">
-        {PLANS.map(({ id, key, price }) => (
+        {PLANS.map(({ id, key, prices }) => (
           <button
             key={id}
             type="button"
@@ -47,7 +49,7 @@ export default function UpgradeDialog({ onClose }) {
             onClick={() => setSelected(id)}
           >
             <span className="upgrade__plan-period">{t(key)}</span>
-            <span className="upgrade__plan-price">{price}</span>
+            <span className="upgrade__plan-price">{prices[currency]}</span>
           </button>
         ))}
       </div>

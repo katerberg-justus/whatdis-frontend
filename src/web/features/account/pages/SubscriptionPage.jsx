@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useLang } from '../../../context/LangContext'
+import { useCurrency } from '../../../context/CurrencyContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
 import Button from '../../../components/Button'
 import './AccountPage.scss'
 
 const PLANS = [
-  { id: 'pro_weekly',  key: 'upgrade.weekly',  price: '€0.99'  },
-  { id: 'pro_monthly', key: 'upgrade.monthly', price: '€1.99'  },
-  { id: 'pro_yearly',  key: 'upgrade.yearly',  price: '€19.99' },
+  { id: 'pro_weekly',  key: 'upgrade.weekly',  prices: { EUR: '€0.99',  USD: '$1.19',  GBP: '£0.89'  } },
+  { id: 'pro_monthly', key: 'upgrade.monthly', prices: { EUR: '€1.99',  USD: '$2.49',  GBP: '£1.79'  } },
+  { id: 'pro_yearly',  key: 'upgrade.yearly',  prices: { EUR: '€19.99', USD: '$24.99', GBP: '£17.99' } },
 ]
 
 const PERKS = [
@@ -24,6 +25,7 @@ function formatDate(value) {
 
 export default function SubscriptionPage() {
   const { t } = useLang()
+  const { currency } = useCurrency()
   const { subscription, isActive, startCheckout, cancelSubscription } = useSubscription()
 
   const currentPlan    = PLANS.find(p => p.id === subscription?.plan_id)
@@ -37,7 +39,7 @@ export default function SubscriptionPage() {
 
   const handleCheckout = async () => {
     setLoading(true)
-    try { await startCheckout(selected) } catch { setLoading(false) }
+    try { await startCheckout(selected, currency) } catch { setLoading(false) }
   }
 
   const handleCancel = async () => {
@@ -61,7 +63,7 @@ export default function SubscriptionPage() {
         <div className="account__sub-status">
           <span className="account__sub-plan">
             {currentPlan ? t(currentPlan.key) : subscription.plan_id}
-            {currentPlan && ` — ${currentPlan.price}`}
+            {currentPlan && ` — ${currentPlan.prices[currency]}`}
           </span>
           <span className="account__sub-meta">
             {isCancelling
@@ -83,7 +85,7 @@ export default function SubscriptionPage() {
       )}
 
       <div className="upgrade__plans">
-        {PLANS.map(({ id, key, price }, idx) => {
+        {PLANS.map(({ id, key, prices }, idx) => {
           const locked = isActive && idx <= currentPlanIdx
           return (
           <button
@@ -93,7 +95,7 @@ export default function SubscriptionPage() {
             onClick={() => !locked && setSelected(id)}
           >
             <span className="upgrade__plan-period">{t(key)}</span>
-            <span className="upgrade__plan-price">{price}</span>
+            <span className="upgrade__plan-price">{prices[currency]}</span>
           </button>
           )
         })}

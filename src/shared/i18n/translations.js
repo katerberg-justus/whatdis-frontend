@@ -106,6 +106,7 @@ const translations = {
 
     'settings.title':               'Settings',
     'settings.language':            'Language',
+    'settings.currency':            'Currency',
     'settings.save':                'Save',
     'settings.saving':              'Saving...',
     'settings.success':             'Settings saved!',
@@ -254,6 +255,7 @@ const translations = {
 
     'settings.title':               'Ajustes',
     'settings.language':            'Idioma',
+    'settings.currency':            'Moneda',
     'settings.save':                'Guardar',
     'settings.saving':              'Guardando...',
     'settings.success':             '¡Ajustes guardados!',
@@ -402,6 +404,7 @@ const translations = {
 
     'settings.title':               'Paramètres',
     'settings.language':            'Langue',
+    'settings.currency':            'Devise',
     'settings.save':                'Enregistrer',
     'settings.saving':              'Enregistrement...',
     'settings.success':             'Paramètres sauvegardés !',
@@ -550,6 +553,7 @@ const translations = {
 
     'settings.title':               'Einstellungen',
     'settings.language':            'Sprache',
+    'settings.currency':            'Währung',
     'settings.save':                'Speichern',
     'settings.saving':              'Wird gespeichert...',
     'settings.success':             'Einstellungen gespeichert!',
@@ -698,6 +702,7 @@ const translations = {
 
     'settings.title':               'Instellingen',
     'settings.language':            'Taal',
+    'settings.currency':            'Valuta',
     'settings.save':                'Opslaan',
     'settings.saving':              'Opslaan...',
     'settings.success':             'Instellingen opgeslagen!',
@@ -846,6 +851,7 @@ const translations = {
 
     'settings.title':               'Configurações',
     'settings.language':            'Idioma',
+    'settings.currency':            'Moeda',
     'settings.save':                'Salvar',
     'settings.saving':              'Salvando...',
     'settings.success':             'Configurações salvas!',

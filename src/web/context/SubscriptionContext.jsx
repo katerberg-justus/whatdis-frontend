@@ -18,8 +18,8 @@ export function SubscriptionProvider({ children }) {
 
   useEffect(() => { refresh() }, [refresh])
 
-  async function startCheckout(planId) {
-    const { checkout_url } = await apiStartCheckout(planId)
+  async function startCheckout(planId, currency) {
+    const { checkout_url } = await apiStartCheckout(planId, currency)
     window.location.href = checkout_url
   }
 

@@ -39,12 +39,6 @@
     margin: 0.5rem 0;
   }
 
-  &__lang-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-  }
-
   &__sub-status {
     display: flex;
     flex-direction: column;
@@ -81,28 +75,5 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-  }
-
-  &__lang-btn {
-    font-family: $font;
-    font-size: $text-xs;
-    text-transform: uppercase;
-    padding: 0.625rem 0.5rem;
-    background: $bg-raised;
-    color: $text-muted;
-    border: 2px solid $bg-border;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
-
-    &:hover {
-      color: $text;
-      border-color: $text-muted;
-    }
-
-    &--active {
-      color: $blue;
-      border-color: $blue;
-      box-shadow: 0 0 10px $blue-glow;
-    }
   }
 }

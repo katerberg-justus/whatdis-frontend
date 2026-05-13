@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router'
+import { useLang } from '../context/LangContext'
 import Button from './Button'
 import './LockedOverlay.scss'
 
@@ -13,14 +14,16 @@ const IconLock = () => (
 
 export default function LockedOverlay({ title, message }) {
   const navigate = useNavigate()
+  const { t } = useLang()
+
   return (
     <div className="locked-overlay">
       <span className="locked-overlay__icon"><IconLock /></span>
       <p className="locked-overlay__title">{title}</p>
       <p className="locked-overlay__message">{message}</p>
       <div className="locked-overlay__actions">
-        <Button color="blue"  onClick={() => navigate('/login')}>Sign In</Button>
-        <Button color="pink"  onClick={() => navigate('/register')}>Register</Button>
+        <Button color="blue"  onClick={() => navigate('/login')}>{t('register.signIn')}</Button>
+        <Button color="pink"  onClick={() => navigate('/register')}>{t('login.register')}</Button>
       </div>
     </div>
   )

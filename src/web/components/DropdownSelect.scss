@@ -1,0 +1,130 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.dropdown-select {
+  @include retro-input;
+  // Match Input.scss vertical optical centering for Press Start 2P.
+  position: relative;
+  min-height: 2.625rem;
+  padding-top: calc(0.875rem + 1px);
+  padding-right: 3rem;
+  padding-bottom: calc(0.875rem - 1px);
+  cursor: pointer;
+  text-align: left;
+
+  &--with-icon {
+    padding-left: 2rem;
+  }
+
+  &--placeholder {
+    color: $text-muted;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  &__label {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-muted;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  &__chevron {
+    display: block;
+  }
+
+  &__menu {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.375rem);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 14rem;
+    overflow-y: auto;
+    background: $bg-surface;
+    border: 2px solid $blue;
+    box-shadow: 0 0 12px $blue-glow;
+  }
+
+  &__option {
+    appearance: none;
+    border: 0;
+    border-bottom: 2px solid $bg-border;
+    background: $bg-surface;
+    color: $text-muted;
+    cursor: pointer;
+    font-family: $font;
+    font-size: $input-font-size;
+    line-height: $control-line-height;
+    margin: 0;
+    padding: calc(0.875rem + 1px) 1.125rem calc(0.875rem - 1px);
+    text-align: left;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    &:hover,
+    &--active {
+      background: $bg-raised;
+      color: $text;
+    }
+
+    &--selected {
+      color: $blue;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+  }
+}
+
+.dropdown-select-wrap {
+  position: relative;
+  width: 100%;
+
+  &__icon {
+    position: absolute;
+    z-index: 1;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-muted;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    font-size: $text-base;
+    line-height: 1;
+
+    &:not(:has(svg)) {
+      margin-top: 1px;
+    }
+  }
+
+  &:focus-within &__icon,
+  &:focus-within .dropdown-select__arrow,
+  &--open &__icon,
+  &--open .dropdown-select__arrow {
+    color: $blue;
+  }
+}

@@ -9,6 +9,9 @@ services:
     volumes:
       - letsencrypt:/etc/letsencrypt
       - certbot-webroot:/var/www/certbot
+    networks:
+      - default
+      - whatdis-net
     restart: unless-stopped
 
   certbot:
@@ -18,21 +21,25 @@ services:
       - certbot-webroot:/var/www/certbot
     entrypoint: >
       /bin/sh -c "trap exit TERM;
-        DOMAIN=app.whatdis.nl;
+        PRIMARY=app.whatdis.nl;
         EMAIL=justuskaterberg@hotmail.com;
-        # Wait for nginx (with bootstrap self-signed cert) to be serving on :80
+        DOMAIN_ARGS='-d app.whatdis.nl -d api.whatdis.nl';
         sleep 10;
         while :; do
-          if [ ! -s \"/etc/letsencrypt/live/$$DOMAIN/fullchain.pem\" ] \
-             || openssl x509 -in /etc/letsencrypt/live/$$DOMAIN/fullchain.pem -noout -issuer | grep -q \"CN=$$DOMAIN\"; then
-            echo \"Issuing initial Let's Encrypt cert for $$DOMAIN\";
+          if [ ! -s \"/etc/letsencrypt/live/$$PRIMARY/fullchain.pem\" ] \
+             || openssl x509 -in /etc/letsencrypt/live/$$PRIMARY/fullchain.pem -noout -issuer | grep -q \"CN=$$PRIMARY\"; then
+            echo \"Issuing initial Let's Encrypt cert for $$DOMAIN_ARGS\";
             certbot certonly --webroot -w /var/www/certbot \
-              -d $$DOMAIN --email $$EMAIL --agree-tos -n --force-renewal || true;
+              $$DOMAIN_ARGS --email $$EMAIL --agree-tos -n --expand --force-renewal || true;
           else
             certbot renew --webroot -w /var/www/certbot --quiet || true;
           fi;
           sleep 12h & wait $$!;
         done"
+
+networks:
+  whatdis-net:
+    external: true
 
 volumes:
   letsencrypt:

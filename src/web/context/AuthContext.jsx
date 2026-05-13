@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   const persist = (data, username) => {
-    const u = data?.user ?? { username }
+    const u = data?.user ?? data ?? { username }
     localStorage.removeItem('logged_out')
     localStorage.setItem('user', JSON.stringify(u))
     setUser(u)
@@ -42,8 +42,8 @@ export function AuthProvider({ children }) {
   }
 
   const register = async (name, email, password) => {
-    await apiClaimAccount(name, email, password)
-    await login(name, password)
+    const data = await apiClaimAccount(name, email, password)
+    persist(data, name)
   }
 
   const logout = async () => {

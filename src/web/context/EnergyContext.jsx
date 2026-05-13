@@ -51,8 +51,8 @@ export function EnergyProvider({ children }) {
       {showLogin && (
         <Dialog title={t('battles.outOfEnergy')} onClose={() => setDialogOpen(false)}>
           <p>{t('challenges.lockedMessage')}</p>
-          <Button color="blue" fullWidth onClick={() => navigate('/login')}>{t('register.signIn')}</Button>
-          <Button color="pink" fullWidth onClick={() => navigate('/register')}>{t('login.register')}</Button>
+          <Button color="blue" fullWidth onClick={() => { setDialogOpen(false); navigate('/login') }}>{t('register.signIn')}</Button>
+          <Button color="pink" fullWidth onClick={() => { setDialogOpen(false); navigate('/register') }}>{t('login.register')}</Button>
         </Dialog>
       )}
       {showUpgrade && <UpgradeDialog onClose={() => setDialogOpen(false)} />}

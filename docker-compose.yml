@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: https://api.whatdis.nl
     ports:
       - "80:80"
       - "443:443"

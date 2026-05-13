@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { apiLogin, apiGuestAuth, apiClaimAccount, apiLogout } from '@shared/api/auth'
 import { apiMe } from '@shared/api/users'
+import { hasCsrfToken } from '@shared/api/clients'
 
 const AuthContext = createContext(null)
 
@@ -17,7 +18,7 @@ export function AuthProvider({ children }) {
     }
     // Previously authenticated users should go to login, not get a guest session
     if (localStorage.getItem('logged_out')) { setLoading(false); return }
-    const hasSession = document.cookie.match(/(?:^|;\s*)csrf_access_token=/)
+    const hasSession = hasCsrfToken()
     if (hasSession) {
       apiMe()
         .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data) })

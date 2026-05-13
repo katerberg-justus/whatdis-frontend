@@ -1,4 +1,4 @@
-import { authClient, apiClient } from './clients'
+import { authClient, apiClient, clearCsrfTokens, getCsrfToken } from './clients'
 
 export async function apiLogin(username, password) {
   const { data } = await authClient.post('/auth/login', { username, password })
@@ -15,9 +15,12 @@ export async function apiClaimAccount(name, email, password) {
 }
 
 export async function apiLogout() {
-  const match = document.cookie.match(/(?:^|;\s*)csrf_access_token=([^;]*)/)
-  const csrf = match ? decodeURIComponent(match[1]) : null
-  await authClient.delete('/auth/logout', {
-    headers: csrf ? { 'X-CSRF-TOKEN': csrf } : {},
-  })
+  const csrf = getCsrfToken()
+  try {
+    await authClient.delete('/auth/logout', {
+      headers: csrf ? { 'X-CSRF-TOKEN': csrf } : {},
+    })
+  } finally {
+    clearCsrfTokens()
+  }
 }

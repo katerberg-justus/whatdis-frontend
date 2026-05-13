@@ -19,10 +19,11 @@ function debugAuthFailure(label, err) {
   console.groupEnd()
 }
 
-function getCsrfToken(name = 'csrf_access_token') {
+export function getCsrfToken(name = 'csrf_access_token') {
   const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`))
   if (match) return decodeURIComponent(match[1])
-  return localStorage.getItem(CSRF_STORAGE_KEYS[name]) ?? null
+  const storageKey = CSRF_STORAGE_KEYS[name]
+  return storageKey ? localStorage.getItem(storageKey) : null
 }
 
 function setCsrfTokens(csrf = {}) {
@@ -77,6 +78,7 @@ apiClient.interceptors.response.use(
       if (!refreshCsrf) {
         debugAuthFailure('Missing refresh CSRF before /auth/refresh', err)
         localStorage.removeItem('user')
+        clearCsrfTokens()
         window.location.href = '/login'
         return Promise.reject(err)
       }
@@ -90,6 +92,7 @@ apiClient.interceptors.response.use(
       } catch (refreshErr) {
         debugAuthFailure('Refresh failed', refreshErr)
         localStorage.removeItem('user')
+        clearCsrfTokens()
         window.location.href = '/login'
         return Promise.reject(refreshErr)
       }

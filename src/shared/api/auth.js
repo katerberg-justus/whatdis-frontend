@@ -15,5 +15,9 @@ export async function apiClaimAccount(name, email, password) {
 }
 
 export async function apiLogout() {
-  await apiClient.delete('/auth/logout')
+  const match = document.cookie.match(/(?:^|;\s*)csrf_access_token=([^;]*)/)
+  const csrf = match ? decodeURIComponent(match[1]) : null
+  await authClient.delete('/auth/logout', {
+    headers: csrf ? { 'X-CSRF-TOKEN': csrf } : {},
+  })
 }

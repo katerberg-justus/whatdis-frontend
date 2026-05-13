@@ -4,11 +4,15 @@ import Button from './Button'
 import './LockedOverlay.scss'
 
 const IconLock = () => (
-  <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges">
-    <rect x="5" y="0" width="6" height="2" />
-    <rect x="5" y="2" width="2" height="4" />
-    <rect x="9" y="2" width="2" height="4" />
-    <rect x="1" y="5" width="14" height="11" />
+  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges">
+    {/* shackle + body base */}
+    <path fill="currentColor" d="M5 0h6v2H5zM4 1h2v6H4zM10 1h2v6h-2zM1 6h14v10H1z" />
+    {/* highlights */}
+    <path fill="#fff" fillOpacity="0.28" d="M5 0h1v2H5zM4 1h1v6H4zM1 6h13v1H1zM1 7h1v8H1z" />
+    {/* shadows */}
+    <path fill="#000" fillOpacity="0.28" d="M10 0h1v2h-1zM11 1h1v6h-1zM2 15h13v1H2zM14 7h1v8h-1z" />
+    {/* keyhole */}
+    <path fill="#000" fillOpacity="0.55" d="M7 9h2v2H7zM7 11h2v3H7z" />
   </svg>
 )
 

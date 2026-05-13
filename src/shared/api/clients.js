@@ -3,6 +3,10 @@ import axios from 'axios'
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000'
 
 const CSRF_METHODS = new Set(['post', 'put', 'patch', 'delete'])
+const CSRF_STORAGE_KEYS = {
+  csrf_access_token: 'csrf_access_token',
+  csrf_refresh_token: 'csrf_refresh_token',
+}
 
 function debugAuthFailure(label, err) {
   console.group(label)
@@ -17,7 +21,22 @@ function debugAuthFailure(label, err) {
 
 function getCsrfToken(name = 'csrf_access_token') {
   const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`))
-  return match ? decodeURIComponent(match[1]) : null
+  if (match) return decodeURIComponent(match[1])
+  return localStorage.getItem(CSRF_STORAGE_KEYS[name]) ?? null
+}
+
+function setCsrfTokens(csrf = {}) {
+  if (csrf.access) localStorage.setItem(CSRF_STORAGE_KEYS.csrf_access_token, csrf.access)
+  if (csrf.refresh) localStorage.setItem(CSRF_STORAGE_KEYS.csrf_refresh_token, csrf.refresh)
+}
+
+export function clearCsrfTokens() {
+  localStorage.removeItem(CSRF_STORAGE_KEYS.csrf_access_token)
+  localStorage.removeItem(CSRF_STORAGE_KEYS.csrf_refresh_token)
+}
+
+export function hasCsrfToken(name = 'csrf_access_token') {
+  return Boolean(getCsrfToken(name))
 }
 
 const sharedDefaults = {
@@ -29,10 +48,18 @@ export const authClient = axios.create({ ...sharedDefaults, baseURL: BASE_URL })
 
 export const apiClient = axios.create({ ...sharedDefaults, baseURL: `${BASE_URL}/api/v1` })
 
+authClient.interceptors.response.use((res) => {
+  setCsrfTokens(res.data?.csrf)
+  return res
+})
+
 apiClient.interceptors.request.use((config) => {
   if (CSRF_METHODS.has(config.method?.toLowerCase())) {
     const csrf = getCsrfToken()
-    if (csrf) config.headers['X-CSRF-TOKEN'] = csrf
+    if (csrf) {
+      config.headers = config.headers ?? {}
+      config.headers['X-CSRF-TOKEN'] = csrf
+    }
   }
   return config
 })

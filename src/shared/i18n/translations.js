@@ -31,6 +31,9 @@ const translations = {
     'challenges.dailyObject':       'Daily Object',
     'challenges.lockedTitle':       'Unlock Challenge Packs',
     'challenges.lockedMessage':     'Create an account to access curated challenge packs.',
+    'challenges.signUpBanner':      'Create an account to {packs} and get {energy} instead of 15.',
+    'challenges.signUpBannerPacks': 'unlock challenge packs',
+    'challenges.signUpBannerEnergy':'30 daily energy',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Friends',
@@ -180,6 +183,9 @@ const translations = {
     'challenges.dailyObject':       'Objeto del Día',
     'challenges.lockedTitle':       'Desbloquear Packs',
     'challenges.lockedMessage':     'Crea una cuenta para acceder a los packs de retos.',
+    'challenges.signUpBanner':      'Crea una cuenta para {packs} y consigue {energy} en lugar de 15.',
+    'challenges.signUpBannerPacks': 'desbloquear packs de retos',
+    'challenges.signUpBannerEnergy':'30 de energía diaria',
 
     'battles.tabBattles':           'Batallas',
     'battles.tabFriends':           'Amigos',
@@ -329,6 +335,9 @@ const translations = {
     'challenges.dailyObject':       'Objet du Jour',
     'challenges.lockedTitle':       'Débloquer les Packs',
     'challenges.lockedMessage':     'Créez un compte pour accéder aux packs de défis.',
+    'challenges.signUpBanner':      'Créez un compte pour {packs} et obtenez {energy} au lieu de 15.',
+    'challenges.signUpBannerPacks': 'débloquer les packs de défis',
+    'challenges.signUpBannerEnergy':'30 d’énergie quotidienne',
 
     'battles.tabBattles':           'Batailles',
     'battles.tabFriends':           'Amis',
@@ -478,6 +487,9 @@ const translations = {
     'challenges.dailyObject':       'Objekt des Tages',
     'challenges.lockedTitle':       'Packs freischalten',
     'challenges.lockedMessage':     'Erstelle ein Konto, um auf Aufgaben-Packs zuzugreifen.',
+    'challenges.signUpBanner':      'Erstelle ein Konto, um {packs} freizuschalten, und erhalte {energy} statt 15.',
+    'challenges.signUpBannerPacks': 'Aufgaben-Packs',
+    'challenges.signUpBannerEnergy':'30 tägliche Energie',
 
     'battles.tabBattles':           'Duelle',
     'battles.tabFriends':           'Freunde',
@@ -627,6 +639,9 @@ const translations = {
     'challenges.dailyObject':       'Object van de Dag',
     'challenges.lockedTitle':       'Pakken Ontgrendelen',
     'challenges.lockedMessage':     'Maak een account aan voor uitdagingspakken.',
+    'challenges.signUpBanner':      'Maak een account aan om {packs} te ontgrendelen en krijg {energy} in plaats van 15.',
+    'challenges.signUpBannerPacks': 'uitdagingspakketten',
+    'challenges.signUpBannerEnergy':'30 dagelijkse energie',
 
     'battles.tabBattles':           'Duels',
     'battles.tabFriends':           'Vrienden',
@@ -776,6 +791,9 @@ const translations = {
     'challenges.dailyObject':       'Objeto do Dia',
     'challenges.lockedTitle':       'Desbloquear Pacotes',
     'challenges.lockedMessage':     'Crie uma conta para acessar os pacotes de desafios.',
+    'challenges.signUpBanner':      'Crie uma conta para {packs} e receba {energy} em vez de 15.',
+    'challenges.signUpBannerPacks': 'desbloquear pacotes de desafios',
+    'challenges.signUpBannerEnergy':'30 de energia diária',
 
     'battles.tabBattles':           'Batalhas',
     'battles.tabFriends':           'Amigos',

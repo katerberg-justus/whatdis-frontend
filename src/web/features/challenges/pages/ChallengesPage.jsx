@@ -49,12 +49,18 @@ const PackArt = ({ locked }) => (
   </div>
 )
 
-const SignUpBannerMessage = () => (
-  <>
-    Create an account to <span className="banner__message-highlight">unlock challenge packs</span> and get{' '}
-    <span className="banner__message-highlight">30 daily energy</span> instead of 15.
-  </>
-)
+const SignUpBannerMessage = ({ t }) => {
+  const parts = t('challenges.signUpBanner').split(/(\{packs\}|\{energy\})/)
+  return (
+    <>
+      {parts.map((p, i) => {
+        if (p === '{packs}') return <span key={i} className="banner__message-highlight">{t('challenges.signUpBannerPacks')}</span>
+        if (p === '{energy}') return <span key={i} className="banner__message-highlight">{t('challenges.signUpBannerEnergy')}</span>
+        return p
+      })}
+    </>
+  )
+}
 
 export default function ChallengesPage() {
   const navigate = useNavigate()
@@ -123,7 +129,7 @@ export default function ChallengesPage() {
         <Banner
           variant="cta"
           title={showSignUpBanner ? t('nav.signUp') : t('upgrade.title')}
-          message={showSignUpBanner ? <SignUpBannerMessage /> : t('upgrade.perk2desc')}
+          message={showSignUpBanner ? <SignUpBannerMessage t={t} /> : t('upgrade.perk2desc')}
           cta={showSignUpBanner ? t('register.submit') : t('upgrade.cta')}
           onCta={() => showSignUpBanner ? navigate('/register') : setUpgradeOpen(true)}
         />

@@ -28,7 +28,7 @@ const TrophySvg = () => (
 export default function GamePage() {
   const { gameId }                = useParams()
   const { state }                 = useLocation()
-  const { depleteEnergy, syncEnergy } = useEnergy()
+  const { energy, depleteEnergy, syncEnergy, promptOutOfEnergy } = useEnergy()
   const navigate                  = useNavigate()
   const { t }                     = useLang()
   const [messages, setMessages]   = useState([])
@@ -69,6 +69,7 @@ export default function GamePage() {
 
   async function handleAsk() {
     if (!input.trim() || done || loading) return
+    if (energy === 0) { promptOutOfEnergy(); return }
     const question = input.trim()
     setInput('')
     if (!timerOn) setTimerOn(true)

@@ -51,6 +51,8 @@ export default function PackChallengesPage() {
         {challenges.map((challenge, i) => (
           <ChallengeCard
             key={challenge.id}
+            className="pack-challenges__card-enter"
+            style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
             type={challenge.challenge_type ?? 'object'}
             difficulty={challenge.difficulty}
             label={`#${i + 1}`}

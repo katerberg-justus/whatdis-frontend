@@ -14,6 +14,21 @@
     margin-bottom: 0.75rem;
   }
 
+  &__daily-section--pending {
+    min-height: calc(100vw - 2rem + 1.5rem);
+    visibility: hidden;
+
+    @media (min-width: 768px) {
+      min-height: calc(260px + 1.5rem);
+    }
+  }
+
+  &__card-enter {
+    animation: challenges-card-enter 280ms steps(4, end) both;
+    animation-delay: var(--card-enter-delay, 0ms);
+    transform-origin: center bottom;
+  }
+
   // ── Daily cards ───────────────────────────────────────────────────────────
 
   &__daily {
@@ -220,5 +235,31 @@
       height: 100%;
       background: $blue;
     }
+  }
+}
+
+@keyframes challenges-card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    clip-path: inset(0 0 12% 0);
+  }
+
+  50% {
+    opacity: 0.72;
+    transform: translateY(3px);
+    clip-path: inset(0 0 4% 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .challenges__card-enter {
+    animation: none;
   }
 }

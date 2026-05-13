@@ -51,6 +51,9 @@ function CyclingAnswer({
 export default function ChatWindow({ messages, emptyLabel, inputRef }) {
   const { t }     = useLang()
   const bottomRef = useRef(null)
+  const previousMessageCountRef = useRef(messages.length)
+  const newEntryTimerRef = useRef(null)
+  const [newEntryIndex, setNewEntryIndex] = useState(null)
 
   useEffect(() => {
     const focusInput = () => {
@@ -80,6 +83,21 @@ export default function ChatWindow({ messages, emptyLabel, inputRef }) {
     bottomRef.current?.scrollIntoView({ behavior: 'instant' })
   }, [messages])
 
+  useEffect(() => {
+    const previousMessageCount = previousMessageCountRef.current
+    previousMessageCountRef.current = messages.length
+
+    if (messages.length > previousMessageCount) {
+      setNewEntryIndex(messages.length - 1)
+      window.clearTimeout(newEntryTimerRef.current)
+      newEntryTimerRef.current = window.setTimeout(() => {
+        setNewEntryIndex(null)
+      }, 360)
+    }
+
+    return () => window.clearTimeout(newEntryTimerRef.current)
+  }, [messages.length])
+
   return (
     <div className="chat">
       {messages.length === 0 && emptyLabel ? (
@@ -87,7 +105,10 @@ export default function ChatWindow({ messages, emptyLabel, inputRef }) {
       ) : (
         <div className="chat__log">
           {messages.map(({ question, answer, finalAnswer, author, isMe }, i) => (
-            <div key={i} className="chat__entry">
+            <div
+              key={i}
+              className={`chat__entry${i === newEntryIndex ? ' chat__entry--new' : ''}`}
+            >
               <span className="chat__question">
                 {author != null && (
                   <span className={`chat__author chat__author--${isMe ? 'me' : 'them'}`}>

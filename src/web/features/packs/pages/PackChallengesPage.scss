@@ -53,5 +53,37 @@
 
   &__grid .challenge-card { aspect-ratio: 1; }
 
+  &__card-enter {
+    animation: pack-challenge-card-enter 280ms steps(4, end) both;
+    animation-delay: var(--card-enter-delay, 0ms);
+    transform-origin: center bottom;
+  }
+
   &__not-found { font-size: $text-sm; color: $text-muted; }
+}
+
+@keyframes pack-challenge-card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    clip-path: inset(0 0 12% 0);
+  }
+
+  50% {
+    opacity: 0.72;
+    transform: translateY(3px);
+    clip-path: inset(0 0 4% 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pack-challenges__card-enter {
+    animation: none;
+  }
 }

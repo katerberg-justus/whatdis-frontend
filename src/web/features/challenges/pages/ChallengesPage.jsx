@@ -56,6 +56,7 @@ export default function ChallengesPage() {
   const { isActive, subscription } = useSubscription()
   const [packs,         setPacks]         = useState([])
   const [dailies,       setDailies]       = useState([])
+  const [dailiesLoading, setDailiesLoading] = useState(true)
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
 
   useEffect(() => {
@@ -63,7 +64,10 @@ export default function ChallengesPage() {
       const total = p.total_count ?? 0
       return total > 0 && !p.is_daily && !/daily/i.test(p.name)
     }))).catch(() => {})
-    apiGetDailyChallenges().then(setDailies).catch(() => {})
+    apiGetDailyChallenges()
+      .then(setDailies)
+      .catch(() => {})
+      .finally(() => setDailiesLoading(false))
   }, [])
 
   async function playDaily(daily) {
@@ -83,13 +87,15 @@ export default function ChallengesPage() {
     <>
     <div className="challenges">
 
-      {dailies.length > 0 && (
-        <section>
+      {(dailiesLoading || dailies.length > 0) && (
+        <section className={dailiesLoading && dailies.length === 0 ? 'challenges__daily-section challenges__daily-section--pending' : 'challenges__daily-section'}>
           <h2 className="challenges__section-title">{t('challenges.dailySection')}</h2>
           <div className="challenges__daily">
-            {dailies.map((daily) => (
+            {dailies.map((daily, i) => (
               <ChallengeCard
                 key={daily.id}
+                className="challenges__card-enter"
+                style={{ '--card-enter-delay': `${Math.min(i, 5) * 45}ms` }}
                 type={daily.challenge_type}
                 difficulty={daily.difficulty}
                 label={t('challenges.dailySection')}
@@ -116,7 +122,7 @@ export default function ChallengesPage() {
         <div className="locked-wrap">
           <div className={user ? undefined : 'locked-wrap__content'}>
             <div className="challenges__packs">
-              {packs.map((pack) => {
+              {packs.map((pack, i) => {
                 const total     = pack.total_count ?? 0
                 const completed = pack.completed_count ?? pack.completed ?? null
                 const pct       = completed != null && total > 0
@@ -127,8 +133,10 @@ export default function ChallengesPage() {
                     key={pack.id}
                     className={[
                       'challenges__pack-card',
+                      'challenges__card-enter',
                       pack.is_locked && !pack.subscription_access && 'challenges__pack-card--locked',
                     ].filter(Boolean).join(' ')}
+                    style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
                     onClick={() => {
                       if (pack.subscription_access && !isActive) { setUpgradeOpen(true); return }
                       if (!pack.is_locked) navigate(`/packs/${pack.id}/challenges`)

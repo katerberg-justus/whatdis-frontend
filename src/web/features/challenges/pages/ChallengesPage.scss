@@ -14,15 +14,6 @@
     margin-bottom: 0.75rem;
   }
 
-  &__daily-section--pending {
-    min-height: calc(100vw - 2rem + 1.5rem);
-    visibility: hidden;
-
-    @media (min-width: 768px) {
-      min-height: calc(260px + 1.5rem);
-    }
-  }
-
   &__card-enter {
     animation: challenges-card-enter 280ms steps(4, end) both;
     animation-delay: var(--card-enter-delay, 0ms);

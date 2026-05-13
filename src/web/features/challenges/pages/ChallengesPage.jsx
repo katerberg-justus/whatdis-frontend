@@ -58,6 +58,9 @@ export default function ChallengesPage() {
   const [dailies,       setDailies]       = useState([])
   const [dailiesLoading, setDailiesLoading] = useState(true)
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
+  const dailyCards = dailiesLoading && dailies.length === 0
+    ? [{ id: 'daily-placeholder', difficulty: 'medium', completed: false, isPlaceholder: true }]
+    : dailies
 
   useEffect(() => {
     apiGetPacks().then(data => setPacks(data.filter(p => {
@@ -87,20 +90,20 @@ export default function ChallengesPage() {
     <>
     <div className="challenges">
 
-      {(dailiesLoading || dailies.length > 0) && (
-        <section className={dailiesLoading && dailies.length === 0 ? 'challenges__daily-section challenges__daily-section--pending' : 'challenges__daily-section'}>
+      {dailyCards.length > 0 && (
+        <section className="challenges__daily-section">
           <h2 className="challenges__section-title">{t('challenges.dailySection')}</h2>
           <div className="challenges__daily">
-            {dailies.map((daily, i) => (
+            {dailyCards.map((daily, i) => (
               <ChallengeCard
-                key={daily.id}
-                className="challenges__card-enter"
+                key={daily.id ?? daily.challenge_id}
+                className={['challenges__card-enter', daily.isPlaceholder && 'challenges__daily-placeholder'].filter(Boolean).join(' ')}
                 style={{ '--card-enter-delay': `${Math.min(i, 5) * 45}ms` }}
                 type={daily.challenge_type}
                 difficulty={daily.difficulty}
                 label={t('challenges.dailySection')}
                 completed={daily.completed}
-                onClick={() => playDaily(daily)}
+                onClick={daily.isPlaceholder ? undefined : () => playDaily(daily)}
               />
             ))}
           </div>

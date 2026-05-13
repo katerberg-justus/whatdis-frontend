@@ -37,6 +37,7 @@ export default function GamePage() {
   const [elapsed,  setElapsed]    = useState(0)
   const [timerOn,  setTimerOn]    = useState(false)
   const [loading,  setLoading]    = useState(false)
+  const [startMs,  setStartMs]    = useState(null)
   const inputRef                  = useRef(null)
 
   useEffect(() => {
@@ -45,8 +46,15 @@ export default function GamePage() {
         setMessages(guesses.map(g => ({ question: g.content, answer: g.response })))
         if (guesses.length > 0 && guesses[0].created_at) {
           const start = new Date(guesses[0].created_at).getTime()
-          setElapsed(Math.floor((Date.now() - start) / 1000))
-          setTimerOn(true)
+          setStartMs(start)
+          const winGuess = guesses.find(g => g.response === 'win')
+          if (winGuess?.created_at) {
+            setElapsed(Math.floor((new Date(winGuess.created_at).getTime() - start) / 1000))
+            setWon(true)
+          } else {
+            setElapsed(Math.floor((Date.now() - start) / 1000))
+            setTimerOn(true)
+          }
         }
       })
       .catch(() => {})
@@ -72,6 +80,7 @@ export default function GamePage() {
     if (energy === 0) { promptOutOfEnergy(); return }
     const question = input.trim()
     setInput('')
+    if (startMs === null) setStartMs(Date.now())
     if (!timerOn) setTimerOn(true)
     depleteEnergy()
     setLoading(true)
@@ -90,7 +99,12 @@ export default function GamePage() {
         return copy
       })
       syncEnergy(guess.energy_remaining)
-      if (guess.response === 'win') setWon(true)
+      if (guess.response === 'win') {
+        setWon(true)
+        const endMs = guess.created_at ? new Date(guess.created_at).getTime() : Date.now()
+        const base  = startMs ?? endMs
+        setElapsed(Math.max(0, Math.floor((endMs - base) / 1000)))
+      }
     } catch {
       setMessages(prev => prev.slice(0, -1))
     } finally {

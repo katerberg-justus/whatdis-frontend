@@ -48,36 +48,12 @@ function CyclingAnswer({
   )
 }
 
-export default function ChatWindow({ messages, emptyLabel, inputRef }) {
+export default function ChatWindow({ messages, emptyLabel }) {
   const { t }     = useLang()
   const bottomRef = useRef(null)
   const previousMessageCountRef = useRef(messages.length)
   const newEntryTimerRef = useRef(null)
   const [newEntryIndex, setNewEntryIndex] = useState(null)
-
-  useEffect(() => {
-    const focusInput = () => {
-      const input = inputRef?.current
-      if (!input || input.disabled) return
-      input.focus()
-    }
-
-    focusInput()
-
-    function handleKeyDown(e) {
-      if (e.defaultPrevented || e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return
-
-      const active = document.activeElement
-      const isTextInput = active?.matches?.('input, textarea, select, [contenteditable="true"]')
-      if (isTextInput) return
-
-      e.preventDefault()
-      focusInput()
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [inputRef])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'instant' })

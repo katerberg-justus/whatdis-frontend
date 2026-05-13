@@ -1,5 +1,10 @@
 import { apiClient } from './clients'
 
+export async function apiGetGames() {
+  const { data } = await apiClient.get('/games')
+  return Array.isArray(data) ? data : (data.games ?? [])
+}
+
 export async function apiGetGame(gameId) {
   const { data } = await apiClient.get(`/games/${gameId}`)
   return data

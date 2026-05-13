@@ -152,7 +152,7 @@ const translations = {
     'nav.challenges':               'Retos',
     'nav.battles':                  'Batallas',
     'nav.account':                  'Cuenta',
-    'nav.signUp':                   'Registrarse',
+    'nav.signUp':                   'Registro',
 
     'login.title':                  'Iniciar Sesión',
     'login.usernamePlaceholder':    'Usuario',
@@ -260,7 +260,7 @@ const translations = {
     'settings.saving':              'Guardando...',
     'settings.success':             '¡Ajustes guardados!',
 
-    'nav.collectibles':             'Coleccionar',
+    'nav.collectibles':             'Colección',
     'collectibles.cat.daily':       'Juego Diario',
     'collectibles.cat.questions':   'Preguntas',
     'collectibles.cat.streak':      'Rachas',
@@ -301,7 +301,7 @@ const translations = {
     'nav.challenges':               'Défis',
     'nav.battles':                  'Batailles',
     'nav.account':                  'Compte',
-    'nav.signUp':                   "S'inscrire",
+    'nav.signUp':                   'Inscrire',
 
     'login.title':                  'Se Connecter',
     'login.usernamePlaceholder':    "Nom d'utilisateur",
@@ -409,7 +409,7 @@ const translations = {
     'settings.saving':              'Enregistrement...',
     'settings.success':             'Paramètres sauvegardés !',
 
-    'nav.collectibles':             'Collectionner',
+    'nav.collectibles':             'Trophées',
     'collectibles.cat.daily':       'Jeu Quotidien',
     'collectibles.cat.questions':   'Questions',
     'collectibles.cat.streak':      'Séries',
@@ -420,7 +420,7 @@ const translations = {
     'collectibles.noStickers':      'Pas encore d\'autocollants.',
     'collectibles.locked':          'Verrouillé',
 
-    'nav.upgrade':                  'Passer Pro',
+    'nav.upgrade':                  'Premium',
     'upgrade.title':                'Devenir Pro',
     'upgrade.perk1':                '500 NRG par jour',
     'upgrade.perk1desc':            'Ne manquez jamais de tentatives — jouez sans limites.',
@@ -450,7 +450,7 @@ const translations = {
     'nav.challenges':               'Aufgaben',
     'nav.battles':                  'Duelle',
     'nav.account':                  'Konto',
-    'nav.signUp':                   'Registrieren',
+    'nav.signUp':                   'Anmelden',
 
     'login.title':                  'Anmelden',
     'login.usernamePlaceholder':    'Benutzername',
@@ -599,7 +599,7 @@ const translations = {
     'nav.challenges':               'Uitdagingen',
     'nav.battles':                  'Duels',
     'nav.account':                  'Account',
-    'nav.signUp':                   'Registreren',
+    'nav.signUp':                   'Aanmelden',
 
     'login.title':                  'Inloggen',
     'login.usernamePlaceholder':    'Gebruikersnaam',
@@ -707,7 +707,7 @@ const translations = {
     'settings.saving':              'Opslaan...',
     'settings.success':             'Instellingen opgeslagen!',
 
-    'nav.collectibles':             'Verzamelen',
+    'nav.collectibles':             'Trofeeën',
     'collectibles.cat.daily':       'Dagelijks Spelen',
     'collectibles.cat.questions':   'Vragen',
     'collectibles.cat.streak':      'Reeksen',

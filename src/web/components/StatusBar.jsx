@@ -35,17 +35,15 @@ function energyColor(ratio) {
 
 export default function StatusBar() {
   const { energy, maxEnergy } = useEnergy()
-
-  if (energy === null) return <div className="status-bar" />
-
-  const filled = Math.round((energy / maxEnergy) * BLOCK_COUNT)
-  const ratio  = energy / maxEnergy
+  const hasEnergy = energy !== null
+  const filled = hasEnergy ? Math.round((energy / maxEnergy) * BLOCK_COUNT) : 0
+  const ratio  = hasEnergy ? energy / maxEnergy : 0
   const color  = energyColor(ratio)
 
   return (
     <div className="status-bar">
       <EnergyDrinkIcon />
-      <div className="status-bar__track" aria-label={`${energy} of ${maxEnergy} energy`}>
+      <div className="status-bar__track" aria-label={hasEnergy ? `${energy} of ${maxEnergy} energy` : 'Energy loading'}>
         {Array.from({ length: BLOCK_COUNT }, (_, i) => (
           <span
             key={i}
@@ -53,7 +51,7 @@ export default function StatusBar() {
           />
         ))}
       </div>
-      <span className="status-bar__count">{energy}/{maxEnergy}</span>
+      <span className="status-bar__count">{hasEnergy ? `${energy}/${maxEnergy}` : '\u00a0'}</span>
     </div>
   )
 }

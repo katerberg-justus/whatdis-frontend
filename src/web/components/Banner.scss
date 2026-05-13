@@ -48,4 +48,8 @@
     line-height: $leading;
     margin: 0;
   }
+
+  &__message-highlight {
+    color: $blue;
+  }
 }

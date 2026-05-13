@@ -49,6 +49,13 @@ const PackArt = ({ locked }) => (
   </div>
 )
 
+const SignUpBannerMessage = () => (
+  <>
+    Create an account to <span className="banner__message-highlight">unlock challenge packs</span> and get{' '}
+    <span className="banner__message-highlight">30 daily energy</span> instead of 15.
+  </>
+)
+
 export default function ChallengesPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -61,6 +68,8 @@ export default function ChallengesPage() {
   const dailyCards = dailiesLoading && dailies.length === 0
     ? [{ id: 'daily-placeholder', difficulty: 'medium', completed: false, isPlaceholder: true }]
     : dailies
+  const showUpgradeBanner = user && !isActive && subscription !== undefined
+  const showSignUpBanner = !user
 
   useEffect(() => {
     apiGetPacks().then(data => setPacks(data.filter(p => {
@@ -109,13 +118,13 @@ export default function ChallengesPage() {
         </section>
       )}
 
-      {user && !isActive && subscription !== undefined && (
+      {(showSignUpBanner || showUpgradeBanner) && (
         <Banner
           variant="cta"
-          title={t('upgrade.title')}
-          message={t('upgrade.perk2desc')}
-          cta={t('upgrade.cta')}
-          onCta={() => user ? setUpgradeOpen(true) : navigate('/register')}
+          title={showSignUpBanner ? t('nav.signUp') : t('upgrade.title')}
+          message={showSignUpBanner ? <SignUpBannerMessage /> : t('upgrade.perk2desc')}
+          cta={showSignUpBanner ? t('register.submit') : t('upgrade.cta')}
+          onCta={() => showSignUpBanner ? navigate('/register') : setUpgradeOpen(true)}
         />
       )}
 

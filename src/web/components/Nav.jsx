@@ -13,7 +13,7 @@ const logoBluePixels = 'M3.00 51.60h11.25v2.25h-11.25z M21.56 51.60h15.75v2.25h-
 
 const IconLogo = () => (
 
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" shapeRendering="crispEdges">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="100" height="100" shapeRendering="crispEdges">
     <g transform="translate(3.38 3.38)" opacity="0.5">
       <path fill="#9C0059" d={logoPinkPixels} />
       <path fill="#0068AA" d={logoBluePixels} />

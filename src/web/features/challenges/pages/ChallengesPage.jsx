@@ -66,17 +66,12 @@ export default function ChallengesPage() {
     apiGetDailyChallenges().then(setDailies).catch(() => {})
   }, [])
 
-  const TYPE_LABEL = {
-    person: t('challenges.dailyPerson'),
-    object: t('challenges.dailyObject'),
-  }
-
   async function playDaily(daily) {
     try {
       const game = await apiCreateGame({ challenge_id: daily.challenge_id })
       navigate(`/games/${game.id}`, {
         state: {
-          label:      TYPE_LABEL[daily.challenge_type] ?? `Daily ${daily.challenge_type}`,
+          label:      t('challenges.dailySection'),
           difficulty: daily.difficulty,
           guessLimit: daily.guess_limit,
         },
@@ -97,7 +92,7 @@ export default function ChallengesPage() {
                 key={daily.id}
                 type={daily.challenge_type}
                 difficulty={daily.difficulty}
-                label={TYPE_LABEL[daily.challenge_type] ?? `Daily ${daily.challenge_type}`}
+                label={t('challenges.dailySection')}
                 completed={daily.completed}
                 onClick={() => playDaily(daily)}
               />

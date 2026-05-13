@@ -44,6 +44,16 @@
 
   // ── Pack grid ─────────────────────────────────────────────────────────────
 
+  &__daily-placeholder {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.72;
+
+    .challenge-card__badge {
+      display: none;
+    }
+  }
+
   &__packs {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

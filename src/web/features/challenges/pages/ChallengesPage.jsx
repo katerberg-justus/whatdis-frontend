@@ -94,11 +94,10 @@ export default function ChallengesPage() {
         <section className="challenges__daily-section">
           <h2 className="challenges__section-title">{t('challenges.dailySection')}</h2>
           <div className="challenges__daily">
-            {dailyCards.map((daily, i) => (
+            {dailyCards.map(daily => (
               <ChallengeCard
                 key={daily.id ?? daily.challenge_id}
-                className={['challenges__card-enter', daily.isPlaceholder && 'challenges__daily-placeholder'].filter(Boolean).join(' ')}
-                style={{ '--card-enter-delay': `${Math.min(i, 5) * 45}ms` }}
+                className={daily.isPlaceholder ? 'challenges__daily-placeholder' : undefined}
                 type={daily.challenge_type}
                 difficulty={daily.difficulty}
                 label={t('challenges.dailySection')}

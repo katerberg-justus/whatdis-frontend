@@ -2,12 +2,17 @@
 
 .banner {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   gap: 1rem;
   padding: 1rem 1.25rem;
   border: 2px solid;
-  flex-wrap: wrap;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   // ── CTA — green dominant ────────────────────────────────────────────────────
 

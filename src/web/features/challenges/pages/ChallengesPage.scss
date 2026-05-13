@@ -56,52 +56,178 @@
     @include card;
     position: relative;
     aspect-ratio: 5/3;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem calc(0.75rem + 10px);
+    gap: 0.35rem;
+    padding: 0.65rem calc(0.65rem + 10px);
     text-align: center;
     cursor: pointer;
+    background:
+      linear-gradient(135deg, rgba($blue, 0.1) 0 14%, transparent 14% 100%),
+      $bg-raised;
 
     @media (min-width: 480px) { aspect-ratio: 4/3; }
     @media (min-width: 768px) { aspect-ratio: 3/2; }
 
-    &:hover { border-color: $blue; }
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      image-rendering: pixelated;
+    }
+
+    &::before {
+      inset: 6px;
+      border: 2px solid rgba($blue, 0.24);
+      box-shadow:
+        inset 4px 0 0 rgba($blue-muted, 0.08),
+        inset -4px 0 0 rgba($blue-dark, 0.28);
+    }
+
+    &::after {
+      top: 0.5rem;
+      left: 0.5rem;
+      width: 6px;
+      height: 6px;
+      background: $blue-muted;
+      box-shadow:
+        10px 0 0 rgba($blue-muted, 0.65),
+        20px 0 0 rgba($pink-muted, 0.65),
+        30px 0 0 rgba($blue-muted, 0.45);
+    }
+
+    &:hover {
+      border-color: $blue;
+      box-shadow: 0 0 20px rgba($blue, 0.16);
+
+      .challenges__pack-wrapper {
+        transform: translateY(-2px);
+      }
+    }
 
     &--locked {
       cursor: default;
-      &:hover { border-color: $bg-border; }
+      background:
+        linear-gradient(135deg, rgba($pink, 0.08) 0 14%, transparent 14% 100%),
+        $bg-raised;
+
+      &::before {
+        border-color: rgba($pink, 0.22);
+        box-shadow:
+          inset 4px 0 0 rgba($pink-muted, 0.07),
+          inset -4px 0 0 rgba($pink-dark, 0.24);
+      }
+
+      &:hover {
+        border-color: $bg-border;
+        box-shadow: 0 0 20px rgba($blue, 0.04);
+
+        .challenges__pack-wrapper {
+          transform: none;
+        }
+      }
     }
   }
 
-  &__pack-unknown {
+  &__pack-art {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 54px;
+    line-height: 0;
     color: $bg-border;
-    margin-bottom: 0.5rem;
+
+    @media (min-width: 768px) {
+      width: 48px;
+      height: 64px;
+    }
+  }
+
+  &__pack-wrapper {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.12s ease;
+  }
+
+  &__pack-shadow { fill: rgba($bg, 0.55); }
+  &__pack-face { fill: $blue; }
+  &__pack-highlight { fill: $blue-muted; }
+  &__pack-dark { fill: $blue-dark; }
+  &__pack-crimp { fill: $text; opacity: 0.24; }
+  &__pack-stripe { fill: $pink; }
+  &__pack-stripe-highlight { fill: $pink-muted; }
+  &__pack-stripe-dark { fill: $pink-dark; }
+  &__pack-spark { fill: $text; opacity: 0.86; }
+
+  &__pack-card--locked {
+    .challenges__pack-face { fill: $bg-border; }
+    .challenges__pack-highlight { fill: rgba($text-muted, 0.5); }
+    .challenges__pack-dark { fill: rgba($bg, 0.7); }
+    .challenges__pack-stripe { fill: $pink-dark; }
+    .challenges__pack-stripe-highlight { fill: $pink-muted; opacity: 0.7; }
+    .challenges__pack-stripe-dark { fill: rgba($bg, 0.75); }
+    .challenges__pack-spark { opacity: 0.35; }
+  }
+
+  &__pack-unknown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: $bg-border;
+    filter: drop-shadow(2px 2px 0 rgba($bg, 0.8));
   }
 
   &__pack-lock {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
+    z-index: 2;
     color: $pink;
   }
 
   &__pack-copy {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     align-items: center;
+    width: 100%;
+    min-width: 0;
   }
 
-  &__pack-name  { font-size: $text-sm; color: $text; }
-  &__pack-description { font-size: $text-xs; color: $text-muted; }
-  &__pack-count { font-size: $text-xs; color: $text-muted; }
+  &__pack-name  {
+    max-width: 100%;
+    font-size: $text-sm;
+    color: $text;
+    overflow-wrap: anywhere;
+  }
+
+  &__pack-description {
+    max-width: 100%;
+    font-size: $text-xs;
+    color: $text-muted;
+    overflow-wrap: anywhere;
+  }
+
+  &__pack-count {
+    position: relative;
+    z-index: 1;
+    font-size: $text-xs;
+    color: $text-muted;
+  }
 
   // ── Progress bar ──────────────────────────────────────────────────────────
 
   &__progress {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 4px;
     background: $bg-border;

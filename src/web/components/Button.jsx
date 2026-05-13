@@ -15,6 +15,7 @@ const Chevron = () => (
 )
 
 export default function Button({ color = 'pink', fullWidth = false, className = '', icon, children, ...props }) {
+  const iconEl = icon !== undefined ? icon : <Chevron />
   const cls = [
     'btn',
     `btn--${color}`,
@@ -24,8 +25,8 @@ export default function Button({ color = 'pink', fullWidth = false, className = 
 
   return (
     <button className={cls} {...props}>
-      {children}
-      {icon !== undefined ? icon : <Chevron />}
+      <span className="btn__label">{children}</span>
+      {iconEl !== null && <span className="btn__icon">{iconEl}</span>}
     </button>
   )
 }

@@ -5,7 +5,6 @@ import { useLang } from '../../../context/LangContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
 import { apiGetPacks, apiGetDailyChallenges } from '@shared/api/challenges'
 import { apiCreateGame } from '@shared/api/games'
-import Button from '../../../components/Button'
 import Banner from '../../../components/Banner'
 import ChallengeCard from '../../../components/ChallengeCard'
 import LockedOverlay from '../../../components/LockedOverlay'
@@ -22,7 +21,7 @@ const LockBadge = () => (
 )
 
 const QuestionMark = () => (
-  <svg viewBox="0 0 8 12" width="24" height="36" fill="currentColor" shapeRendering="crispEdges" className="challenges__pack-unknown">
+  <svg viewBox="0 0 8 12" width="24" height="36" fill="currentColor" shapeRendering="crispEdges" className="challenges__pack-unknown" aria-hidden="true">
     <rect x="1" y="0" width="6" height="2" />
     <rect x="0" y="2" width="2" height="2" />
     <rect x="6" y="2" width="2" height="2" />
@@ -31,6 +30,23 @@ const QuestionMark = () => (
     <rect x="3" y="8" width="2" height="2" />
     <rect x="3" y="11" width="2" height="1" />
   </svg>
+)
+
+const PackArt = ({ locked }) => (
+  <div className="challenges__pack-art" aria-hidden="true">
+    <svg viewBox="0 0 48 64" shapeRendering="crispEdges" className="challenges__pack-wrapper">
+      <path className="challenges__pack-shadow" d="M8 8h34v48H8zM10 6h30v2H10zM10 56h30v2H10z" />
+      <path className="challenges__pack-face" d="M6 10h36v44H6zM8 8h32v2H8zM8 54h32v2H8z" />
+      <path className="challenges__pack-highlight" d="M8 10h6v42H8zM14 8h10v2H14z" />
+      <path className="challenges__pack-dark" d="M36 10h6v44h-6zM28 54h12v2H28z" />
+      <path className="challenges__pack-crimp" d="M8 8h4v2H8zM16 8h4v2h-4zM24 8h4v2h-4zM32 8h4v2h-4zM8 54h4v2H8zM16 54h4v2h-4zM24 54h4v2h-4zM32 54h4v2h-4z" />
+      <path className="challenges__pack-stripe" d="M6 26h36v12H6z" />
+      <path className="challenges__pack-stripe-highlight" d="M8 26h6v12H8z" />
+      <path className="challenges__pack-stripe-dark" d="M36 26h6v12h-6z" />
+      <path className="challenges__pack-spark" d="M22 16h4v4h-4zM20 20h8v4h-8zM22 24h4v4h-4zM14 42h4v4h-4zM30 42h4v4h-4z" />
+    </svg>
+    {locked && <QuestionMark />}
+  </div>
 )
 
 export default function ChallengesPage() {
@@ -124,7 +140,7 @@ export default function ChallengesPage() {
                     }}
                   >
                     {pack.is_locked && <LockBadge />}
-                    {pack.is_locked && <QuestionMark />}
+                    <PackArt locked={pack.is_locked} />
                     <div className="challenges__pack-copy">
                       <span className="challenges__pack-name">{pack.name}</span>
                       {pack.description && (

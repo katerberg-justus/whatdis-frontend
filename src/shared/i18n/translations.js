@@ -6,7 +6,7 @@ const translations = {
     'nav.signUp':                   'Sign Up',
 
     'login.title':                  'Sign In',
-    'login.usernamePlaceholder':    'email / username',
+    'login.usernamePlaceholder':    'Email / username',
     'login.passwordPlaceholder':    'Password',
     'login.submit':                 'Sign In',
     'login.submitting':             'Signing in...',
@@ -160,7 +160,7 @@ const translations = {
     'nav.signUp':                   'Registro',
 
     'login.title':                  'Iniciar Sesión',
-    'login.usernamePlaceholder':    'email / username',
+    'login.usernamePlaceholder':    'Email / username',
     'login.passwordPlaceholder':    'Contraseña',
     'login.submit':                 'Iniciar Sesión',
     'login.submitting':             'Iniciando...',
@@ -314,7 +314,7 @@ const translations = {
     'nav.signUp':                   'Inscrire',
 
     'login.title':                  'Se Connecter',
-    'login.usernamePlaceholder':    'email / username',
+    'login.usernamePlaceholder':    'Email / username',
     'login.passwordPlaceholder':    'Mot de passe',
     'login.submit':                 'Se Connecter',
     'login.submitting':             'Connexion...',
@@ -468,7 +468,7 @@ const translations = {
     'nav.signUp':                   'Anmelden',
 
     'login.title':                  'Anmelden',
-    'login.usernamePlaceholder':    'email / username',
+    'login.usernamePlaceholder':    'Email / username',
     'login.passwordPlaceholder':    'Passwort',
     'login.submit':                 'Anmelden',
     'login.submitting':             'Anmeldung...',
@@ -622,7 +622,7 @@ const translations = {
     'nav.signUp':                   'Aanmelden',
 
     'login.title':                  'Inloggen',
-    'login.usernamePlaceholder':    'email / username',
+    'login.usernamePlaceholder':    'Email / username',
     'login.passwordPlaceholder':    'Wachtwoord',
     'login.submit':                 'Inloggen',
     'login.submitting':             'Inloggen...',
@@ -776,7 +776,7 @@ const translations = {
     'nav.signUp':                   'Registrar',
 
     'login.title':                  'Entrar',
-    'login.usernamePlaceholder':    'email / username',
+    'login.usernamePlaceholder':    'Email / username',
     'login.passwordPlaceholder':    'Senha',
     'login.submit':                 'Entrar',
     'login.submitting':             'Entrando...',

@@ -51,7 +51,13 @@
     }
   }
 
-  &__grid .challenge-card { aspect-ratio: 1; }
+  &__grid .challenge-card {
+    aspect-ratio: 4 / 5;
+
+    @media (min-width: 480px) {
+      aspect-ratio: 1;
+    }
+  }
 
   &__card-enter {
     animation: pack-challenge-card-enter 280ms steps(4, end) both;

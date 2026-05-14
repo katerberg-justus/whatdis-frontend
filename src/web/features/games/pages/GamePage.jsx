@@ -70,9 +70,12 @@ export default function GamePage() {
   }, [timerOn, done])
 
   function formatTime(s) {
-    const m = Math.floor(s / 60)
+    const h = Math.floor(s / 3600)
+    const m = Math.floor((s % 3600) / 60)
     const sec = s % 60
-    return `${m}:${sec.toString().padStart(2, '0')}`
+    const mm = m.toString().padStart(2, '0')
+    const ss = sec.toString().padStart(2, '0')
+    return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`
   }
 
   async function handleAsk() {
@@ -145,11 +148,9 @@ export default function GamePage() {
           {label}
           {position != null && <span className="game__position"> #{position}</span>}
         </span>
-        {timerOn && (
-          <span className={`game__timer${done ? ' game__timer--done' : ''}`}>
-            {formatTime(elapsed)}
-          </span>
-        )}
+        <span className={`game__timer${done ? ' game__timer--done' : ''}`}>
+          {formatTime(elapsed)}
+        </span>
       </div>
 
       <ChatWindow messages={messages} emptyLabel={t('game.emptyChat')} inputRef={inputRef} />

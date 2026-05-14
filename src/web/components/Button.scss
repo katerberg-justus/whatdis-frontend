@@ -56,3 +56,9 @@
 
   &__chevron { display: block; }
 }
+
+@media (max-width: 767px) {
+  .btn {
+    min-height: calc(#{$input-font-size} + 1.75rem + 8px);
+  }
+}

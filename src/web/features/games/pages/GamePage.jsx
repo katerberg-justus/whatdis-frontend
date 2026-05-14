@@ -9,21 +9,15 @@ import Dialog from '../../../components/Dialog'
 import IconButton from '../../../components/IconButton'
 import { BackIcon } from '../../../components/icons'
 import { useEnergy } from '../../../context/EnergyContext'
+import { getStickerUrl } from '../../../assets/stickers'
+import '../../collectibles/pages/CollectiblesPage.scss'
 import './GamePage.scss'
 
-const TrophySvg = () => (
-  <svg viewBox="0 0 12 12" width="64" height="64" fill="currentColor" shapeRendering="crispEdges" className="game__trophy">
-    <rect x="0" y="0" width="12" height="3" />
-    <rect x="1" y="3" width="10" height="1" />
-    <rect x="2" y="4" width="8"  height="1" />
-    <rect x="3" y="5" width="6"  height="1" />
-    <rect x="4" y="6" width="4"  height="1" />
-    <rect x="5" y="7" width="2"  height="2" />
-    <rect x="3" y="9" width="6"  height="1" />
-    <rect x="2" y="10" width="8" height="1" />
-    <rect x="1" y="11" width="10" height="1" />
-  </svg>
-)
+function frameTier(guessCount) {
+  if (guessCount < 20) return 'gold'
+  if (guessCount < 40) return 'silver'
+  return 'bronze'
+}
 
 export default function GamePage() {
   const { gameId }                = useParams()
@@ -108,6 +102,7 @@ export default function GamePage() {
         const endMs = guess.created_at ? new Date(guess.created_at).getTime() : Date.now()
         const base  = startMs ?? endMs
         setElapsed(Math.max(0, Math.floor((endMs - base) / 1000)))
+        apiGetGame(gameId).then(setGame).catch(() => {})
       }
     } catch {
       setMessages(prev => prev.slice(0, -1))
@@ -179,18 +174,30 @@ export default function GamePage() {
         <Button color="blue" onClick={handleAsk} disabled={done || loading || input.trim().length < 2}>{t('game.ask')}</Button>
       </div>
 
-      {done && won && (
-        <Dialog title={t('game.wonTitle')}>
-          <TrophySvg />
-          <p className="game__won-stat">
-            {t('game.solvedIn')} {messages.length} {messages.length === 1 ? t('game.guess') : t('game.guesses')}
-          </p>
-          <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
-          {nextChallenge && (
-            <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
-          )}
-        </Dialog>
-      )}
+      {done && won && (() => {
+        const challenge = game?.challenge
+        const stickerUrl = getStickerUrl(challenge?.sticker)
+        const tier = frameTier(messages.length)
+        return (
+          <Dialog title={t('game.wonTitle')}>
+            <div className={`game__sticker-pop collectibles__sticker collectibles__sticker--${tier}`}>
+              <span className="collectibles__sticker-icon" aria-hidden="true">
+                {stickerUrl ? <img src={stickerUrl} alt="" /> : '?'}
+              </span>
+              {challenge?.subject && (
+                <span className="collectibles__sticker-name">{challenge.subject}</span>
+              )}
+            </div>
+            <p className="game__won-stat">
+              {t('game.solvedIn')} {messages.length} {messages.length === 1 ? t('game.guess') : t('game.guesses')}
+            </p>
+            <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
+            {nextChallenge && (
+              <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
+            )}
+          </Dialog>
+        )
+      })()}
 
     </div>
   )

@@ -36,6 +36,13 @@ export default function GamePage() {
   const inputRef                  = useRef(null)
 
   useEffect(() => {
+    setGame(null)
+    setMessages([])
+    setWon(false)
+    setWinDismissed(false)
+    setElapsed(0)
+    setTimerOn(false)
+    setStartMs(null)
     apiGetGame(gameId).then(setGame).catch(() => {})
     apiGetGuesses(gameId)
       .then(guesses => {

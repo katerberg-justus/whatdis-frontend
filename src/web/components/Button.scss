@@ -28,6 +28,8 @@
   &--green   { @include retro-btn($green); }
   &--muted   { @include retro-btn($text-muted); }
 
+  font-size: 0.5625rem;
+
   &:hover::before {
     box-shadow:
       inset 4px 4px 0 rgba(255, 255, 255, 0.18),

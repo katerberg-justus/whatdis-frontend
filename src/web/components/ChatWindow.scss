@@ -39,6 +39,10 @@
     gap: 0.875rem;
     margin-top: auto;
     width: 100%;
+
+    > :last-child:empty {
+      margin-top: calc(-0.875rem - 0.625rem - 1px);
+    }
   }
 
   // ── Entry ──────────────────────────────────────────────────────────────────
@@ -52,9 +56,8 @@
     padding-bottom: 0.625rem;
     transform-origin: bottom left;
 
-    &:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
+    &:nth-last-child(2) {
+      border-bottom-color: transparent;
     }
 
     &--new {

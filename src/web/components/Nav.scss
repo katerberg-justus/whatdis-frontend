@@ -54,7 +54,8 @@ $panel-transition: 0.25s ease;
     z-index: $nav-z;
     display: flex;
     flex-direction: column;
-    padding: 0 2rem;
+    padding: 0 1rem calc(1rem + env(safe-area-inset-bottom));
+    box-sizing: border-box;
     overflow-y: auto;
   }
 
@@ -78,17 +79,26 @@ $panel-transition: 0.25s ease;
   // ── Link lists ────────────────────────────────────────────────────────────────
   &__links {
     list-style: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.75rem;
+    gap: 0.75rem;
   }
 
   &__bottom {
     list-style: none;
-    padding-top: 0.25rem;
-    padding-bottom: 0.5rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem 0 0.75rem;
+  }
+
+  &__links > li,
+  &__bottom > li {
+    width: 100%;
   }
 
   // ── Individual link ───────────────────────────────────────────────────────────
@@ -96,9 +106,11 @@ $panel-transition: 0.25s ease;
     display: flex;
     align-items: center;
     gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
     color: $text;
     font-size: $text-sm;
-    padding: 0.625rem 0.75rem;
+    padding: 1.125rem 1rem;
 
     &:hover,
     &.active          { background: $bg-surface; color: $blue-muted; box-shadow: inset 2px 0 0 $blue, inset 0 0 20px rgba($blue, 0.06); }
@@ -117,8 +129,8 @@ $panel-transition: 0.25s ease;
   }
 
   &__icon {
-    width: 22px;
-    height: 22px;
+    width: 30px;
+    height: 30px;
     flex-shrink: 0;
     display: flex;
     align-items: center;

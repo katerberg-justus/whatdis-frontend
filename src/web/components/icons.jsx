@@ -23,6 +23,20 @@ export const BackIcon = () => (
   </svg>
 )
 
+export const CloseIcon = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    <rect x="2"  y="2"  width="4" height="4" />
+    <rect x="6"  y="6"  width="4" height="4" />
+    <rect x="10" y="10" width="4" height="4" />
+    <rect x="14" y="14" width="4" height="4" />
+    <rect x="18" y="18" width="4" height="4" />
+    <rect x="18" y="2"  width="4" height="4" />
+    <rect x="14" y="6"  width="4" height="4" />
+    <rect x="6"  y="14" width="4" height="4" />
+    <rect x="2"  y="18" width="4" height="4" />
+  </svg>
+)
+
 export const TrashIcon = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
     {/* Handle */}

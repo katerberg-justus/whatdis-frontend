@@ -32,6 +32,7 @@ export default function GamePage() {
   const [loading,  setLoading]    = useState(false)
   const [startMs,  setStartMs]    = useState(null)
   const [game,     setGame]       = useState(null)
+  const [winDismissed, setWinDismissed] = useState(false)
   const inputRef                  = useRef(null)
 
   useEffect(() => {
@@ -174,12 +175,12 @@ export default function GamePage() {
         <Button color="blue" onClick={handleAsk} disabled={done || loading || input.trim().length < 2}>{t('game.ask')}</Button>
       </div>
 
-      {done && won && (() => {
+      {done && won && !winDismissed && (() => {
         const challenge = game?.challenge
         const stickerUrl = getStickerUrl(challenge?.sticker)
         const tier = frameTier(messages.length)
         return (
-          <Dialog title={t('game.wonTitle')}>
+          <Dialog title={t('game.wonTitle')} onClose={() => setWinDismissed(true)}>
             <div className={`game__sticker-pop collectibles__sticker collectibles__sticker--${tier}`}>
               <span className="collectibles__sticker-icon" aria-hidden="true">
                 {stickerUrl ? <img src={stickerUrl} alt="" /> : '?'}

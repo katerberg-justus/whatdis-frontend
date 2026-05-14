@@ -14,6 +14,7 @@
 
 .dialog {
   @include card;
+  position: relative;
   width: 100%;
   max-width: 400px;
   padding: 2rem;
@@ -21,6 +22,25 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+
+  &__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: $text-muted;
+
+    &:hover {
+      background: transparent;
+      color: $text;
+      box-shadow: none;
+    }
+  }
 
   &__title {
     font-size: $text-md;

@@ -57,6 +57,7 @@ export default function PackChallengesPage() {
             difficulty={challenge.difficulty}
             label={`#${i + 1}`}
             subject={challenge.subject}
+            sticker={challenge.sticker}
             icon={challenge.icon}
             locked={challenge.is_locked}
             completed={challenge.completed}

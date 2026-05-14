@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useLocation, useNavigate } from 'react-router'
-import { apiGetGuesses, apiSubmitGuess } from '@shared/api/games'
+import { useParams, useNavigate } from 'react-router'
+import { apiGetGame, apiGetGuesses, apiSubmitGuess, apiCreateGame } from '@shared/api/games'
 import { useLang } from '../../../context/LangContext'
 import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
@@ -27,7 +27,6 @@ const TrophySvg = () => (
 
 export default function GamePage() {
   const { gameId }                = useParams()
-  const { state }                 = useLocation()
   const { energy, depleteEnergy, syncEnergy, promptOutOfEnergy } = useEnergy()
   const navigate                  = useNavigate()
   const { t }                     = useLang()
@@ -38,9 +37,11 @@ export default function GamePage() {
   const [timerOn,  setTimerOn]    = useState(false)
   const [loading,  setLoading]    = useState(false)
   const [startMs,  setStartMs]    = useState(null)
+  const [game,     setGame]       = useState(null)
   const inputRef                  = useRef(null)
 
   useEffect(() => {
+    apiGetGame(gameId).then(setGame).catch(() => {})
     apiGetGuesses(gameId)
       .then(guesses => {
         setMessages(guesses.map(g => ({ question: g.content, answer: g.response })))
@@ -60,7 +61,7 @@ export default function GamePage() {
       .catch(() => {})
   }, [gameId])
 
-  const remaining = state?.guessLimit != null ? state.guessLimit - messages.length : null
+  const remaining = game?.guess_limit != null ? game.guess_limit - messages.length : null
   const done = won || (remaining !== null && remaining <= 0)
 
   useEffect(() => {
@@ -125,11 +126,20 @@ export default function GamePage() {
     hard:   t('game.diffHard'),
   }
 
-  const label      = state?.label ?? ''
-  const packId     = state?.packId
-  const position   = state?.position
-  const difficulty = state?.difficulty ?? ''
-  const backTo     = packId ? `/packs/${packId}/challenges` : '/challenges'
+  const label         = game?.pack_name ?? ''
+  const packId        = game?.pack_id
+  const position      = game?.position
+  const difficulty    = game?.difficulty ?? ''
+  const backTo        = packId ? `/packs/${packId}/challenges` : '/challenges'
+  const nextChallenge = game?.next_challenge ?? null
+
+  async function handleNext() {
+    if (!nextChallenge) return
+    try {
+      const newGame = await apiCreateGame({ challenge_id: nextChallenge.id })
+      navigate(`/games/${newGame.id}`)
+    } catch {}
+  }
 
   return (
     <div className="game">
@@ -175,7 +185,10 @@ export default function GamePage() {
           <p className="game__won-stat">
             {t('game.solvedIn')} {messages.length} {messages.length === 1 ? t('game.guess') : t('game.guesses')}
           </p>
-          <Button fullWidth onClick={() => navigate('/challenges')}>{t('game.playAgain')}</Button>
+          <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
+          {nextChallenge && (
+            <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
+          )}
         </Dialog>
       )}
 

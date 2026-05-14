@@ -94,7 +94,8 @@ const translations = {
     'game.solvedIn':                'Solved in',
     'game.guess':                   'guess',
     'game.guesses':                 'guesses',
-    'game.playAgain':               'Play Again',
+    'game.backToPack':              'Back to Pack',
+    'game.nextChallenge':           'Next Challenge',
 
     'profile.title':                'Profile',
     'profile.changePassword':       'Change Password',
@@ -246,7 +247,8 @@ const translations = {
     'game.solvedIn':                'Resuelto en',
     'game.guess':                   'intento',
     'game.guesses':                 'intentos',
-    'game.playAgain':               'Jugar de Nuevo',
+    'game.backToPack':              'Volver al Pack',
+    'game.nextChallenge':           'Siguiente Reto',
 
     'profile.title':                'Perfil',
     'profile.changePassword':       'Cambiar Contraseña',
@@ -398,7 +400,8 @@ const translations = {
     'game.solvedIn':                'Résolu en',
     'game.guess':                   'essai',
     'game.guesses':                 'essais',
-    'game.playAgain':               'Rejouer',
+    'game.backToPack':              'Retour au Pack',
+    'game.nextChallenge':           'Défi Suivant',
 
     'profile.title':                'Profil',
     'profile.changePassword':       'Changer le mot de passe',
@@ -550,7 +553,8 @@ const translations = {
     'game.solvedIn':                'Gelöst in',
     'game.guess':                   'Versuch',
     'game.guesses':                 'Versuchen',
-    'game.playAgain':               'Nochmal spielen',
+    'game.backToPack':              'Zurück zum Pack',
+    'game.nextChallenge':           'Nächste Aufgabe',
 
     'profile.title':                'Profil',
     'profile.changePassword':       'Passwort ändern',
@@ -702,7 +706,8 @@ const translations = {
     'game.solvedIn':                'Opgelost in',
     'game.guess':                   'poging',
     'game.guesses':                 'pogingen',
-    'game.playAgain':               'Opnieuw Spelen',
+    'game.backToPack':              'Terug naar Pack',
+    'game.nextChallenge':           'Volgende Uitdaging',
 
     'profile.title':                'Profiel',
     'profile.changePassword':       'Wachtwoord Wijzigen',
@@ -854,7 +859,8 @@ const translations = {
     'game.solvedIn':                'Resolvido em',
     'game.guess':                   'tentativa',
     'game.guesses':                 'tentativas',
-    'game.playAgain':               'Jogar Novamente',
+    'game.backToPack':              'Voltar ao Pacote',
+    'game.nextChallenge':           'Próximo Desafio',
 
     'profile.title':                'Perfil',
     'profile.changePassword':       'Alterar Senha',

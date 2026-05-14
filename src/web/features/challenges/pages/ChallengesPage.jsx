@@ -117,6 +117,9 @@ export default function ChallengesPage() {
                 type={daily.challenge_type}
                 difficulty={daily.difficulty}
                 label={t('challenges.dailySection')}
+                subject={daily.subject}
+                sticker={daily.sticker}
+                icon={daily.icon}
                 completed={daily.completed}
                 onClick={daily.isPlaceholder ? undefined : () => playDaily(daily)}
               />

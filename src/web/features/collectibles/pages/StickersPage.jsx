@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLang } from '../../../context/LangContext'
 import { apiGetGames } from '@shared/api/games'
+import { getStickerUrl } from '../../../assets/stickers'
 import './CollectiblesPage.scss'
 
 function frameTier(guessCount) {
@@ -37,6 +38,7 @@ export default function StickersPage() {
       {stickers.map((game) => {
         const challenge = game.challenge
         const guessCount = game.guess_count ?? 0
+        const stickerUrl = getStickerUrl(challenge.sticker ?? challenge.icon)
 
         return (
           <article
@@ -45,7 +47,7 @@ export default function StickersPage() {
             title={`${challenge.subject} (${guessCount})`}
           >
             <span className="collectibles__sticker-icon" aria-hidden="true">
-              {challenge.icon || '?'}
+              {stickerUrl ? <img src={stickerUrl} alt="" /> : (challenge.icon || '?')}
             </span>
             <span className="collectibles__sticker-name">{challenge.subject}</span>
           </article>

@@ -1,4 +1,5 @@
 import './ChallengeCard.scss'
+import { getStickerUrl } from '../assets/stickers'
 
 const DIFF_MOD   = { easy: 'green', medium: 'blue', hard: 'pink' }
 const DIFF_LABEL = { easy: 'Easy',  medium: 'Medium', hard: 'Hard' }
@@ -45,9 +46,10 @@ const CheckSvg = () => (
   </svg>
 )
 
-export default function ChallengeCard({ difficulty, label, subject, icon, onClick, locked, completed, className, style }) {
+export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, className, style }) {
   const mod = DIFF_MOD[difficulty] ?? 'blue'
   const showSubject = completed && subject
+  const stickerUrl = getStickerUrl(sticker ?? icon)
 
   return (
     <div
@@ -60,7 +62,13 @@ export default function ChallengeCard({ difficulty, label, subject, icon, onClic
       </span>
       {completed ? <span className="challenge-card__check"><CheckSvg /></span> : locked && <span className="challenge-card__lock"><LockSvg /></span>}
       <div className="challenge-card__art">
-        {completed && icon ? <span className="challenge-card__icon">{icon}</span> : <QuestionMarkSvg />}
+        {completed && stickerUrl ? (
+          <img className="challenge-card__sticker" src={stickerUrl} alt="" aria-hidden="true" />
+        ) : completed && icon ? (
+          <span className="challenge-card__icon">{icon}</span>
+        ) : (
+          <QuestionMarkSvg />
+        )}
       </div>
       {label && (
         <span className="challenge-card__label">

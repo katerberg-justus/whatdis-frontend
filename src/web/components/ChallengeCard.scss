@@ -131,6 +131,16 @@
     line-height: 1;
   }
 
+  &__sticker {
+    display: block;
+    width: min(100%, 112px);
+    height: auto;
+    max-height: 112px;
+    object-fit: contain;
+    image-rendering: auto;
+    filter: drop-shadow(2px 2px 0 rgba($bg, 0.52));
+  }
+
   // ── Label ───────────────────────────────────────────────────────────────────
 
   &__label {

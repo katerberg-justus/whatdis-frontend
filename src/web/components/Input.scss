@@ -3,11 +3,29 @@
 
 .input {
   @include retro-input;
+  font-weight: 400;
   // Press Start 2P has large descent metrics — shift text down to visually centre it
   padding-top: calc(0.875rem + 1px);
   padding-bottom: calc(0.875rem - 1px);
 
   &--with-icon { padding-left: 2rem; }
+}
+
+@media (max-width: 767px) {
+  .input {
+    font-size: $control-mobile-font-size;
+  }
+}
+
+@media (min-width: 768px) {
+  .input {
+    padding-top: calc(0.875rem + 2px);
+    padding-bottom: calc(0.875rem);
+    padding-left: calc(1.125rem + 1px);
+    padding-right: calc(1.125rem + 1px);
+
+    &--with-icon { padding-left: calc(2rem + 1px); }
+  }
 }
 
 .input-wrap {

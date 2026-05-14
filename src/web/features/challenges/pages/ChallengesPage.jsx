@@ -121,6 +121,7 @@ export default function ChallengesPage() {
                 sticker={daily.sticker}
                 icon={daily.icon}
                 completed={daily.completed}
+                freeBadge={isGuest && !daily.isPlaceholder ? t('challenges.playFree') : undefined}
                 onClick={daily.isPlaceholder ? undefined : () => playDaily(daily)}
               />
             ))}

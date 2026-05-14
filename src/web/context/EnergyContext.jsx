@@ -20,6 +20,8 @@ export function EnergyProvider({ children }) {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
+    if (!user) return
+
     apiMe()
       .then(data => {
         const e = data.energy ?? null

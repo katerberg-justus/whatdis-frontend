@@ -9,7 +9,7 @@ export default function Banner({ variant = 'cta', title, message, cta, onCta }) 
         {message && <p className="banner__message">{message}</p>}
       </div>
       {cta && (
-        <Button color="green" onClick={onCta} icon={null}>
+        <Button color="green" cta onClick={onCta}>
           {cta}
         </Button>
       )}

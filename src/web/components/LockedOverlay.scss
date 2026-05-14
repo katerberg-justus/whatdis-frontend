@@ -39,12 +39,12 @@
   }
 
   &__title {
-    font-size: $text-sm;
+    font-size: $text-base;
     color: $text;
   }
 
   &__message {
-    font-size: $text-xs;
+    font-size: $text-sm;
     color: $text-muted;
     max-width: 280px;
     line-height: $leading;

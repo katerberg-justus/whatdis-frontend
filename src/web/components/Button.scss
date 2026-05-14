@@ -28,7 +28,13 @@
   &--green   { @include retro-btn($green); }
   &--muted   { @include retro-btn($text-muted); }
 
-  font-size: 0.5625rem;
+  &--cta {
+    &.btn--default { @include retro-btn-cta($text); }
+    &.btn--blue    { @include retro-btn-cta($blue); }
+    &.btn--pink    { @include retro-btn-cta($pink); }
+    &.btn--green   { @include retro-btn-cta($green); }
+    &.btn--muted   { @include retro-btn-cta($text-muted); }
+  }
 
   &:hover::before {
     box-shadow:
@@ -53,6 +59,7 @@
     align-items: center;
     justify-content: center;
     margin-left: auto;
+    padding-left: 4px;
     line-height: 0;
   }
 
@@ -61,6 +68,13 @@
 
 @media (max-width: 767px) {
   .btn {
-    min-height: calc(#{$input-font-size} + 1.75rem + 8px);
+    font-size: $control-mobile-font-size;
+    min-height: calc(#{$control-mobile-font-size} + 1.75rem + 8px);
+  }
+}
+
+@media (min-width: 768px) {
+  .btn {
+    padding: calc(0.875rem + 1px) calc(1.125rem + 1px);
   }
 }

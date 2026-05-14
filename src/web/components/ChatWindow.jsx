@@ -48,7 +48,7 @@ function CyclingAnswer({
   )
 }
 
-export default function ChatWindow({ messages, emptyLabel }) {
+export default function ChatWindow({ messages, emptyLabel, className = '' }) {
   const { t }     = useLang()
   const bottomRef = useRef(null)
   const previousMessageCountRef = useRef(messages.length)
@@ -75,7 +75,7 @@ export default function ChatWindow({ messages, emptyLabel }) {
   }, [messages.length])
 
   return (
-    <div className="chat">
+    <div className={['chat', className].filter(Boolean).join(' ')}>
       {messages.length === 0 && emptyLabel ? (
         <p className="chat__empty">{emptyLabel}</p>
       ) : (

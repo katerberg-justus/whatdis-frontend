@@ -154,19 +154,26 @@ export default function GamePage() {
           onClick={() => navigate(backTo)}
           aria-label="Back"
         />
-        <span className={`game__diff game__diff--${difficulty}`}>
-          {DIFF_LABEL[difficulty] ?? difficulty}
-        </span>
+        <span
+          className={`game__diff game__diff--${difficulty}`}
+          aria-label={DIFF_LABEL[difficulty] ?? difficulty}
+        />
+
         <span className="game__pack">
-          {label}
-          {position != null && <span className="game__position"> #{position}</span>}
+          <span className="game__pack-name">{label}</span>
+          {position != null && <span className="game__position">#{position}</span>}
         </span>
         <span className={`game__timer${done ? ' game__timer--done' : ''}`}>
           {formatTime(elapsed)}
         </span>
       </div>
 
-      <ChatWindow messages={messages} emptyLabel={t('game.emptyChat')} inputRef={inputRef} />
+      <ChatWindow
+        className="game__chat"
+        messages={messages}
+        emptyLabel={t('game.emptyChat')}
+        inputRef={inputRef}
+      />
 
       <div className="game__controls">
         <Input

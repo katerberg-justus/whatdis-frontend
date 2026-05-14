@@ -6,7 +6,7 @@ const translations = {
     'nav.signUp':                   'Sign Up',
 
     'login.title':                  'Sign In',
-    'login.usernamePlaceholder':    'Username',
+    'login.usernamePlaceholder':    'email / username',
     'login.passwordPlaceholder':    'Password',
     'login.submit':                 'Sign In',
     'login.submitting':             'Signing in...',
@@ -34,6 +34,7 @@ const translations = {
     'challenges.signUpBanner':      'Create an account to {packs} and get {energy} instead of 15.',
     'challenges.signUpBannerPacks': 'unlock challenge packs',
     'challenges.signUpBannerEnergy':'30 daily energy',
+    'challenges.playFree':          'Play Free',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Friends',
@@ -159,7 +160,7 @@ const translations = {
     'nav.signUp':                   'Registro',
 
     'login.title':                  'Iniciar Sesión',
-    'login.usernamePlaceholder':    'Usuario',
+    'login.usernamePlaceholder':    'email / username',
     'login.passwordPlaceholder':    'Contraseña',
     'login.submit':                 'Iniciar Sesión',
     'login.submitting':             'Iniciando...',
@@ -187,6 +188,7 @@ const translations = {
     'challenges.signUpBanner':      'Crea una cuenta para {packs} y consigue {energy} en lugar de 15.',
     'challenges.signUpBannerPacks': 'desbloquear packs de retos',
     'challenges.signUpBannerEnergy':'30 de energía diaria',
+    'challenges.playFree':          'Juega Gratis',
 
     'battles.tabBattles':           'Batallas',
     'battles.tabFriends':           'Amigos',
@@ -312,7 +314,7 @@ const translations = {
     'nav.signUp':                   'Inscrire',
 
     'login.title':                  'Se Connecter',
-    'login.usernamePlaceholder':    "Nom d'utilisateur",
+    'login.usernamePlaceholder':    'email / username',
     'login.passwordPlaceholder':    'Mot de passe',
     'login.submit':                 'Se Connecter',
     'login.submitting':             'Connexion...',
@@ -340,6 +342,7 @@ const translations = {
     'challenges.signUpBanner':      'Créez un compte pour {packs} et obtenez {energy} au lieu de 15.',
     'challenges.signUpBannerPacks': 'débloquer les packs de défis',
     'challenges.signUpBannerEnergy':'30 d’énergie quotidienne',
+    'challenges.playFree':          'Jouer Gratuit',
 
     'battles.tabBattles':           'Batailles',
     'battles.tabFriends':           'Amis',
@@ -465,7 +468,7 @@ const translations = {
     'nav.signUp':                   'Anmelden',
 
     'login.title':                  'Anmelden',
-    'login.usernamePlaceholder':    'Benutzername',
+    'login.usernamePlaceholder':    'email / username',
     'login.passwordPlaceholder':    'Passwort',
     'login.submit':                 'Anmelden',
     'login.submitting':             'Anmeldung...',
@@ -493,6 +496,7 @@ const translations = {
     'challenges.signUpBanner':      'Erstelle ein Konto, um {packs} freizuschalten, und erhalte {energy} statt 15.',
     'challenges.signUpBannerPacks': 'Aufgaben-Packs',
     'challenges.signUpBannerEnergy':'30 tägliche Energie',
+    'challenges.playFree':          'Gratis Spielen',
 
     'battles.tabBattles':           'Duelle',
     'battles.tabFriends':           'Freunde',
@@ -618,7 +622,7 @@ const translations = {
     'nav.signUp':                   'Aanmelden',
 
     'login.title':                  'Inloggen',
-    'login.usernamePlaceholder':    'Gebruikersnaam',
+    'login.usernamePlaceholder':    'email / username',
     'login.passwordPlaceholder':    'Wachtwoord',
     'login.submit':                 'Inloggen',
     'login.submitting':             'Inloggen...',
@@ -646,6 +650,7 @@ const translations = {
     'challenges.signUpBanner':      'Maak een account aan om {packs} te ontgrendelen en krijg {energy} in plaats van 15.',
     'challenges.signUpBannerPacks': 'Challenge Packs',
     'challenges.signUpBannerEnergy':'30 dagelijkse energie',
+    'challenges.playFree':          'Gratis Spelen',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Vrienden',
@@ -771,7 +776,7 @@ const translations = {
     'nav.signUp':                   'Registrar',
 
     'login.title':                  'Entrar',
-    'login.usernamePlaceholder':    'Usuário',
+    'login.usernamePlaceholder':    'email / username',
     'login.passwordPlaceholder':    'Senha',
     'login.submit':                 'Entrar',
     'login.submitting':             'Entrando...',
@@ -799,6 +804,7 @@ const translations = {
     'challenges.signUpBanner':      'Crie uma conta para {packs} e receba {energy} em vez de 15.',
     'challenges.signUpBannerPacks': 'desbloquear pacotes de desafios',
     'challenges.signUpBannerEnergy':'30 de energia diária',
+    'challenges.playFree':          'Jogue Grátis',
 
     'battles.tabBattles':           'Batalhas',
     'battles.tabFriends':           'Amigos',

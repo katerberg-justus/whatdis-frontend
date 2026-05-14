@@ -2,7 +2,8 @@
 
 // Shared control tokens — keep button and input pixel-identical
 $control-padding:   0.875rem 1.125rem;
-$control-font-size: $text-xs;
+$control-font-size: $text-sm;
+$control-mobile-font-size: 0.6875rem;
 $input-font-size:   $text-sm;
 $control-line-height: 1;
 
@@ -23,6 +24,7 @@ $control-line-height: 1;
   gap: 0.5rem;
   font-family: $font;
   font-size: $control-font-size;
+  font-weight: 400;
   line-height: $control-line-height;
   cursor: pointer;
   background: $bg-surface;
@@ -46,6 +48,24 @@ $control-line-height: 1;
       color: $color;
       box-shadow: none;
     }
+  }
+}
+
+// Filled CTA variant of the retro button — inverted by default, brighter glow on hover
+@mixin retro-btn-cta($color) {
+  background: $color;
+  color: $bg;
+
+  &:hover {
+    background: $color;
+    color: $bg;
+    box-shadow: 0 0 18px rgba($color, 0.6);
+  }
+
+  &:disabled:hover {
+    background: $color;
+    color: $bg;
+    box-shadow: none;
   }
 }
 

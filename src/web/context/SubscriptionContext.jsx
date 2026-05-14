@@ -7,14 +7,19 @@ const SubscriptionContext = createContext(null)
 
 export function SubscriptionProvider({ children }) {
   const { user } = useAuth()
+  const userKey = user?.id ?? user?.username ?? null
   // undefined = still loading, null = no subscription
   const [subscription, setSubscription] = useState(undefined)
 
   const refresh = useCallback(() => {
-    apiMe()
+    if (!userKey) {
+      return Promise.resolve(null)
+    }
+
+    return apiMe()
       .then(data => setSubscription(data.subscription ?? null))
       .catch(() => setSubscription(null))
-  }, [user?.id ?? user?.username])
+  }, [userKey])
 
   useEffect(() => { refresh() }, [refresh])
 

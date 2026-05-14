@@ -7,12 +7,12 @@ import DropdownSelect from '../../../components/DropdownSelect'
 import './AccountPage.scss'
 
 const CheckIcon = () => (
-  <svg viewBox="0 0 10 8" width="10" height="8" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true" className="btn__chevron">
-    <rect x="0" y="4" width="2" height="2" />
-    <rect x="2" y="6" width="2" height="2" />
-    <rect x="4" y="4" width="2" height="2" />
-    <rect x="6" y="2" width="2" height="2" />
-    <rect x="8" y="0" width="2" height="2" />
+  <svg viewBox="0 0 11 8" width="11" height="8" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true" className="btn__chevron">
+    <rect x="0" y="4" width="3" height="2" />
+    <rect x="2" y="6" width="3" height="2" />
+    <rect x="4" y="4" width="3" height="2" />
+    <rect x="6" y="2" width="3" height="2" />
+    <rect x="8" y="0" width="3" height="2" />
   </svg>
 )
 

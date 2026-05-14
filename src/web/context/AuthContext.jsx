@@ -47,9 +47,12 @@ export function AuthProvider({ children }) {
   }
 
   const logout = async () => {
-    try { await apiLogout() } catch {}
+    setUser(null)
     localStorage.removeItem('user')
     localStorage.setItem('logged_out', '1')
+    try { await apiLogout() } catch {
+      // The local logout state is authoritative even if the server session is already gone.
+    }
     window.location.replace('/login')
   }
 

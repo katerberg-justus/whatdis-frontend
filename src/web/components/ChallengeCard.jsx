@@ -46,7 +46,7 @@ const CheckSvg = () => (
   </svg>
 )
 
-export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, className, style }) {
+export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, freeBadge, className, style }) {
   const mod = DIFF_MOD[difficulty] ?? 'blue'
   const showSubject = completed && subject
   const stickerUrl = getStickerUrl(sticker ?? icon)
@@ -57,9 +57,12 @@ export default function ChallengeCard({ difficulty, label, subject, sticker, ico
       style={style}
       onClick={locked ? undefined : onClick}
     >
-      <span className={`challenge-card__badge challenge-card__badge--${mod}`}>
-        {DIFF_LABEL[difficulty] ?? difficulty}
-      </span>
+      <div className="challenge-card__badges">
+        <span className={`challenge-card__badge challenge-card__badge--${mod}`}>
+          {DIFF_LABEL[difficulty] ?? difficulty}
+        </span>
+        {freeBadge && !completed && <span className="challenge-card__free">{freeBadge}</span>}
+      </div>
       {completed ? <span className="challenge-card__check"><CheckSvg /></span> : locked && <span className="challenge-card__lock"><LockSvg /></span>}
       <div className="challenge-card__art">
         {completed && stickerUrl ? (

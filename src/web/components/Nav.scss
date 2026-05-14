@@ -1,6 +1,5 @@
 @use '../styles/variables' as *;
 
-$hamburger-size: 48px;
 $panel-transition: 0.25s ease;
 
 .nav {
@@ -25,8 +24,8 @@ $panel-transition: 0.25s ease;
 
     span {
       display: block;
-      width: 22px;
-      height: 2px;
+      width: 26px;
+      height: 3px;
       background: $text;
       transition: transform $panel-transition, opacity $panel-transition;
       transform-origin: center;
@@ -34,9 +33,9 @@ $panel-transition: 0.25s ease;
   }
 
   &--open &__hamburger {
-    span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
     span:nth-child(2) { opacity: 0; }
-    span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
   }
 
   // ── Panel ─────────────────────────────────────────────────────────────────────
@@ -69,8 +68,8 @@ $panel-transition: 0.25s ease;
     gap: 0.25em;
     font-size: $text-lg;
     margin: 0.5rem auto 0;
-    max-width: 64px;
-    max-height: 64px;
+    max-width: 74px;
+    max-height: 74px;
 
     svg {width: 100%; height: 100%;}
 

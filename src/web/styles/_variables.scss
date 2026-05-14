@@ -41,4 +41,4 @@ $leading:       1.8;
 
 $nav-width:         106px;
 $nav-z:             1000;
-$status-bar-height: 2.75rem;
+$status-bar-height: var(--status-bar-height);

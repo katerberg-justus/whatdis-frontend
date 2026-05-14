@@ -13,6 +13,14 @@ html, body, #root {
   height: 100%;
 }
 
+:root {
+  --status-bar-height: 3.5rem;
+
+  @media (min-width: 768px) {
+    --status-bar-height: 3rem;
+  }
+}
+
 body {
   font-family: $font;
   font-size: $text-base;
@@ -57,10 +65,11 @@ h1, h2, h3, h4, h5, h6 {
 .main-content {
   flex: 1;
   min-width: 0;
-  padding: 1.5rem;
-  padding-top: calc(#{$status-bar-height} + 1.5rem);
+  padding: 0.75rem;
+  padding-top: calc(#{$status-bar-height} + 0.75rem);
 
   @media (min-width: 768px) {
+    padding: 1.5rem;
     padding-top: calc(#{$status-bar-height} + 1.5rem);
     margin-left: $nav-width;
   }

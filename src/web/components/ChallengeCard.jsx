@@ -1,8 +1,9 @@
 import './ChallengeCard.scss'
 import { getStickerUrl } from '../assets/stickers'
+import { useLang } from '../context/LangContext'
 
 const DIFF_MOD   = { easy: 'green', medium: 'blue', hard: 'pink' }
-const DIFF_LABEL = { easy: 'Easy',  medium: 'Medium', hard: 'Hard' }
+const DIFF_LABEL_KEY = { easy: 'game.diffEasy', medium: 'game.diffMedium', hard: 'game.diffHard' }
 
 // 9x12 logical-pixel grid; blocky rects keep the mark deliberately pixelated.
 function QuestionMarkSvg() {
@@ -47,7 +48,9 @@ const CheckSvg = () => (
 )
 
 export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, freeBadge, className, style }) {
+  const { t } = useLang()
   const mod = DIFF_MOD[difficulty] ?? 'blue'
+  const diffKey = DIFF_LABEL_KEY[difficulty]
   const showSubject = completed && subject
   const stickerUrl = getStickerUrl(sticker ?? icon)
 
@@ -59,7 +62,7 @@ export default function ChallengeCard({ difficulty, label, subject, sticker, ico
     >
       <div className="challenge-card__badges">
         <span className={`challenge-card__badge challenge-card__badge--${mod}`}>
-          {DIFF_LABEL[difficulty] ?? difficulty}
+          {diffKey ? t(diffKey) : difficulty}
         </span>
         {freeBadge && !completed && <span className="challenge-card__free">{freeBadge}</span>}
       </div>

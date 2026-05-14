@@ -5,8 +5,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 1.5rem;
+  min-height: 100dvh;
+  padding: 15px 1.5rem;
   box-sizing: border-box;
   position: relative;
   background-color: $bg;
@@ -16,14 +16,26 @@
   background-repeat: repeat;
   image-rendering: pixelated;
 
+  @supports not (height: 100dvh) {
+    min-height: 100vh;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+  }
+
   &__form {
     @include card;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 0.75rem 2rem 2rem;
+    padding: 0.75rem 1rem 2rem;
     width: 100%;
     max-width: 420px;
+
+    @media (min-width: 768px) {
+      padding: 0.75rem 2rem 2rem;
+    }
   }
 
   &__logo {

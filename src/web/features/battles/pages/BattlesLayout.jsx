@@ -6,15 +6,6 @@ import LockedOverlay from '../../../components/LockedOverlay'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 
-const IconLock = () => (
-  <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges">
-    <rect x="5" y="0" width="6" height="2" />
-    <rect x="5" y="2" width="2" height="4" />
-    <rect x="9" y="2" width="2" height="4" />
-    <rect x="1" y="5" width="14" height="11" />
-  </svg>
-)
-
 export default function BattlesLayout() {
   const { t }      = useLang()
   const { user }   = useAuth()
@@ -48,7 +39,6 @@ export default function BattlesLayout() {
         fullWidth
         onClick={() => navigate(isGuest ? '/register' : '/battles/friends')}
       >
-        {isGuest && <IconLock />}
         {t('battles.startNew')}
       </Button>
     </div>

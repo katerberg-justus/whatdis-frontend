@@ -79,7 +79,7 @@ const translations = {
     'game.response.partly':         'Partly',
     'game.response.indecisive':     'Unsure',
     'game.response.possible':       'Possible',
-    'game.response.possibly_not':   'Possibly not',
+    'game.response.possibly_not':   'Likely not',
     'game.response.refusal':        'N/A',
     'game.response.win':            'Correct!',
 
@@ -231,7 +231,7 @@ const translations = {
     'game.response.partly':         'En parte',
     'game.response.indecisive':     'Incierto',
     'game.response.possible':       'Posible',
-    'game.response.possibly_not':   'Quizás no',
+    'game.response.possibly_not':   'Probablemente no',
     'game.response.refusal':        'N/A',
     'game.response.win':            '¡Correcto!',
 
@@ -383,7 +383,7 @@ const translations = {
     'game.response.partly':         'En partie',
     'game.response.indecisive':     'Incertain',
     'game.response.possible':       'Possible',
-    'game.response.possibly_not':   'Peut-être pas',
+    'game.response.possibly_not':   'Probablement pas',
     'game.response.refusal':        'N/A',
     'game.response.win':            'Correct !',
 
@@ -535,7 +535,7 @@ const translations = {
     'game.response.partly':         'Teilweise',
     'game.response.indecisive':     'Ungewiss',
     'game.response.possible':       'Möglich',
-    'game.response.possibly_not':   'Wohl nicht',
+    'game.response.possibly_not':   'Wahrscheinlich nicht',
     'game.response.refusal':        'N/A',
     'game.response.win':            'Richtig!',
 
@@ -687,7 +687,7 @@ const translations = {
     'game.response.partly':         'Deels',
     'game.response.indecisive':     'Onzeker',
     'game.response.possible':       'Mogelijk',
-    'game.response.possibly_not':   'Misschien niet',
+    'game.response.possibly_not':   'Waarschijnlijk niet',
     'game.response.refusal':        'N/A',
     'game.response.win':            'Correct!',
 
@@ -839,7 +839,7 @@ const translations = {
     'game.response.partly':         'Em parte',
     'game.response.indecisive':     'Incerto',
     'game.response.possible':       'Possível',
-    'game.response.possibly_not':   'Talvez não',
+    'game.response.possibly_not':   'Provavelmente não',
     'game.response.refusal':        'N/A',
     'game.response.win':            'Correto!',
 

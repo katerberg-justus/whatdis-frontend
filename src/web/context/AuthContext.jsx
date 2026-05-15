@@ -26,7 +26,11 @@ export function AuthProvider({ children }) {
         .finally(() => setLoading(false))
       return
     }
-    apiGuestAuth(navigator.language).catch(() => {}).finally(() => setLoading(false))
+    apiGuestAuth(navigator.language)
+      .then(() => apiMe())
+      .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   const persist = (data, username) => {

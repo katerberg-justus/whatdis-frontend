@@ -18,6 +18,7 @@
 
 .dialog {
   @include card;
+  border-width: 4px;
   position: relative;
   width: 100%;
   max-width: 400px;

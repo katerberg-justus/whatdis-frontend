@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { apiGetGame, apiGetGuesses, apiSubmitGuess, apiCreateGame } from '@shared/api/games'
+import { apiGetGame, apiGetGuesses, apiSubmitGuess, apiCreateGame, apiRequestHint } from '@shared/api/games'
+
+const HINT_ENERGY_COST = 5
+
+function isHintCommand(text) {
+  return text.replace(/[\s\p{P}\p{S}]+/gu, '').toLowerCase() === 'hint'
+}
 import { useLang } from '../../../context/LangContext'
 import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
@@ -9,15 +15,9 @@ import Dialog from '../../../components/Dialog'
 import IconButton from '../../../components/IconButton'
 import { BackIcon } from '../../../components/icons'
 import { useEnergy } from '../../../context/EnergyContext'
-import { getStickerUrl } from '../../../assets/stickers'
+import Sticker, { stickerFrameTier } from '../../../components/Sticker'
 import '../../collectibles/pages/CollectiblesPage.scss'
 import './GamePage.scss'
-
-function frameTier(guessCount) {
-  if (guessCount < 20) return 'gold'
-  if (guessCount < 40) return 'silver'
-  return 'bronze'
-}
 
 export default function GamePage() {
   const { gameId }                = useParams()
@@ -46,7 +46,9 @@ export default function GamePage() {
     apiGetGame(gameId).then(setGame).catch(() => {})
     apiGetGuesses(gameId)
       .then(guesses => {
-        setMessages(guesses.map(g => ({ question: g.content, answer: g.response })))
+        setMessages(guesses.map(g => g.kind === 'hint'
+          ? { question: t('game.hint'), answer: g.content, kind: 'hint' }
+          : { question: g.content, answer: g.response }))
         if (guesses.length > 0 && guesses[0].created_at) {
           const start = new Date(guesses[0].created_at).getTime()
           setStartMs(start)
@@ -83,8 +85,12 @@ export default function GamePage() {
 
   async function handleAsk() {
     if (!input.trim() || done || loading) return
-    if (energy === 0) { promptOutOfEnergy(); return }
     const question = input.trim()
+    if (isHintCommand(question)) {
+      await handleHint()
+      return
+    }
+    if (energy === 0) { promptOutOfEnergy(); return }
     setInput('')
     if (startMs === null) setStartMs(Date.now())
     if (!timerOn) setTimerOn(true)
@@ -119,6 +125,33 @@ export default function GamePage() {
     }
   }
 
+  async function handleHint() {
+    if (energy !== null && energy < HINT_ENERGY_COST) { promptOutOfEnergy(); return }
+    setInput('')
+    if (startMs === null) setStartMs(Date.now())
+    if (!timerOn) setTimerOn(true)
+    depleteEnergy(HINT_ENERGY_COST)
+    setLoading(true)
+    setMessages(prev => [...prev, { question: t('game.hint'), answer: '...', finalAnswer: null, kind: 'hint' }])
+    try {
+      const hint = await apiRequestHint(gameId)
+      setMessages(prev => {
+        if (prev.length === 0) return prev
+        const copy = prev.slice()
+        copy[copy.length - 1] = {
+          ...copy[copy.length - 1],
+          finalAnswer: hint.content,
+        }
+        return copy
+      })
+      syncEnergy(hint.energy_remaining)
+    } catch {
+      setMessages(prev => prev.slice(0, -1))
+    } finally {
+      setLoading(false)
+    }
+  }
+
   function handleKeyDown(e) {
     if (e.key === 'Enter') handleAsk()
   }
@@ -133,7 +166,8 @@ export default function GamePage() {
   const packId        = game?.pack_id
   const position      = game?.position
   const difficulty    = game?.difficulty ?? ''
-  const backTo        = packId ? `/packs/${packId}/challenges` : '/challenges'
+  const isDailyChallenge = game?.challenge?.is_daily === true
+  const backTo        = !isDailyChallenge && packId ? `/packs/${packId}/challenges` : '/challenges'
   const nextChallenge = game?.next_challenge ?? null
 
   async function handleNext() {
@@ -191,18 +225,14 @@ export default function GamePage() {
 
       {done && won && !winDismissed && (() => {
         const challenge = game?.challenge
-        const stickerUrl = getStickerUrl(challenge?.sticker)
-        const tier = frameTier(messages.length)
         return (
           <Dialog title={t('game.wonTitle')} onClose={() => setWinDismissed(true)}>
-            <div className={`game__sticker-pop collectibles__sticker collectibles__sticker--${tier}`}>
-              <span className="collectibles__sticker-icon" aria-hidden="true">
-                {stickerUrl ? <img src={stickerUrl} alt="" /> : '?'}
-              </span>
-              {challenge?.subject && (
-                <span className="collectibles__sticker-name">{challenge.subject}</span>
-              )}
-            </div>
+            <Sticker
+              className="game__sticker-pop"
+              sticker={challenge?.sticker}
+              name={challenge?.subject}
+              tier={stickerFrameTier(messages.length)}
+            />
             <p className="game__won-stat">
               {t('game.solvedIn')} {messages.length} {messages.length === 1 ? t('game.guess') : t('game.guesses')}
             </p>

@@ -16,13 +16,16 @@ export default function AchievementsPage() {
   const { t }                = useLang()
   const [all,    setAll]     = useState([])
   const [earned, setEarned]  = useState([])
+  const isGuest              = !user || user.is_guest
 
   useEffect(() => {
     apiGetAchievements().then(setAll).catch(() => {})
-    if (user) apiGetMyAchievements().then(setEarned).catch(() => {})
-  }, [user])
+    if (isGuest) return
+    apiGetMyAchievements().then(setEarned).catch(() => {})
+  }, [isGuest])
 
-  const earnedMap = Object.fromEntries(earned.map(e => [e.achievement_id ?? e.id, e]))
+  const visibleEarned = isGuest ? [] : earned
+  const earnedMap = Object.fromEntries(visibleEarned.map(e => [e.achievement_id ?? e.id, e]))
 
   const grouped = CATEGORY_ORDER.reduce((acc, cat) => {
     const items = all.filter(a => a.category === cat)

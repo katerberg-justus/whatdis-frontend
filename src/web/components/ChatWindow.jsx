@@ -80,31 +80,36 @@ export default function ChatWindow({ messages, emptyLabel, className = '' }) {
         <p className="chat__empty">{emptyLabel}</p>
       ) : (
         <div className="chat__log">
-          {messages.map(({ question, answer, finalAnswer, author, isMe }, i) => (
-            <div
-              key={i}
-              className={`chat__entry${i === newEntryIndex ? ' chat__entry--new' : ''}`}
-            >
-              <span className="chat__question">
-                {author != null && (
-                  <span className={`chat__author chat__author--${isMe ? 'me' : 'them'}`}>
-                    {author}
+          {messages.map(({ question, answer, finalAnswer, author, isMe, kind }, i) => {
+            const isHint = kind === 'hint'
+            return (
+              <div
+                key={i}
+                className={`chat__entry${i === newEntryIndex ? ' chat__entry--new' : ''}${isHint ? ' chat__entry--hint' : ''}`}
+              >
+                <span className="chat__question">
+                  {author != null && (
+                    <span className={`chat__author chat__author--${isMe ? 'me' : 'them'}`}>
+                      {author}
+                    </span>
+                  )}
+                  <span className="chat__prompt">&gt;</span>
+                  {question}
+                </span>
+                {answer === '...' ? (
+                  <span className={`chat__answer chat__answer--${isHint ? 'hint' : (finalAnswer ?? 'loading')}`}>
+                    {isHint && finalAnswer
+                      ? finalAnswer
+                      : <CyclingAnswer targetKey={isHint ? null : finalAnswer} />}
+                  </span>
+                ) : (
+                  <span className={`chat__answer chat__answer--${isHint ? 'hint' : answer}`}>
+                    {isHint ? answer : t(`game.response.${answer}`)}
                   </span>
                 )}
-                <span className="chat__prompt">&gt;</span>
-                {question}
-              </span>
-              {answer === '...' ? (
-                <span className={`chat__answer chat__answer--${finalAnswer ?? 'loading'}`}>
-                  <CyclingAnswer targetKey={finalAnswer} />
-                </span>
-              ) : (
-                <span className={`chat__answer chat__answer--${answer}`}>
-                  {t(`game.response.${answer}`)}
-                </span>
-              )}
-            </div>
-          ))}
+              </div>
+            )
+          })}
           <div ref={bottomRef} />
         </div>
       )}

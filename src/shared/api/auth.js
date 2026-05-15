@@ -5,8 +5,8 @@ export async function apiLogin(username, password) {
   return data
 }
 
-export async function apiGuestAuth() {
-  await authClient.post('/auth/guest')
+export async function apiGuestAuth(language) {
+  await authClient.post('/auth/guest', language ? { language } : {})
 }
 
 export async function apiClaimAccount(name, email, password) {

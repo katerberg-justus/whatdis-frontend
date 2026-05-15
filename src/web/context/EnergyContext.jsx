@@ -9,6 +9,11 @@ import Button from '../components/Button'
 import UpgradeDialog from '../components/UpgradeDialog'
 
 const EnergyContext = createContext(null)
+const REGISTER_PERKS = [
+  'register.energyPerk',
+  'register.battlesPerk',
+  'register.progressPerk',
+]
 
 export function EnergyProvider({ children }) {
   const { user } = useAuth()
@@ -35,8 +40,8 @@ export function EnergyProvider({ children }) {
     if (energy === 0) setDialogOpen(true)
   }, [energy])
 
-  const depleteEnergy = () =>
-    setEnergy(e => (e !== null && e > 0) ? e - 1 : e)
+  const depleteEnergy = (cost = 1) =>
+    setEnergy(e => (e !== null && e > 0) ? Math.max(0, e - cost) : e)
 
   const syncEnergy = (value) =>
     setEnergy(value ?? null)
@@ -44,17 +49,24 @@ export function EnergyProvider({ children }) {
   const isOutOfEnergy = energy === 0
   const promptOutOfEnergy = useCallback(() => setDialogOpen(true), [])
 
-  const showUpgrade = dialogOpen && !!user && !isActive
-  const showLogin = dialogOpen && !user
+  const isGuest = !user || user.is_guest
+  const showRegister = dialogOpen && isGuest
+  const showUpgrade = dialogOpen && !isGuest && !isActive
 
   return (
     <EnergyContext.Provider value={{ energy, maxEnergy, depleteEnergy, syncEnergy, isOutOfEnergy, promptOutOfEnergy }}>
       {children}
-      {showLogin && (
-        <Dialog title={t('battles.outOfEnergy')} onClose={() => setDialogOpen(false)}>
-          <p>{t('challenges.lockedMessage')}</p>
+      {showRegister && (
+        <Dialog title={t('register.energyTitle')} onClose={() => setDialogOpen(false)}>
+          <ul className="upgrade__perks">
+            {REGISTER_PERKS.map(key => (
+              <li key={key} className="upgrade__perk">
+                <span className="upgrade__perk-title">{t(key)}</span>
+              </li>
+            ))}
+          </ul>
+          <Button color="pink" fullWidth onClick={() => { setDialogOpen(false); navigate('/register') }}>{t('register.submit')}</Button>
           <Button color="blue" fullWidth onClick={() => { setDialogOpen(false); navigate('/login') }}>{t('register.signIn')}</Button>
-          <Button color="pink" fullWidth onClick={() => { setDialogOpen(false); navigate('/register') }}>{t('login.register')}</Button>
         </Dialog>
       )}
       {showUpgrade && <UpgradeDialog onClose={() => setDialogOpen(false)} />}

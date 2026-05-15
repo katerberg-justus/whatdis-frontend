@@ -21,6 +21,8 @@
     gap: 0.625rem;
     padding: 0.9375rem 0.875rem 0.9375rem 3.5rem;
     flex-shrink: 0;
+    animation: game-panel-enter 220ms steps(4, end) both;
+    transform-origin: center bottom;
   }
 
   &__back {
@@ -111,6 +113,10 @@
   }
 
   &__chat {
+    animation: game-panel-enter 180ms steps(3, end) both;
+    animation-delay: 55ms;
+    transform-origin: center bottom;
+
     .chat__empty {
       font-size: $text-sm;
     }
@@ -122,6 +128,9 @@
     display: flex;
     gap: 0.5rem;
     flex-shrink: 0;
+    animation: game-panel-enter 180ms steps(3, end) both;
+    animation-delay: 100ms;
+    transform-origin: center bottom;
 
     .btn {
       white-space: nowrap;
@@ -143,4 +152,32 @@
   0%   { opacity: 0; transform: scale(0.3) rotate(-12deg); }
   60%  { opacity: 1; transform: scale(1.1) rotate(4deg); }
   100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes game-panel-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+    clip-path: inset(0 0 8% 0);
+  }
+
+  50% {
+    opacity: 0.78;
+    transform: translateY(2px);
+    clip-path: inset(0 0 2% 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game__meta,
+  .game__chat,
+  .game__controls {
+    animation: none;
+  }
 }

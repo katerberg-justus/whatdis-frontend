@@ -16,7 +16,8 @@ export const BackIcon = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
     <rect x="9" y="3" width="4" height="4" />
     <rect x="5" y="7" width="4" height="4" />
-    <rect x="1" y="11" width="4" height="2" />
+    <rect x="1" y="10" width="4" height="4" />
+    <rect x="5" y="11" width="4" height="2" />
     <rect x="5" y="13" width="4" height="4" />
     <rect x="9" y="17" width="4" height="4" />
     <rect x="9" y="10" width="14" height="4" />

@@ -24,3 +24,8 @@ export async function apiSubmitGuess(gameId, content) {
   const { data } = await apiClient.post(`/games/${gameId}/guesses`, { content })
   return data
 }
+
+export async function apiRequestHint(gameId) {
+  const { data } = await apiClient.post(`/games/${gameId}/hints`)
+  return data
+}

@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLang } from '../../../context/LangContext'
 import { apiGetGames } from '@shared/api/games'
-import { getStickerUrl } from '../../../assets/stickers'
+import Sticker, { stickerFrameTier } from '../../../components/Sticker'
 import './CollectiblesPage.scss'
-
-function frameTier(guessCount) {
-  if (guessCount < 20) return 'gold'
-  if (guessCount < 40) return 'silver'
-  return 'bronze'
-}
 
 export default function StickersPage() {
   const { t } = useLang()
@@ -38,19 +32,17 @@ export default function StickersPage() {
       {stickers.map((game) => {
         const challenge = game.challenge
         const guessCount = game.guess_count ?? 0
-        const stickerUrl = getStickerUrl(challenge.sticker ?? challenge.icon)
 
         return (
-          <article
+          <Sticker
             key={game.id}
-            className={`collectibles__sticker collectibles__sticker--${frameTier(guessCount)}`}
+            as="article"
+            sticker={challenge.sticker}
+            icon={challenge.icon}
+            name={challenge.subject}
+            tier={stickerFrameTier(guessCount)}
             title={`${challenge.subject} (${guessCount})`}
-          >
-            <span className="collectibles__sticker-icon" aria-hidden="true">
-              {stickerUrl ? <img src={stickerUrl} alt="" /> : (challenge.icon || '?')}
-            </span>
-            <span className="collectibles__sticker-name">{challenge.subject}</span>
-          </article>
+          />
         )
       })}
     </div>

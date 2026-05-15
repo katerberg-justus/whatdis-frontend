@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { LangProvider } from './context/LangContext'
 import { CurrencyProvider } from './context/CurrencyContext'
 import { EnergyProvider } from './context/EnergyContext'
@@ -29,6 +29,13 @@ const AUTH_ROUTES = ['/login', '/register']
 
 function Layout() {
   const { pathname } = useLocation()
+  const { user } = useAuth()
+  const mustLogin = !user && localStorage.getItem('logged_out') === '1'
+
+  if (mustLogin && pathname !== '/login') {
+    return <Navigate to="/login" replace />
+  }
+
   const isAuth = AUTH_ROUTES.includes(pathname)
 
   return (

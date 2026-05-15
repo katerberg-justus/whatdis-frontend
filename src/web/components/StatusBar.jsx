@@ -1,5 +1,8 @@
+import { useEffect, useRef, useState } from 'react'
 import { useEnergy } from '../context/EnergyContext'
 import './StatusBar.scss'
+
+const FILL_DURATION_MS = 800
 
 const EnergyDrinkIcon = () => (
   <div className="status-bar__can">
@@ -36,9 +39,38 @@ function energyColor(ratio) {
 export default function StatusBar() {
   const { energy, maxEnergy } = useEnergy()
   const hasEnergy = energy !== null
-  const filled = hasEnergy ? Math.round((energy / maxEnergy) * BLOCK_COUNT) : 0
-  const ratio  = hasEnergy ? energy / maxEnergy : 0
+  const [displayEnergy, setDisplayEnergy] = useState(0)
+  const animatedRef = useRef(false)
+
+  useEffect(() => {
+    if (!hasEnergy) return
+    if (animatedRef.current) {
+      setDisplayEnergy(energy)
+      return
+    }
+    animatedRef.current = true
+    const target = energy
+    if (target <= 0) {
+      setDisplayEnergy(0)
+      return
+    }
+    const start = performance.now()
+    let raf
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / FILL_DURATION_MS)
+      setDisplayEnergy(Math.round(t * target))
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [hasEnergy, energy])
+
+  const current = hasEnergy ? displayEnergy : 0
+  const filled = hasEnergy ? Math.round((current / maxEnergy) * BLOCK_COUNT) : 0
+  const ratio  = hasEnergy ? current / maxEnergy : 0
   const color  = energyColor(ratio)
+  const padWidth = hasEnergy ? String(energy).length : 1
+  const paddedCurrent = String(current).padStart(padWidth, '0')
 
   return (
     <div className="status-bar">
@@ -51,7 +83,7 @@ export default function StatusBar() {
           />
         ))}
       </div>
-      <span className="status-bar__count">{hasEnergy ? `${energy}/${maxEnergy}` : '\u00a0'}</span>
+      <span className="status-bar__count">{hasEnergy ? `${paddedCurrent}/${maxEnergy}` : '\u00a0'}</span>
     </div>
   )
 }

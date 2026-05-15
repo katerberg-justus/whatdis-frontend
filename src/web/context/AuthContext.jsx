@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
         .finally(() => setLoading(false))
       return
     }
-    apiGuestAuth().catch(() => {}).finally(() => setLoading(false))
+    apiGuestAuth(navigator.language).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const persist = (data, username) => {

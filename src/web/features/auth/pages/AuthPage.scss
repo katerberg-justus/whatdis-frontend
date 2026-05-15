@@ -1,8 +1,13 @@
 @use 'sass:list';
+@use 'sass:math';
 @use '../../../styles/variables' as *;
 @use '../../../styles/mixins' as *;
 
-@mixin star-field($stars) {
+@function centered-background-position($position, $size) {
+  @return calc(#{$position} + #{math.div($position, 100%) * $size - $size * 0.5});
+}
+
+@mixin star-field($stars, $glow: false) {
   $images: ();
   $positions: ();
   $sizes: ();
@@ -13,9 +18,37 @@
     $y: list.nth($star, 3);
     $size: list.nth($star, 4);
 
-    $images: list.append($images, linear-gradient($color, $color), comma);
-    $positions: list.append($positions, $x $y, comma);
-    $sizes: list.append($sizes, $size $size, comma);
+    @if $glow {
+      $glow-size: $size * 4;
+
+      $images: list.append(
+        $images,
+        radial-gradient(circle, rgba($color, 0.16) 0 18%, rgba($color, 0.06) 48%, transparent 72%),
+        comma
+      );
+      $positions: list.append(
+        $positions,
+        centered-background-position($x, $glow-size) centered-background-position($y, $glow-size),
+        comma
+      );
+      $sizes: list.append($sizes, $glow-size $glow-size, comma);
+
+      $images: list.append($images, linear-gradient($color, $color), comma);
+      $positions: list.append(
+        $positions,
+        centered-background-position($x, $size) centered-background-position($y, $size),
+        comma
+      );
+      $sizes: list.append($sizes, $size $size, comma);
+    } @else {
+      $images: list.append($images, linear-gradient($color, $color), comma);
+      $positions: list.append(
+        $positions,
+        centered-background-position($x, $size) centered-background-position($y, $size),
+        comma
+      );
+      $sizes: list.append($sizes, $size $size, comma);
+    }
   }
 
   background-image: $images;
@@ -53,11 +86,7 @@
     ($bg-border, 7%, 87%, 5px), ($blue, 16%, 16%, 3px), ($text, 25%, 96%, 4px), ($bg-surface, 39%, 62%, 5px),
     ($pink-muted, 49%, 29%, 4px), ($blue-muted, 62%, 57%, 3px), ($text, 70%, 7%, 5px), ($pink, 84%, 76%, 4px),
     ($bg-border, 92%, 35%, 5px), ($blue, 98%, 96%, 3px)
-  ));
-  filter:
-    drop-shadow(0 0 3px rgba($text, 0.18))
-    drop-shadow(0 0 5px rgba($blue, 0.1))
-    drop-shadow(0 0 5px rgba($pink, 0.08));
+  ), true);
 
   &::before,
   &::after {
@@ -69,37 +98,33 @@
     background-repeat: no-repeat;
     image-rendering: pixelated;
     will-change: opacity;
-    filter:
-      drop-shadow(0 0 4px rgba($text, 0.22))
-      drop-shadow(0 0 8px rgba($blue, 0.16))
-      drop-shadow(0 0 8px rgba($pink, 0.14));
   }
 
   &::before {
     opacity: 0.3;
     @include star-field((
-      ($text, 6%, 18%, 9px), ($blue, 17%, 65%, 7px), ($pink, 29%, 41%, 8px), ($text, 36%, 89%, 6px),
-      ($blue-muted, 48%, 22%, 7px), ($pink-muted, 58%, 71%, 8px), ($text, 69%, 34%, 9px), ($blue, 80%, 12%, 6px),
-      ($pink, 93%, 57%, 7px), ($text, 12%, 86%, 8px), ($blue-muted, 43%, 55%, 6px), ($pink-muted, 74%, 84%, 7px),
-      ($blue, 88%, 31%, 8px), ($text, 24%, 8%, 6px), ($pink, 64%, 96%, 7px), ($blue-muted, 97%, 79%, 6px),
+      ($text, 6%, 18%, 6px), ($blue, 17%, 65%, 5px), ($pink, 29%, 41%, 5px), ($text, 36%, 89%, 4px),
+      ($blue-muted, 48%, 22%, 5px), ($pink-muted, 58%, 71%, 5px), ($text, 69%, 34%, 6px), ($blue, 80%, 12%, 4px),
+      ($pink, 93%, 57%, 5px), ($text, 12%, 86%, 5px), ($blue-muted, 43%, 55%, 4px), ($pink-muted, 74%, 84%, 5px),
+      ($blue, 88%, 31%, 5px), ($text, 24%, 14%, 4px), ($pink, 65%, 91%, 5px), ($blue-muted, 96%, 75%, 4px),
       ($text, 4%, 38%, 3px), ($blue, 14%, 5%, 4px), ($pink, 22%, 93%, 3px), ($text, 31%, 18%, 4px),
       ($blue-muted, 40%, 72%, 3px), ($pink-muted, 51%, 6%, 4px), ($text, 60%, 53%, 3px), ($blue, 71%, 10%, 4px),
       ($pink, 83%, 64%, 3px), ($text, 90%, 44%, 4px), ($blue-muted, 96%, 7%, 3px), ($pink-muted, 67%, 76%, 4px)
-    ));
+    ), true);
     animation: auth-star-glow-a 5.2s steps(5, end) infinite;
   }
 
   &::after {
     opacity: 0.18;
     @include star-field((
-      ($pink, 9%, 48%, 7px), ($text, 20%, 27%, 8px), ($blue, 33%, 78%, 6px), ($pink-muted, 45%, 14%, 9px),
-      ($text, 55%, 61%, 7px), ($blue-muted, 67%, 5%, 8px), ($pink, 76%, 45%, 6px), ($text, 86%, 93%, 9px),
-      ($blue, 96%, 20%, 7px), ($pink-muted, 3%, 91%, 6px), ($text, 39%, 34%, 7px), ($blue-muted, 62%, 86%, 8px),
-      ($pink, 72%, 25%, 9px), ($blue, 91%, 68%, 6px), ($text, 27%, 96%, 8px), ($pink-muted, 52%, 42%, 7px),
+      ($pink, 9%, 48%, 5px), ($text, 20%, 27%, 5px), ($blue, 33%, 78%, 4px), ($pink-muted, 45%, 14%, 6px),
+      ($text, 55%, 61%, 5px), ($blue-muted, 67%, 5%, 5px), ($pink, 76%, 45%, 4px), ($text, 86%, 93%, 6px),
+      ($blue, 96%, 20%, 5px), ($pink-muted, 3%, 91%, 4px), ($text, 39%, 34%, 5px), ($blue-muted, 62%, 86%, 5px),
+      ($pink, 72%, 25%, 6px), ($blue, 91%, 68%, 4px), ($text, 27%, 96%, 5px), ($pink-muted, 52%, 42%, 5px),
       ($blue, 7%, 13%, 4px), ($text, 16%, 78%, 3px), ($pink, 28%, 57%, 4px), ($blue-muted, 37%, 5%, 3px),
       ($text, 49%, 93%, 4px), ($pink-muted, 59%, 29%, 3px), ($blue, 70%, 69%, 4px), ($text, 81%, 8%, 3px),
       ($pink, 89%, 52%, 4px), ($blue-muted, 98%, 88%, 3px), ($text, 12%, 36%, 4px), ($pink-muted, 34%, 24%, 3px)
-    ));
+    ), true);
     animation: auth-star-glow-b 7.1s steps(6, end) infinite;
     animation-delay: -2.4s;
   }

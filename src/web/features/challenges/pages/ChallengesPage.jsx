@@ -168,7 +168,8 @@ export default function ChallengesPage() {
                     ].filter(Boolean).join(' ')}
                     style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
                     onClick={() => {
-                      if (pack.subscription_access && !isActive) { setUpgradeOpen(true); return }
+                      if (pack.subscription_access && subscription !== undefined && !isActive) { setUpgradeOpen(true); return }
+                      if (pack.subscription_access && subscription === undefined) return
                       if (!pack.is_locked) navigate(`/packs/${pack.id}/challenges`)
                     }}
                   >

@@ -164,7 +164,7 @@ export default function ChallengesPage() {
                     className={[
                       'challenges__pack-card',
                       'challenges__card-enter',
-                      pack.is_locked && !pack.subscription_access && 'challenges__pack-card--locked',
+                      pack.is_locked && pack.is_exclusive && 'challenges__pack-card--locked',
                     ].filter(Boolean).join(' ')}
                     style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
                     onClick={() => {

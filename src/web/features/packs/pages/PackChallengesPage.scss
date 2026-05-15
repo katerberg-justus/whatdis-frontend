@@ -39,21 +39,23 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 0.75rem;
 
     @media (min-width: 480px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 800px) {
       grid-template-columns: repeat(3, 1fr);
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 1100px) {
       grid-template-columns: repeat(4, 1fr);
     }
   }
 
   &__grid .challenge-card {
-    aspect-ratio: 4 / 5;
-
     @media (min-width: 480px) {
       aspect-ratio: 1;
     }

@@ -27,6 +27,13 @@ export function EnergyProvider({ children }) {
   useEffect(() => {
     if (!user) return
 
+    if (user.energy !== undefined) {
+      const e = user.energy ?? null
+      setEnergy(e)
+      setMaxEnergy(user.max_energy ?? Math.max(10, e ?? 0))
+      return
+    }
+
     apiMe()
       .then(data => {
         const e = data.energy ?? null

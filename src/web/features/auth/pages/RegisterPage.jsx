@@ -25,7 +25,7 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await register(username, email, password)
-      navigate('/challenges')
+      navigate('/challenges', { state: { promptUpgrade: true } })
     } catch (err) {
       setError(err.message)
     } finally {

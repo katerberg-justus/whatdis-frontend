@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
@@ -64,6 +64,7 @@ const SignUpBannerMessage = ({ t }) => {
 
 export default function ChallengesPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuth()
   const { t }        = useLang()
   const { isActive, subscription } = useSubscription()
@@ -71,6 +72,13 @@ export default function ChallengesPage() {
   const [dailies,       setDailies]       = useState([])
   const [dailiesLoading, setDailiesLoading] = useState(true)
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
+  const [welcomeUpgradeOpen, setWelcomeUpgradeOpen] = useState(!!location.state?.promptUpgrade)
+
+  useEffect(() => {
+    if (location.state?.promptUpgrade) {
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [])
   const dailyCards = dailiesLoading && dailies.length === 0
     ? [{ id: 'daily-placeholder', difficulty: 'medium', completed: false, isPlaceholder: true }]
     : dailies
@@ -197,6 +205,7 @@ export default function ChallengesPage() {
     </div>
 
     {upgradeOpen && <UpgradeDialog onClose={() => setUpgradeOpen(false)} />}
+    {welcomeUpgradeOpen && <UpgradeDialog fullscreen onClose={() => setWelcomeUpgradeOpen(false)} />}
     </>
   )
 }

@@ -18,7 +18,7 @@ const PERKS = [
   { title: 'upgrade.perk3', desc: 'upgrade.perk3desc' },
 ]
 
-export default function UpgradeDialog({ onClose }) {
+export default function UpgradeDialog({ onClose, fullscreen = false }) {
   const { t }             = useLang()
   const { currency }      = useCurrency()
   const { startCheckout } = useSubscription()
@@ -30,13 +30,16 @@ export default function UpgradeDialog({ onClose }) {
     try { await startCheckout(selected, currency) } catch { setLoading(false) }
   }
 
-  return (
-    <Dialog title={t('upgrade.title')} onClose={onClose}>
+  const body = (
+    <>
       <ul className="upgrade__perks">
         {PERKS.map(({ title, desc }) => (
           <li key={title} className="upgrade__perk">
-            <span className="upgrade__perk-title">{t(title)}</span>
-            <span className="upgrade__perk-desc">{t(desc)}</span>
+            <span className="upgrade__perk-bullet" />
+            <div className="upgrade__perk-text">
+              <span className="upgrade__perk-title">{t(title)}</span>
+              <span className="upgrade__perk-desc">{t(desc)}</span>
+            </div>
           </li>
         ))}
       </ul>
@@ -56,6 +59,28 @@ export default function UpgradeDialog({ onClose }) {
       <Button fullWidth disabled={loading} onClick={handleUpgrade}>
         {loading ? t('upgrade.redirecting') : t('upgrade.cta')}
       </Button>
+      {fullscreen && (
+        <button type="button" className="upgrade__skip" onClick={onClose}>
+          {t('upgrade.playForFree')}
+        </button>
+      )}
+    </>
+  )
+
+  if (fullscreen) {
+    return (
+      <div className="upgrade-fullscreen">
+        <div className="upgrade-fullscreen__inner">
+          <h2 className="upgrade-fullscreen__title">{t('upgrade.title')}</h2>
+          {body}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Dialog title={t('upgrade.title')} onClose={onClose}>
+      {body}
     </Dialog>
   )
 }

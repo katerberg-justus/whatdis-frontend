@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLang } from '../../../context/LangContext'
 import { useCurrency } from '../../../context/CurrencyContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
@@ -36,6 +36,13 @@ export default function SubscriptionPage() {
   const [loading,    setLoading]    = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [error,      setError]      = useState(null)
+  const userSelectedPlan = useRef(false)
+
+  useEffect(() => {
+    if (!userSelectedPlan.current && subscription?.plan_id) {
+      setSelected(subscription.plan_id)
+    }
+  }, [subscription?.plan_id])
 
   const handleCheckout = async () => {
     setLoading(true)
@@ -77,8 +84,11 @@ export default function SubscriptionPage() {
         <ul className="upgrade__perks">
           {PERKS.map(({ title, desc }) => (
             <li key={title} className="upgrade__perk">
-              <span className="upgrade__perk-title">{t(title)}</span>
-              <span className="upgrade__perk-desc">{t(desc)}</span>
+              <span className="upgrade__perk-bullet" />
+              <div className="upgrade__perk-text">
+                <span className="upgrade__perk-title">{t(title)}</span>
+                <span className="upgrade__perk-desc">{t(desc)}</span>
+              </div>
             </li>
           ))}
         </ul>
@@ -92,7 +102,12 @@ export default function SubscriptionPage() {
             key={id}
             type="button"
             className={['upgrade__plan', selected === id && 'upgrade__plan--active', locked && 'upgrade__plan--locked'].filter(Boolean).join(' ')}
-            onClick={() => !locked && setSelected(id)}
+            onClick={() => {
+              if (!locked) {
+                userSelectedPlan.current = true
+                setSelected(id)
+              }
+            }}
           >
             <span className="upgrade__plan-period">{t(key)}</span>
             <span className="upgrade__plan-price">{prices[currency]}</span>

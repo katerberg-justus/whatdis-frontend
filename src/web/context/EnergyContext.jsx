@@ -10,9 +10,9 @@ import UpgradeDialog from '../components/UpgradeDialog'
 
 const EnergyContext = createContext(null)
 const REGISTER_PERKS = [
-  'register.energyPerk',
-  'register.battlesPerk',
-  'register.progressPerk',
+  { title: 'register.energyPerk',   desc: 'register.energyPerkDesc'   },
+  { title: 'register.battlesPerk',  desc: 'register.battlesPerkDesc'  },
+  { title: 'register.progressPerk', desc: 'register.progressPerkDesc' },
 ]
 
 export function EnergyProvider({ children }) {
@@ -59,14 +59,20 @@ export function EnergyProvider({ children }) {
       {showRegister && (
         <Dialog title={t('register.energyTitle')} onClose={() => setDialogOpen(false)}>
           <ul className="upgrade__perks">
-            {REGISTER_PERKS.map(key => (
-              <li key={key} className="upgrade__perk">
-                <span className="upgrade__perk-title">{t(key)}</span>
+            {REGISTER_PERKS.map(({ title, desc }) => (
+              <li key={title} className="upgrade__perk">
+                <span className="upgrade__perk-bullet" />
+                <div className="upgrade__perk-text">
+                  <span className="upgrade__perk-title">{t(title)}</span>
+                  <span className="upgrade__perk-desc">{t(desc)}</span>
+                </div>
               </li>
             ))}
           </ul>
-          <Button color="pink" fullWidth onClick={() => { setDialogOpen(false); navigate('/register') }}>{t('register.submit')}</Button>
-          <Button color="blue" fullWidth onClick={() => { setDialogOpen(false); navigate('/login') }}>{t('register.signIn')}</Button>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <Button color="pink" fullWidth onClick={() => { setDialogOpen(false); navigate('/register') }}>{t('register.submit')}</Button>
+            <Button color="blue" fullWidth onClick={() => { setDialogOpen(false); navigate('/login') }}>{t('register.signIn')}</Button>
+          </div>
         </Dialog>
       )}
       {showUpgrade && <UpgradeDialog onClose={() => setDialogOpen(false)} />}

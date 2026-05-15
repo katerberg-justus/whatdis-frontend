@@ -234,12 +234,14 @@ export default function GamePage() {
               tier={stickerFrameTier(messages.length)}
             />
             <p className="game__won-stat">
-              {t('game.solvedIn')} {messages.length} {messages.length === 1 ? t('game.guess') : t('game.guesses')}
+              {t('game.solvedIn')} <span className="game__won-stat-count">{messages.length}</span> {messages.length === 1 ? t('game.guess') : t('game.guesses')}!
             </p>
-            <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
-            {nextChallenge && (
-              <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
-            )}
+            <div className="game__won-actions">
+              <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
+              {nextChallenge && (
+                <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
+              )}
+            </div>
           </Dialog>
         )
       })()}

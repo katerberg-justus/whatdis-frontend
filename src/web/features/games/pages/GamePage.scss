@@ -100,8 +100,27 @@
   }
 
   &__won-stat {
-    font-size: $text-xs;
+    font-size: $text-sm;
     color: $text-muted;
+  }
+
+  &__won-stat-count {
+    color: $blue;
+  }
+
+  &__won-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .dialog {
+    padding-block: 2rem;
+
+    @media (min-width: 768px) {
+      padding-block: 3rem;
+    }
   }
 
   &__timer {

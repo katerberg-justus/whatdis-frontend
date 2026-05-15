@@ -5,16 +5,15 @@ import { apiGetBattles } from '@shared/api/battles'
 import './BattlesPage.scss'
 
 function battleOpponent(battle, userId) {
-  return battle.challenger?.id === userId
-    ? battle.challenged?.username
-    : battle.challenger?.username
+  const opp = battle.player1?.id === userId ? battle.player2 : battle.player1
+  return opp?.name ?? opp?.username ?? '?'
 }
 
 function battleScores(battle, userId) {
-  if (battle.challenger?.id === userId) {
-    return [battle.challenger_score ?? 0, battle.challenged_score ?? 0]
+  if (battle.player1?.id === userId) {
+    return [battle.player1_score ?? 0, battle.player2_score ?? 0]
   }
-  return [battle.challenged_score ?? 0, battle.challenger_score ?? 0]
+  return [battle.player2_score ?? 0, battle.player1_score ?? 0]
 }
 
 function formatDate(iso) {
@@ -40,12 +39,16 @@ export default function BattlesHistoryPage() {
               <p className="battles__empty">{t('battles.noHistory')}</p>
             ) : (
               <ul className="battles__list">
-                {battles.map((battle) => {
+                {battles.map((battle, i) => {
                   const [myScore, theirScore] = battleScores(battle, user?.id)
                   const won = myScore > theirScore
                   const draw = myScore === theirScore
                   return (
-                    <li key={battle.id} className="battles__battle battles__battle--history">
+                    <li
+                      key={battle.id}
+                      className="battles__battle battles__battle--history battles__card-enter"
+                      style={{ '--card-enter-delay': `${Math.min(i, 7) * 22}ms` }}
+                    >
                       <div className="battles__info">
                         <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
                         <span className="battles__meta">

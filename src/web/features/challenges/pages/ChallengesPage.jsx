@@ -89,7 +89,7 @@ export default function ChallengesPage() {
   useEffect(() => {
     apiGetPacks().then(data => setPacks(data.filter(p => {
       const total = p.total_count ?? 0
-      return total > 0 && !p.is_daily && !/daily/i.test(p.name)
+      return total > 0 && !p.is_daily && !/daily/i.test(p.name) && p.is_battle !== true
     }))).catch(() => {})
     apiGetDailyChallenges()
       .then(setDailies)

@@ -6,6 +6,11 @@ import { apiGetBattle, apiSubmitBattleGuess } from '@shared/api/battles'
 import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
 import Input from '../../../components/Input'
+import Dialog from '../../../components/Dialog'
+import IconButton from '../../../components/IconButton'
+import { BackIcon } from '../../../components/icons'
+import Sticker, { stickerFrameTier } from '../../../components/Sticker'
+import '../../collectibles/pages/CollectiblesPage.scss'
 import './BattlePage.scss'
 
 const RESPONSE_CODE_KEY = {
@@ -18,20 +23,8 @@ const RESPONSE_CODE_KEY = {
   6: 'possibly_not',
 }
 
-const RESPONSE_OPTIONS = [
-  { code: 0, key: 'no'          },
-  { code: 1, key: 'yes'         },
-  { code: 2, key: 'indecisive'  },
-  { code: 5, key: 'possible'    },
-  { code: 6, key: 'possibly_not'},
-  { code: 3, key: 'refusal'     },
-]
-
 function resolvePlayer(battle, userId) {
-  const candidates = [
-    battle.player1, battle.player2,
-    battle.challenger, battle.challenged,
-  ].filter(Boolean)
+  const candidates = [battle.player1, battle.player2].filter(Boolean)
   const me  = candidates.find(p => p.id === userId)
   const opp = candidates.find(p => p.id !== userId)
   return { me, opp }
@@ -39,6 +32,10 @@ function resolvePlayer(battle, userId) {
 
 function oppDisplayName(opp) {
   return opp?.name ?? opp?.username ?? '?'
+}
+
+function responseKey(guess) {
+  return guess.response ?? RESPONSE_CODE_KEY[guess.response_code] ?? 'indecisive'
 }
 
 export default function BattlePage() {
@@ -49,29 +46,59 @@ export default function BattlePage() {
 
   const [battle,   setBattle]   = useState(null)
   const [input,    setInput]    = useState('')
-  const [respCode, setRespCode] = useState(1)
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState(null)
+  const [pendingMessage, setPendingMessage] = useState(null)
+  const [resultDismissed, setResultDismissed] = useState(false)
   const pollRef = useRef(null)
   const inputRef = useRef(null)
+  const pendingTimerRef = useRef(null)
 
   const loadBattle = useCallback(async () => {
     try {
       const data = await apiGetBattle(battleId)
       setBattle(data)
       return data
-    } catch {}
+    } catch {
+      return undefined
+    }
   }, [battleId])
 
-  useEffect(() => { loadBattle() }, [loadBattle])
+  useEffect(() => {
+    window.clearTimeout(pendingTimerRef.current)
+    const loadTimer = window.setTimeout(loadBattle, 0)
+    return () => {
+      window.clearTimeout(loadTimer)
+      window.clearTimeout(pendingTimerRef.current)
+    }
+  }, [loadBattle])
 
   useEffect(() => {
-    clearInterval(pollRef.current)
     if (!battle || battle.status !== 'active') return
     const isMyTurn = battle.current_turn_id === user?.id
     if (isMyTurn) return
-    pollRef.current = setInterval(loadBattle, 5000)
-    return () => clearInterval(pollRef.current)
+
+    const start = () => {
+      clearInterval(pollRef.current)
+      pollRef.current = setInterval(loadBattle, 15000)
+    }
+    const stop = () => clearInterval(pollRef.current)
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        loadBattle()
+        start()
+      } else {
+        stop()
+      }
+    }
+
+    if (document.visibilityState === 'visible') start()
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
   }, [battle?.status, battle?.current_turn_id, user?.id, loadBattle])
 
   if (!battle) return <div className="battle" />
@@ -83,27 +110,55 @@ export default function BattlePage() {
   const isPending  = battle.status === 'pending'
   const iWon       = isFinished && battle.winner_id === user?.id
 
-  const messages = (battle.guesses ?? []).map(g => {
-    const guessPlayerId = g.player_id ?? g.player?.id
+  const activePendingMessage = pendingMessage?.battleId === battleId ? pendingMessage : null
+  const messages = (battle.guesses ?? [])
+    .filter(g => g.id !== activePendingMessage?.id)
+    .map(g => {
+    const guessPlayerId = g.user_id ?? g.player_id ?? g.player?.id
     const mine = guessPlayerId === user?.id
     return {
       question: g.content,
-      answer:   RESPONSE_CODE_KEY[g.response_code] ?? 'indecisive',
+      answer:   responseKey(g),
       author:   mine ? t('battles.you') : opponentName,
       isMe:     mine,
     }
   })
 
-  async function handleSubmit(code = respCode) {
+  if (activePendingMessage) {
+    messages.push(activePendingMessage)
+  }
+
+  async function handleSubmit() {
     if (!input.trim() || loading) return
+    const question = input.trim()
     setLoading(true)
     setError(null)
+    setInput('')
+    setPendingMessage({
+      battleId,
+      question,
+      answer: '...',
+      finalAnswer: null,
+      author: t('battles.you'),
+      isMe: true,
+    })
     try {
-      await apiSubmitBattleGuess(battleId, input.trim(), code)
-      setInput('')
-      setRespCode(1)
+      const guess = await apiSubmitBattleGuess(battleId, question)
+      setPendingMessage(current => current && ({
+        ...current,
+        id: guess.id,
+        question: guess.content,
+        finalAnswer: responseKey(guess),
+      }))
       await loadBattle()
+      window.clearTimeout(pendingTimerRef.current)
+      pendingTimerRef.current = window.setTimeout(() => {
+        setPendingMessage(null)
+      }, 420)
     } catch (err) {
+      window.clearTimeout(pendingTimerRef.current)
+      setPendingMessage(null)
+      setInput(question)
       setError(
         err.response?.status === 429
           ? t('battles.outOfEnergy')
@@ -120,13 +175,16 @@ export default function BattlePage() {
     <div className="battle">
 
       <div className="battle__meta">
-        <button className="battle__back" onClick={() => navigate('/battles')}>
-          ←
-        </button>
+        <IconButton
+          className="battle__back"
+          icon={<BackIcon />}
+          onClick={() => navigate('/battles')}
+          aria-label="Back"
+        />
         <span className="battle__vs">
-          {t('battles.you')}
-          <span className="battle__vs-sep"> vs </span>
-          {opponentName}
+          <span className="battle__vs-name">{t('battles.you')}</span>
+          <span className="battle__vs-sep">vs</span>
+          <span className="battle__vs-name">{opponentName}</span>
         </span>
         <span className={[
           'battle__status',
@@ -143,31 +201,15 @@ export default function BattlePage() {
       </div>
 
       <ChatWindow
+        className="battle__chat"
         messages={messages}
         emptyLabel={isMyTurn ? t('battles.askFirst') : t('battles.waiting')}
         inputRef={inputRef}
       />
 
       {!isFinished && !isPending && (
-        <div className="battle__controls">
-          <div className="battle__responses">
-            {RESPONSE_OPTIONS.map(({ code, key }) => (
-              <button
-                key={code}
-                type="button"
-                className={[
-                  'battle__resp',
-                  `battle__resp--${key}`,
-                  respCode === code && 'battle__resp--active',
-                ].filter(Boolean).join(' ')}
-                onClick={() => setRespCode(code)}
-              >
-                {t(`game.response.${key}`)}
-              </button>
-            ))}
-          </div>
-
-          <div className="battle__input-row">
+        <>
+          <div className="battle__controls">
             <Input
               ref={inputRef}
               placeholder={isMyTurn ? t('game.inputPlaceholder') : t('battles.waiting')}
@@ -179,34 +221,45 @@ export default function BattlePage() {
             />
             <Button
               color="blue"
-              onClick={() => handleSubmit(respCode)}
+              onClick={() => handleSubmit()}
               disabled={!canSubmit}
             >
               {t('game.ask')}
             </Button>
-            <Button
-              color="green"
-              onClick={() => handleSubmit(4)}
-              disabled={!canSubmit}
-              title={t('game.response.win')}
-            >
-              {t('game.response.win')}
-            </Button>
           </div>
 
           {error && <p className="battle__error">{error}</p>}
-        </div>
+        </>
       )}
 
-      {isFinished && (
-        <div className="battle__result">
-          <span className={`battle__result-label battle__result-label--${iWon ? 'win' : 'loss'}`}>
-            {iWon ? t('battles.youWon') : t('battles.youLost')}
-          </span>
-          <Button fullWidth onClick={() => navigate('/battles')}>
-            {t('battles.back')}
-          </Button>
-        </div>
+      {isFinished && !resultDismissed && (
+        <Dialog
+          title={iWon ? t('battles.youWon') : t('battles.youLost')}
+          onClose={() => setResultDismissed(true)}
+        >
+          <Sticker
+            className="battle__sticker-pop"
+            sticker={battle.challenge?.sticker}
+            name={battle.challenge?.subject}
+            tier={iWon ? stickerFrameTier(messages.length) : 'silver'}
+          />
+          {iWon ? (
+            <>
+              <p className="battle__won-stat">
+                {t('game.solvedIn')} <span className="battle__won-stat-count">{messages.length}</span> {messages.length === 1 ? t('game.guess') : t('game.guesses')}!
+              </p>
+            </>
+          ) : (
+            <p className="battle__result-label battle__result-label--loss">
+              {t('battles.helpedSolve')}
+            </p>
+          )}
+          <div className="battle__result-actions">
+            <Button fullWidth color="muted" onClick={() => navigate('/battles')}>
+              {t('battles.back')}
+            </Button>
+          </div>
+        </Dialog>
       )}
 
     </div>

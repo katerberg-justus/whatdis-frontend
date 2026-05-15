@@ -3,6 +3,7 @@
 
 .challenge-card {
   @include card;
+  border-width: 4px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -153,7 +154,7 @@
     color: #fff;
     background: $green;
     line-height: 0;
-    padding: 0.35rem 0.4rem 0.3rem;
+    padding: calc(0.35rem + 2px) 0.4rem 0.3rem calc(0.4rem + 2px);
     box-shadow: inset 2px 2px 0 0 $green-dark;
   }
 

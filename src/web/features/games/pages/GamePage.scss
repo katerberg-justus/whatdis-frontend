@@ -135,6 +135,7 @@
     animation: game-panel-enter 180ms steps(3, end) both;
     animation-delay: 55ms;
     transform-origin: center bottom;
+    padding-block: 0;
 
     .chat__empty {
       font-size: $text-sm;

@@ -1,0 +1,9 @@
+@use '../../../styles/variables' as *;
+
+.pick-battle {
+  &__against {
+    font-size: $text-sm;
+    color: $text-muted;
+    margin: 0;
+  }
+}

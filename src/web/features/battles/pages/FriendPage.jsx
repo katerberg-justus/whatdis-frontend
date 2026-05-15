@@ -39,7 +39,7 @@ export default function FriendPage() {
 
       <section className="battles__section">
         <div className="battles__actions">
-          <Button color="pink" icon={null}>{t('battles.challenge')}</Button>
+          <Button color="pink" icon={null} onClick={() => navigate(`/battles/new/${friendshipId}`, { state: { friend: friend.friend } })}>{t('battles.challenge')}</Button>
           <Button color="muted" icon={null} onClick={handleRemove}>{t('friends.remove')}</Button>
         </div>
       </section>

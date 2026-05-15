@@ -78,6 +78,7 @@
 
   &__pack-card {
     @include card;
+    border-width: 4px;
     position: relative;
     display: grid;
     grid-template-columns: auto 1fr auto;

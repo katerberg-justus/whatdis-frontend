@@ -6,56 +6,45 @@ import { apiGetBattles, apiAcceptBattle, apiDeclineBattle } from '@shared/api/ba
 import Button from '../../../components/Button'
 import './BattlesPage.scss'
 
+const CheckIcon = () => (
+  <svg viewBox="0 0 11 8" width="11" height="8" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true" className="btn__chevron">
+    <rect x="0" y="4" width="3" height="2" />
+    <rect x="2" y="6" width="3" height="2" />
+    <rect x="4" y="4" width="3" height="2" />
+    <rect x="6" y="2" width="3" height="2" />
+    <rect x="8" y="0" width="3" height="2" />
+  </svg>
+)
+
+const CrossIcon = () => (
+  <svg viewBox="0 0 8 8" width="11" height="8" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true" className="btn__chevron" preserveAspectRatio="xMidYMid meet">
+    <rect x="0" y="0" width="2" height="2" />
+    <rect x="2" y="2" width="2" height="2" />
+    <rect x="4" y="4" width="2" height="2" />
+    <rect x="6" y="6" width="2" height="2" />
+    <rect x="6" y="0" width="2" height="2" />
+    <rect x="4" y="2" width="2" height="2" />
+    <rect x="2" y="4" width="2" height="2" />
+    <rect x="0" y="6" width="2" height="2" />
+  </svg>
+)
+
+const DIFF_LABEL_KEY = { easy: 'game.diffEasy', medium: 'game.diffMedium', hard: 'game.diffHard' }
+
 function battleOpponent(battle, userId) {
-  const opp = battle.challenger?.id === userId ? battle.challenged : battle.challenger
-  return opp?.name ?? opp?.username
+  const opp = battle.player1?.id === userId ? battle.player2 : battle.player1
+  return opp?.name ?? opp?.username ?? '?'
 }
 
 function battleScores(battle, userId) {
-  if (battle.challenger?.id === userId) {
-    return [battle.challenger_score ?? 0, battle.challenged_score ?? 0]
+  if (battle.player1?.id === userId) {
+    return [battle.player1_score ?? 0, battle.player2_score ?? 0]
   }
-  return [battle.challenged_score ?? 0, battle.challenger_score ?? 0]
+  return [battle.player2_score ?? 0, battle.player1_score ?? 0]
 }
 
-const BattlePageIcon = ({ type }) => {
-  const icons = {
-    invite: (
-      <>
-        <rect x="2" y="3" width="12" height="10" />
-        <rect x="4" y="5" width="2" height="2" fill="var(--battle-icon-cutout)" />
-        <rect x="10" y="5" width="2" height="2" fill="var(--battle-icon-cutout)" />
-        <rect x="6" y="8" width="4" height="1" fill="var(--battle-icon-cutout)" />
-        <rect x="5" y="10" width="6" height="1" fill="var(--battle-icon-cutout)" />
-      </>
-    ),
-    battle: (
-      <>
-        <rect x="10" y="1" width="3" height="3" />
-        <rect x="9" y="4" width="2" height="2" />
-        <rect x="7" y="6" width="2" height="2" />
-        <rect x="5" y="8" width="2" height="2" />
-        <rect x="3" y="10" width="2" height="2" />
-        <rect x="2" y="12" width="2" height="2" />
-        <rect x="5" y="11" width="2" height="2" />
-        <rect x="1" y="14" width="3" height="1" />
-      </>
-    ),
-  }[type]
-
-  return (
-    <svg
-      className={`battles__pixel-icon battles__pixel-icon--${type}`}
-      viewBox="0 0 16 16"
-      width="16"
-      height="16"
-      fill="currentColor"
-      shapeRendering="crispEdges"
-      aria-hidden="true"
-    >
-      {icons}
-    </svg>
-  )
+function difficultyLabel(t, difficulty) {
+  return t(DIFF_LABEL_KEY[difficulty]) ?? difficulty
 }
 
 export default function BattlesPage() {
@@ -66,20 +55,46 @@ export default function BattlesPage() {
 
   const loadBattles = useCallback(() => {
     if (!user) return
-    apiGetBattles().then(setBattles).catch(() => {})
+    apiGetBattles().then(setBattles).catch(() => undefined)
   }, [user])
 
   useEffect(() => { loadBattles() }, [loadBattles])
 
-  const invites = battles.filter(b => b.status === 'pending' && b.challenged?.id === user?.id)
+  useEffect(() => {
+    let pollId = null
+    const start = () => {
+      clearInterval(pollId)
+      pollId = setInterval(loadBattles, 15000)
+    }
+    const stop = () => clearInterval(pollId)
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        loadBattles()
+        start()
+      } else {
+        stop()
+      }
+    }
+
+    if (document.visibilityState === 'visible') start()
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      stop()
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [loadBattles])
+
+  const invites = battles.filter(b => b.status === 'pending' && b.player2?.id === user?.id)
+  const sentInvites = battles.filter(b => b.status === 'pending' && b.player1?.id === user?.id)
   const ongoing = battles.filter(b => b.status === 'active')
 
   async function handleAccept(battleId) {
-    try { await apiAcceptBattle(battleId); loadBattles() } catch {}
+    try { await apiAcceptBattle(battleId); loadBattles() } catch { return undefined }
   }
 
   async function handleDecline(battleId) {
-    try { await apiDeclineBattle(battleId); loadBattles() } catch {}
+    try { await apiDeclineBattle(battleId); loadBattles() } catch { return undefined }
   }
 
   return (
@@ -88,27 +103,61 @@ export default function BattlesPage() {
           {invites.length > 0 && (
             <section className="battles__section">
               <h2 className="battles__section-title">
-                <BattlePageIcon type="invite" />
                 <span>{t('battles.pendingInvites')}</span>
               </h2>
               <ul className="battles__list">
-                {invites.map((battle) => (
-                  <li key={battle.id} className="battles__invite">
-                    <span className="battles__card-icon">
-                      <BattlePageIcon type="invite" />
-                    </span>
+                {invites.map((battle, i) => (
+                  <li
+                    key={battle.id}
+                    className="battles__invite battles__card-enter"
+                    style={{ '--card-enter-delay': `${Math.min(i, 7) * 22}ms` }}
+                  >
+                    <div className="battles__badges">
+                      <span className={`battles__badge battles__badge--${battle.difficulty}`}>
+                        {difficultyLabel(t, battle.difficulty)}
+                      </span>
+                    </div>
                     <div className="battles__info">
                       <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
                       <span className="battles__meta">
                         {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
-                        <span className={`battles__diff battles__diff--${battle.difficulty}`}>
-                          {battle.difficulty}
-                        </span>
                       </span>
                     </div>
                     <div className="battles__actions">
-                      <Button color="green" onClick={() => handleAccept(battle.id)}>{t('battles.accept')}</Button>
-                      <Button color="muted" onClick={() => handleDecline(battle.id)}>{t('battles.decline')}</Button>
+                      <Button color="green" icon={<CheckIcon />} onClick={() => handleAccept(battle.id)}>{t('battles.accept')}</Button>
+                      <Button color="muted" icon={<CrossIcon />} onClick={() => handleDecline(battle.id)}>{t('battles.decline')}</Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {sentInvites.length > 0 && (
+            <section className="battles__section">
+              <h2 className="battles__section-title">
+                <span>{t('battles.sentInvites')}</span>
+              </h2>
+              <ul className="battles__list">
+                {sentInvites.map((battle, i) => (
+                  <li
+                    key={battle.id}
+                    className="battles__invite battles__card-enter"
+                    style={{ '--card-enter-delay': `${Math.min(i, 7) * 22}ms` }}
+                  >
+                    <div className="battles__badges">
+                      <span className="battles__tag battles__tag--blue">
+                        {t('battles.waitingTag')}
+                      </span>
+                      <span className={`battles__badge battles__badge--${battle.difficulty}`}>
+                        {difficultyLabel(t, battle.difficulty)}
+                      </span>
+                    </div>
+                    <div className="battles__info">
+                      <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
+                      <span className="battles__meta">
+                        {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
+                      </span>
                     </div>
                   </li>
                 ))}
@@ -122,34 +171,32 @@ export default function BattlesPage() {
               <p className="battles__empty">{t('battles.noOngoing')}</p>
             ) : (
               <ul className="battles__list">
-                {ongoing.map((battle) => {
+                {ongoing.map((battle, i) => {
                   const [myScore, theirScore] = battleScores(battle, user?.id)
-                  const myTurn = battle.current_player_id === user?.id
+                  const myTurn = battle.current_turn_id === user?.id
                   return (
                     <li
                       key={battle.id}
-                      className="battles__battle"
+                      className="battles__battle battles__card-enter"
+                      style={{ '--card-enter-delay': `${Math.min(i, 7) * 22}ms` }}
                       onClick={() => navigate(`/battles/${battle.id}`)}
                     >
-                      <span className="battles__card-icon">
-                        <BattlePageIcon type="battle" />
-                      </span>
+                      <div className="battles__badges">
+                        {myTurn && (
+                          <span className="battles__tag battles__tag--pink">
+                            {t('battles.yourTurn')}
+                          </span>
+                        )}
+                        <span className={`battles__badge battles__badge--${battle.difficulty}`}>
+                          {difficultyLabel(t, battle.difficulty)}
+                        </span>
+                      </div>
                       <div className="battles__info">
                         <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>
                         <span className="battles__meta">
                           {battle.challenge_pack?.name ?? battle.pack?.name ?? ''}
-                          <span className={`battles__diff battles__diff--${battle.difficulty}`}>
-                            {battle.difficulty}
-                          </span>
                         </span>
-                      </div>
-                      <div className="battles__status">
                         <span className="battles__score">{myScore} – {theirScore}</span>
-                        {battle.current_player_id != null && (
-                          <span className={`battles__turn battles__turn--${myTurn ? 'yours' : 'theirs'}`}>
-                            {myTurn ? t('battles.yourTurn') : t('battles.theirTurn')}
-                          </span>
-                        )}
                       </div>
                     </li>
                   )

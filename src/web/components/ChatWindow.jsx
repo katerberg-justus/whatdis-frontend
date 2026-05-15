@@ -85,28 +85,30 @@ export default function ChatWindow({ messages, emptyLabel, className = '' }) {
             return (
               <div
                 key={i}
-                className={`chat__entry${i === newEntryIndex ? ' chat__entry--new' : ''}${isHint ? ' chat__entry--hint' : ''}`}
+                className={`chat__entry${i === newEntryIndex ? ' chat__entry--new' : ''}${isHint ? ' chat__entry--hint' : ''}${author != null ? ' chat__entry--with-author' : ''}`}
               >
-                <span className="chat__question">
-                  {author != null && (
-                    <span className={`chat__author chat__author--${isMe ? 'me' : 'them'}`}>
-                      {author}
-                    </span>
-                  )}
-                  <span className="chat__prompt">&gt;</span>
-                  {question}
-                </span>
-                {answer === '...' ? (
-                  <span className={`chat__answer chat__answer--${isHint ? 'hint' : (finalAnswer ?? 'loading')}`}>
-                    {isHint && finalAnswer
-                      ? finalAnswer
-                      : <CyclingAnswer targetKey={isHint ? null : finalAnswer} />}
-                  </span>
-                ) : (
-                  <span className={`chat__answer chat__answer--${isHint ? 'hint' : answer}`}>
-                    {isHint ? answer : t(`game.response.${answer}`)}
+                {author != null && (
+                  <span className={`chat__author chat__author--${isMe ? 'me' : 'them'}`}>
+                    {author}
                   </span>
                 )}
+                <span className={`chat__body${author != null ? ' chat__body--with-author' : ''}`}>
+                  <span className="chat__question">
+                    <span className="chat__prompt">&gt;</span>
+                    {question}
+                  </span>
+                  {answer === '...' ? (
+                    <span className={`chat__answer chat__answer--${isHint ? 'hint' : (finalAnswer ?? 'loading')}`}>
+                      {isHint && finalAnswer
+                        ? finalAnswer
+                        : <CyclingAnswer targetKey={isHint ? null : finalAnswer} />}
+                    </span>
+                  ) : (
+                    <span className={`chat__answer chat__answer--${isHint ? 'hint' : answer}`}>
+                      {isHint ? answer : t(`game.response.${answer}`)}
+                    </span>
+                  )}
+                </span>
               </div>
             )
           })}

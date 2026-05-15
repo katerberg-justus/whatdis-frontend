@@ -24,10 +24,9 @@ export async function apiDeclineBattle(battleId) {
   await apiClient.delete(`/battles/${battleId}`)
 }
 
-export async function apiSubmitBattleGuess(battleId, content, responseCode) {
+export async function apiSubmitBattleGuess(battleId, content) {
   const { data } = await apiClient.post(`/battles/${battleId}/guesses`, {
     content,
-    response_code: responseCode,
   })
   return data
 }

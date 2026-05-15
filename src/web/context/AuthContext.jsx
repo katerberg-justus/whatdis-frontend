@@ -12,9 +12,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const stored = localStorage.getItem('user')
     if (stored) {
-      setUser(JSON.parse(stored))
-      setLoading(false)
-      return
+      const parsed = JSON.parse(stored)
+      if (parsed?.id) {
+        setUser(parsed)
+        setLoading(false)
+        return
+      }
     }
     // Previously authenticated users should go to login, not get a guest session
     if (localStorage.getItem('logged_out')) { setLoading(false); return }
@@ -41,8 +44,8 @@ export function AuthProvider({ children }) {
   }
 
   const login = async (username, password) => {
-    const data = await apiLogin(username, password)
-    persist(data, username)
+    await apiLogin(username, password)
+    persist(await apiMe(), username)
   }
 
   const register = async (name, email, password) => {

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
 import { useNavigate } from 'react-router'
 import Tabs from '../../../components/Tabs'
 import Button from '../../../components/Button'
@@ -10,7 +10,9 @@ export default function BattlesLayout() {
   const { t }      = useLang()
   const { user }   = useAuth()
   const navigate   = useNavigate()
+  const { pathname } = useLocation()
   const isGuest    = !user || user.is_guest
+  const isFriendsPage = pathname === '/battles/friends'
 
   const tabs = [
     { to: '/battles',         label: t('battles.tabBattles'),  end: true },
@@ -33,15 +35,17 @@ export default function BattlesLayout() {
       )}
     </div>
 
-    <div className="battles__footer">
-      <Button
-        color="pink"
-        fullWidth
-        onClick={() => navigate(isGuest ? '/register' : '/battles/friends')}
-      >
-        {t('battles.startNew')}
-      </Button>
-    </div>
+    {!isFriendsPage && (
+      <div className="battles__footer">
+        <Button
+          color="pink"
+          fullWidth
+          onClick={() => navigate(isGuest ? '/register' : '/battles/friends')}
+        >
+          {t('battles.startNew')}
+        </Button>
+      </div>
+    )}
     </>
   )
 }

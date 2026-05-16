@@ -67,6 +67,10 @@ const translations = {
     'notifications.yourTurn':       'Your turn',
     'notifications.newFriendRequest': 'New friend request',
     'notifications.achievementUnlocked': 'Achievement unlocked',
+    'notifications.nrgPurchaseSuccess': 'NRG added',
+    'notifications.nrgPurchaseCancelled': 'NRG purchase cancelled',
+    'notifications.subscriptionPurchaseSuccess': 'Subscription updated',
+    'notifications.subscriptionPurchaseCancelled': 'Subscription checkout cancelled',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Friends',

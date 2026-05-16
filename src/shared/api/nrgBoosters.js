@@ -7,12 +7,19 @@ export async function apiGetNrgBoosters() {
   return data
 }
 
+function stripeReturnUrl(success) {
+  const url = new URL(window.location.href)
+  url.searchParams.set('success', success ? 'true' : 'false')
+  url.searchParams.set('purchase', 'nrg')
+  return url.toString()
+}
+
 export async function apiStartNrgBoosterCheckout(boosterId, currency) {
   const { data } = await apiClient.post('/nrg-boosters/checkout', {
     booster_id: boosterId,
     currency,
-    success_url: window.location.href,
-    cancel_url:  window.location.href,
+    success_url: stripeReturnUrl(true),
+    cancel_url:  stripeReturnUrl(false),
   })
   return data
 }

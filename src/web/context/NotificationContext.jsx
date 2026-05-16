@@ -1,6 +1,9 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
+import { useQueryClient } from '@tanstack/react-query'
+import { qk } from '@shared/api/queryKeys'
 import Notification from '../components/Notification'
+import { useLang } from './LangContext'
 
 const NotificationContext = createContext(null)
 
@@ -12,7 +15,10 @@ function normalizePath(path) {
 }
 
 export function NotificationProvider({ children }) {
-  const { pathname } = useLocation()
+  const { pathname, search, hash } = useLocation()
+  const navigate = useNavigate()
+  const qc = useQueryClient()
+  const { t } = useLang()
   const [items, setItems] = useState([])
   const timersRef = useRef(new Map())
 
@@ -50,6 +56,44 @@ export function NotificationProvider({ children }) {
     timersRef.current.forEach(clearTimeout)
     timersRef.current.clear()
   }, [])
+
+  useEffect(() => {
+    const params = new URLSearchParams(search)
+    const success = params.get('success')
+    const purchase = params.get('purchase')
+    const isStripeReturn = (success === 'true' || success === 'false') &&
+      (purchase === 'nrg' || purchase === 'subscription')
+
+    if (!isStripeReturn) return
+
+    const completed = success === 'true'
+    const titleKey = completed
+      ? `notifications.${purchase}PurchaseSuccess`
+      : `notifications.${purchase}PurchaseCancelled`
+
+    window.setTimeout(() => {
+      notify({
+        key: `stripe-${purchase}-${success}`,
+        title: t(titleKey),
+      })
+    }, 0)
+
+    if (completed) {
+      qc.invalidateQueries({ queryKey: qk.me })
+      if (purchase === 'subscription') {
+        qc.invalidateQueries({ queryKey: qk.subscription })
+      }
+    }
+
+    params.delete('success')
+    params.delete('purchase')
+    const nextSearch = params.toString()
+    navigate({
+      pathname,
+      search: nextSearch ? `?${nextSearch}` : '',
+      hash,
+    }, { replace: true })
+  }, [hash, navigate, notify, pathname, qc, search, t])
 
   return (
     <NotificationContext.Provider value={{ notify, dismiss }}>

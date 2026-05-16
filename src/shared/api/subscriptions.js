@@ -7,12 +7,19 @@ export async function apiGetSubscription() {
   return data?.subscription !== undefined ? data.subscription : data
 }
 
+function stripeReturnUrl(success) {
+  const url = new URL('/account/subscription', window.location.origin)
+  url.searchParams.set('success', success ? 'true' : 'false')
+  url.searchParams.set('purchase', 'subscription')
+  return url.toString()
+}
+
 export async function apiStartCheckout(planId, currency) {
   const { data } = await apiClient.post('/subscriptions/checkout', {
     plan_id:     planId,
     currency,
-    success_url: `${window.location.origin}/account/subscription`,
-    cancel_url:  `${window.location.origin}/account/subscription`,
+    success_url: stripeReturnUrl(true),
+    cancel_url:  stripeReturnUrl(false),
   })
   return data
 }

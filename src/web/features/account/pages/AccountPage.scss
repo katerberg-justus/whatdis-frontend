@@ -21,6 +21,18 @@
     gap: 0.875rem;
   }
 
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  &__field-label {
+    font-size: $text-xs;
+    color: $text-muted;
+    line-height: $leading;
+  }
+
   &__error {
     font-size: $text-xs;
     color: $pink;

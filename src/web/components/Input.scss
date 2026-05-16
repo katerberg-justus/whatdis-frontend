@@ -9,6 +9,22 @@
   padding-bottom: calc(0.875rem - 1px);
 
   &--with-icon { padding-left: 2rem; }
+
+  &--read-only {
+    color: $text-muted;
+    background: rgba($bg-surface, 0.55);
+    border-color: rgba($bg-border, 0.75);
+    cursor: default;
+
+    &::placeholder {
+      color: rgba($text-muted, 0.75);
+    }
+
+    &:focus {
+      border-color: rgba($bg-border, 0.75);
+      box-shadow: none;
+    }
+  }
 }
 
 @media (max-width: 767px) {

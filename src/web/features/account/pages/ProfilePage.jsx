@@ -9,7 +9,7 @@ import './AccountPage.scss'
 
 export default function ProfilePage() {
   const { t }      = useLang()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const navigate   = useNavigate()
   const [current, setCurrent] = useState('')
   const [next,    setNext]    = useState('')
@@ -35,6 +35,28 @@ export default function ProfilePage() {
 
   return (
     <div className="account__section">
+      <h2 className="account__heading">{t('profile.accountDetails')}</h2>
+      <div className="account__form">
+        <label className="account__field">
+          <span className="account__field-label">{t('profile.username')}</span>
+          <Input
+            type="text"
+            value={user?.name ?? ''}
+            autoComplete="name"
+            readOnly
+          />
+        </label>
+        <label className="account__field">
+          <span className="account__field-label">{t('profile.email')}</span>
+          <Input
+            type="email"
+            value={user?.email ?? ''}
+            autoComplete="email"
+            readOnly
+          />
+        </label>
+      </div>
+      <div className="account__divider" />
       <h2 className="account__heading">{t('profile.changePassword')}</h2>
       <form className="account__form" onSubmit={handleSubmit}>
         {error   && <p className="account__error">{error}</p>}

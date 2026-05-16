@@ -63,6 +63,20 @@ const IconCollectibles = () => (
   </svg>
 )
 
+// Hamburger: three pixel bars
+const IconHamburger = () => (
+  <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M2 3h12v2H2zM2 7h12v2H2zM2 11h12v2H2z" />
+  </svg>
+)
+
+// Close: pixel X
+const IconClose = () => (
+  <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M2 2h2v2H2zM4 4h2v2H4zM6 6h2v2H6zM8 8h2v2H8zM10 10h2v2h-2zM12 12h2v2h-2zM12 2h2v2h-2zM10 4h2v2h-2zM8 6h2v2H8zM6 8h2v2H6zM4 10h2v2H4zM2 12h2v2H2z" />
+  </svg>
+)
+
 // Person: square head + body block + two legs
 const IconAccount = () => (
   <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" role="img">
@@ -93,9 +107,8 @@ export default function Nav() {
   return (
     <nav className={`nav${open ? ' nav--open' : ''}`}>
       <button className="nav__hamburger" onClick={() => setOpen(o => !o)} aria-label="Toggle menu">
-        <span />
-        <span />
-        <span />
+        <span className="nav__hamburger-icon nav__hamburger-icon--bars"><IconHamburger /></span>
+        <span className="nav__hamburger-icon nav__hamburger-icon--close"><IconClose /></span>
       </button>
 
       <div className="nav__panel">

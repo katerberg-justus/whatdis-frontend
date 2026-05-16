@@ -56,10 +56,6 @@
   }
 
   &__grid .challenge-card {
-    @media (max-width: 479px) {
-      min-height: 10rem;
-    }
-
     @media (min-width: 480px) {
       aspect-ratio: 1;
     }

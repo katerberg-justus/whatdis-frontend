@@ -16,6 +16,10 @@
     linear-gradient(135deg, rgba($blue, 0.08) 0 14%, transparent 14% 100%),
     $bg-raised;
 
+  @media (max-width: 559px) {
+    min-height: 11rem;
+  }
+
   &::before {
     content: '';
     position: absolute;

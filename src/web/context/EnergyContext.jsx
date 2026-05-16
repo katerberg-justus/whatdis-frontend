@@ -30,9 +30,7 @@ export function EnergyProvider({ children }) {
   })
 
   const source = me ?? user
-  const energyBoost = source?.energy_boost ?? 0
-  const baseServerEnergy = source?.energy ?? null
-  const serverEnergy = baseServerEnergy === null ? null : baseServerEnergy + energyBoost
+  const serverEnergy = source?.energy ?? null
   const energy = localEnergy?.serverEnergy === serverEnergy ? localEnergy.value : serverEnergy
   const maxEnergy = source?.max_energy ?? Math.max(10, energy ?? 0)
   const dialogOpen = energy === 0 && (dialogForcedOpen || !dialogDismissed)

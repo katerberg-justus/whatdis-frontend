@@ -1,9 +1,26 @@
-import { getStickerUrl } from '../assets/stickers'
+import { getStickerSources } from '../assets/stickers'
 
 export function stickerFrameTier(guessCount) {
   if (guessCount < 20) return 'gold'
   if (guessCount < 40) return 'silver'
   return 'bronze'
+}
+
+function StickerImage({ sources, className, ariaHidden = true }) {
+  const { webp, png } = sources
+  const fallback = png ?? webp
+  return (
+    <picture>
+      {webp && <source srcSet={webp} type="image/webp" />}
+      {png && <source srcSet={png} type="image/png" />}
+      <img
+        className={className}
+        src={fallback}
+        alt=""
+        {...(ariaHidden ? { 'aria-hidden': 'true' } : {})}
+      />
+    </picture>
+  )
 }
 
 export default function Sticker({
@@ -17,7 +34,7 @@ export default function Sticker({
   iconClassName,
   ...rest
 }) {
-  const url = getStickerUrl(sticker ?? icon)
+  const sources = getStickerSources(sticker ?? icon)
 
   if (tier) {
     return (
@@ -26,14 +43,14 @@ export default function Sticker({
         {...rest}
       >
         <span className="collectibles__sticker-icon" aria-hidden="true">
-          {url ? <img src={url} alt="" /> : (icon || '?')}
+          {sources ? <StickerImage sources={sources} /> : (icon || '?')}
         </span>
         {name && <span className="collectibles__sticker-name">{name}</span>}
       </Tag>
     )
   }
 
-  if (url) return <img className={imgClassName} src={url} alt="" aria-hidden="true" />
+  if (sources) return <StickerImage sources={sources} className={imgClassName} />
   if (icon) return <span className={iconClassName}>{icon}</span>
   return null
 }

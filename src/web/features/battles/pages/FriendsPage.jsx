@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useLang } from '../../../context/LangContext'
 import { useFriends } from '../../../context/FriendsContext'
 import {
-  apiSendFriendInvite,
-  apiAcceptFriendRequest,
-  apiRemoveFriend,
+  useSendFriendInviteMutation,
+  useAcceptFriendRequestMutation,
+  useRemoveFriendMutation,
 } from '@shared/api/friends'
 import Button from '../../../components/Button'
 import IconButton from '../../../components/IconButton'
@@ -28,39 +28,38 @@ const SwordIcon = () => (
 export default function FriendsPage() {
   const { t }      = useLang()
   const navigate   = useNavigate()
-  const { friends, requests, refresh: load } = useFriends()
+  const { friends, requests } = useFriends()
 
-  useEffect(() => { load() }, [load])
+  const sendInviteMutation = useSendFriendInviteMutation()
+  const acceptMutation = useAcceptFriendRequestMutation()
+  const removeMutation = useRemoveFriendMutation()
 
   const [email,     setEmail]     = useState('')
-  const [sending,   setSending]   = useState(false)
   const [error,     setError]     = useState('')
   const [success,   setSuccess]   = useState('')
+
+  const sending = sendInviteMutation.isPending
 
   async function handleSendInvite(e) {
     e.preventDefault()
     if (!email.trim()) return
-    setSending(true)
     setError('')
     setSuccess('')
     try {
-      await apiSendFriendInvite(email.trim())
+      await sendInviteMutation.mutateAsync(email.trim())
       setEmail('')
       setSuccess(t('friends.inviteSent'))
-      load()
     } catch {
       setError(t('friends.inviteError'))
-    } finally {
-      setSending(false)
     }
   }
 
-  async function handleAccept(id) {
-    try { await apiAcceptFriendRequest(id); load() } catch { return undefined }
+  function handleAccept(id) {
+    acceptMutation.mutate(id)
   }
 
-  async function handleRemove(id) {
-    try { await apiRemoveFriend(id); load() } catch { return undefined }
+  function handleRemove(id) {
+    removeMutation.mutate(id)
   }
 
   return (

@@ -1,12 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { createContext, useContext, useEffect, useRef } from 'react'
 import { useAuth } from './AuthContext'
 import { useLang } from './LangContext'
 import { useNotifications } from './NotificationContext'
-import { apiGetBattles } from '@shared/api/battles'
+import { useBattlesQuery } from '@shared/api/battles'
 
 const BattlesContext = createContext(null)
-
-const POLL_INTERVAL = 15000
 
 function opponentName(battle, userId) {
   const opp = battle.player1?.id === userId ? battle.player2 : battle.player1
@@ -17,51 +15,19 @@ export function BattlesProvider({ children }) {
   const { user } = useAuth()
   const { t } = useLang()
   const { notify } = useNotifications()
-  const [battles, setBattles] = useState([])
   const seenRef = useRef({ initialized: false, inviteIds: new Set(), myTurnIds: new Set() })
 
-  const refresh = useCallback(async () => {
-    if (!user) return
-    try {
-      const data = await apiGetBattles()
-      setBattles(data)
-    } catch {
-      // swallow
-    }
-  }, [user])
+  const { data: battles = [], refetch } = useBattlesQuery({
+    enabled: Boolean(user),
+    refetchInterval: user ? 15 * 1000 : false,
+    refetchIntervalInBackground: false,
+  })
 
   useEffect(() => {
     if (!user) {
-      setBattles([])
       seenRef.current = { initialized: false, inviteIds: new Set(), myTurnIds: new Set() }
-      return
     }
-
-    refresh()
-
-    let pollId = null
-    const start = () => {
-      clearInterval(pollId)
-      pollId = setInterval(refresh, POLL_INTERVAL)
-    }
-    const stop = () => clearInterval(pollId)
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        refresh()
-        start()
-      } else {
-        stop()
-      }
-    }
-
-    if (document.visibilityState === 'visible') start()
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      stop()
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [user, refresh])
+  }, [user])
 
   useEffect(() => {
     if (!user) return
@@ -112,7 +78,7 @@ export function BattlesProvider({ children }) {
   }, [battles, user, notify, t])
 
   return (
-    <BattlesContext.Provider value={{ battles, refresh }}>
+    <BattlesContext.Provider value={{ battles, refresh: refetch }}>
       {children}
     </BattlesContext.Provider>
   )

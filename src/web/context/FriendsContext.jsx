@@ -1,65 +1,38 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { createContext, useContext, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useAuth } from './AuthContext'
 import { useLang } from './LangContext'
 import { useNotifications } from './NotificationContext'
-import { apiGetFriends, apiGetFriendRequests } from '@shared/api/friends'
+import { useFriendsQuery, useFriendRequestsQuery } from '@shared/api/friends'
 
 const FriendsContext = createContext(null)
-
-const POLL_INTERVAL = 30000
 
 export function FriendsProvider({ children }) {
   const { user } = useAuth()
   const { t } = useLang()
   const { notify } = useNotifications()
-  const [friends, setFriends] = useState([])
-  const [requests, setRequests] = useState([])
   const seenRef = useRef({ initialized: false, requestIds: new Set() })
 
-  const refresh = useCallback(async () => {
-    if (!user) return
-    try {
-      const [f, r] = await Promise.all([apiGetFriends(), apiGetFriendRequests()])
-      setFriends(f.filter(x => x.status === 'accepted'))
-      setRequests(r.filter(x => x.direction === 'received'))
-    } catch {
-      // swallow
-    }
-  }, [user])
+  const queryOpts = {
+    enabled: Boolean(user),
+    refetchInterval: user ? 30 * 1000 : false,
+    refetchIntervalInBackground: false,
+  }
+  const { data: rawFriends = [], refetch: refetchFriends } = useFriendsQuery(queryOpts)
+  const { data: rawRequests = [], refetch: refetchRequests } = useFriendRequestsQuery(queryOpts)
+
+  const friends  = useMemo(() => rawFriends.filter(x => x.status === 'accepted'),     [rawFriends])
+  const requests = useMemo(() => rawRequests.filter(x => x.direction === 'received'), [rawRequests])
+
+  const refresh = useCallback(() => {
+    refetchFriends()
+    refetchRequests()
+  }, [refetchFriends, refetchRequests])
 
   useEffect(() => {
     if (!user) {
-      setFriends([])
-      setRequests([])
       seenRef.current = { initialized: false, requestIds: new Set() }
-      return
     }
-
-    refresh()
-
-    let pollId = null
-    const start = () => {
-      clearInterval(pollId)
-      pollId = setInterval(refresh, POLL_INTERVAL)
-    }
-    const stop = () => clearInterval(pollId)
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        refresh()
-        start()
-      } else {
-        stop()
-      }
-    }
-
-    if (document.visibilityState === 'visible') start()
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      stop()
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [user, refresh])
+  }, [user])
 
   useEffect(() => {
     if (!user) return

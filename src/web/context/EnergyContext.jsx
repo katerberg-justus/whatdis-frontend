@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { useAuth } from './AuthContext'
 import { useLang } from './LangContext'
 import { useSubscription } from './SubscriptionContext'
-import { apiMe } from '@shared/api/users'
+import { useMeQuery } from '@shared/api/users'
 import Dialog from '../components/Dialog'
 import Button from '../components/Button'
 import UpgradeDialog from '../components/UpgradeDialog'
@@ -24,6 +24,10 @@ export function EnergyProvider({ children }) {
   const [maxEnergy, setMaxEnergy] = useState(10)
   const [dialogOpen, setDialogOpen] = useState(false)
 
+  const { data: me } = useMeQuery({
+    enabled: Boolean(user) && user?.energy === undefined,
+  })
+
   useEffect(() => {
     if (!user) return
 
@@ -34,14 +38,12 @@ export function EnergyProvider({ children }) {
       return
     }
 
-    apiMe()
-      .then(data => {
-        const e = data.energy ?? null
-        setEnergy(e)
-        setMaxEnergy(data.max_energy ?? Math.max(10, e ?? 0))
-      })
-      .catch(() => {})
-  }, [user])
+    if (me) {
+      const e = me.energy ?? null
+      setEnergy(e)
+      setMaxEnergy(me.max_energy ?? Math.max(10, e ?? 0))
+    }
+  }, [user, me])
 
   useEffect(() => {
     if (energy === 0) setDialogOpen(true)

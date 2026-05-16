@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
-import { apiGetPacks, apiGetDailyChallenges } from '@shared/api/challenges'
-import { apiCreateGame } from '@shared/api/games'
+import { usePacksQuery, useDailyChallengesQuery } from '@shared/api/challenges'
+import { useCreateGameMutation } from '@shared/api/games'
 import Banner from '../../../components/Banner'
 import ChallengeCard from '../../../components/ChallengeCard'
 import LockedOverlay from '../../../components/LockedOverlay'
@@ -71,9 +71,6 @@ export default function ChallengesPage() {
   const { t }        = useLang()
   const dateLocale = useDateLocale()
   const { isActive, subscription } = useSubscription()
-  const [packs,         setPacks]         = useState([])
-  const [dailies,       setDailies]       = useState([])
-  const [dailiesLoading, setDailiesLoading] = useState(true)
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
   const [welcomeUpgradeOpen, setWelcomeUpgradeOpen] = useState(!!location.state?.promptUpgrade)
 
@@ -82,6 +79,16 @@ export default function ChallengesPage() {
       navigate(location.pathname, { replace: true, state: {} })
     }
   }, [])
+
+  const { data: allPacks = [] } = usePacksQuery()
+  const { data: dailies = [], isLoading: dailiesLoading } = useDailyChallengesQuery()
+  const createGameMutation = useCreateGameMutation()
+
+  const packs = useMemo(() => allPacks.filter(p => {
+    const total = p.total_count ?? 0
+    return total > 0 && !p.is_daily && !/daily/i.test(p.name) && p.is_battle !== true
+  }), [allPacks])
+
   const dailyCards = dailiesLoading && dailies.length === 0
     ? [{ id: 'daily-placeholder', difficulty: 'medium', completed: false, isPlaceholder: true }]
     : dailies
@@ -90,20 +97,9 @@ export default function ChallengesPage() {
   const showSignUpBanner = isGuest
   const dailyDate = formatLocalizedDate(new Date(), dateLocale)
 
-  useEffect(() => {
-    apiGetPacks().then(data => setPacks(data.filter(p => {
-      const total = p.total_count ?? 0
-      return total > 0 && !p.is_daily && !/daily/i.test(p.name) && p.is_battle !== true
-    }))).catch(() => {})
-    apiGetDailyChallenges()
-      .then(setDailies)
-      .catch(() => {})
-      .finally(() => setDailiesLoading(false))
-  }, [])
-
   async function playDaily(daily) {
     try {
-      const game = await apiCreateGame({ challenge_id: daily.challenge_id })
+      const game = await createGameMutation.mutateAsync({ challenge_id: daily.challenge_id })
       navigate(`/games/${game.id}`, {
         state: {
           label:      t('challenges.dailySection'),
@@ -134,6 +130,7 @@ export default function ChallengesPage() {
                 difficulty={daily.difficulty}
                 label={t('challenges.dailySection')}
                 subject={daily.subject}
+                subjectPlacement="below"
                 sticker={daily.sticker}
                 icon={daily.icon}
                 completed={daily.completed}

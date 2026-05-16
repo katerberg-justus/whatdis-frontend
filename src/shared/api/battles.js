@@ -1,4 +1,6 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from './clients'
+import { qk } from './queryKeys'
 
 export async function apiCreateBattle(payload) {
   const { data } = await apiClient.post('/battles', payload)
@@ -36,4 +38,77 @@ export async function apiSubmitBattleGuess(battleId, content) {
     content,
   })
   return data
+}
+
+export function useBattlesQuery(options = {}) {
+  return useQuery({
+    queryKey: qk.battles,
+    queryFn: apiGetBattles,
+    staleTime: 10 * 1000,
+    ...options,
+  })
+}
+
+export function useBattleQuery(battleId, options = {}) {
+  return useQuery({
+    queryKey: qk.battle(battleId),
+    queryFn: () => apiGetBattle(battleId),
+    enabled: Boolean(battleId),
+    staleTime: 5 * 1000,
+    ...options,
+  })
+}
+
+export function useBattlePackChallengesQuery(packId, opponentId, options = {}) {
+  return useQuery({
+    queryKey: qk.battlePackChallenges(packId, opponentId),
+    queryFn: () => apiGetBattlePackChallenges(packId, opponentId),
+    enabled: Boolean(packId && opponentId),
+    staleTime: 30 * 1000,
+    ...options,
+  })
+}
+
+export function useCreateBattleMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: apiCreateBattle,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.battles })
+    },
+  })
+}
+
+export function useAcceptBattleMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: apiAcceptBattle,
+    onSuccess: (_data, battleId) => {
+      qc.invalidateQueries({ queryKey: qk.battles })
+      qc.invalidateQueries({ queryKey: qk.battle(battleId) })
+    },
+  })
+}
+
+export function useDeclineBattleMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: apiDeclineBattle,
+    onSuccess: (_data, battleId) => {
+      qc.invalidateQueries({ queryKey: qk.battles })
+      qc.removeQueries({ queryKey: qk.battle(battleId) })
+    },
+  })
+}
+
+export function useSubmitBattleGuessMutation(battleId) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (content) => apiSubmitBattleGuess(battleId, content),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.battle(battleId) })
+      qc.invalidateQueries({ queryKey: qk.battles })
+      qc.invalidateQueries({ queryKey: qk.myAchievements })
+    },
+  })
 }

@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router'
 import { useLang } from '../../../context/LangContext'
-import { apiGetPack } from '@shared/api/challenges'
-import { apiGetFriends } from '@shared/api/friends'
-import { apiCreateBattle, apiGetBattlePackChallenges } from '@shared/api/battles'
+import { usePackQuery } from '@shared/api/challenges'
+import { useFriendsQuery } from '@shared/api/friends'
+import {
+  useBattlePackChallengesQuery,
+  useCreateBattleMutation,
+} from '@shared/api/battles'
 import Button from '../../../components/Button'
 import ChallengeCard from '../../../components/ChallengeCard'
 import '../../packs/pages/PackChallengesPage.scss'
@@ -15,49 +17,34 @@ export default function PickBattleChallengePage() {
   const location                 = useLocation()
   const { t }                    = useLang()
 
-  const [friend,     setFriend]     = useState(location.state?.friend ?? null)
-  const [pack,       setPack]       = useState(location.state?.pack ?? null)
-  const [challenges, setChallenges] = useState([])
-  const [submitting, setSubmitting] = useState(false)
-  const [error,      setError]      = useState(false)
+  const stateFriend = location.state?.friend ?? null
+  const { data: friendsList = [] } = useFriendsQuery({ enabled: !stateFriend })
+  const friend = stateFriend
+    ?? friendsList.find(f => f.id === friendshipId)?.friend
+    ?? null
 
-  useEffect(() => {
-    if (!friend) {
-      apiGetFriends()
-        .then(data => {
-          const match = data.find(f => f.id === friendshipId)
-          if (match) setFriend(match.friend)
-        })
-        .catch(() => {})
-    }
-  }, [friendshipId, friend])
+  const { data: fetchedPack, error: packError } = usePackQuery(packId, {
+    enabled: Boolean(packId) && !location.state?.pack,
+  })
+  const pack = location.state?.pack ?? fetchedPack ?? null
 
-  useEffect(() => {
-    if (pack) return
-    apiGetPack(packId)
-      .then(setPack)
-      .catch(() => setError(true))
-  }, [packId, pack])
+  const { data: challenges = [], error: challengesError } = useBattlePackChallengesQuery(
+    packId,
+    friend?.id,
+  )
 
-  useEffect(() => {
-    if (!friend?.id) return
-    apiGetBattlePackChallenges(packId, friend.id)
-      .then(setChallenges)
-      .catch(() => setError(true))
-  }, [packId, friend?.id])
+  const createBattleMutation = useCreateBattleMutation()
+  const error = Boolean(packError || challengesError)
 
   async function handleChallengeClick(challenge) {
-    if (submitting || !friend || challenge.battle_completed_by_participant) return
-    setSubmitting(true)
+    if (createBattleMutation.isPending || !friend || challenge.battle_completed_by_participant) return
     try {
-      await apiCreateBattle({
+      await createBattleMutation.mutateAsync({
         challenge_id: challenge.id,
         opponent_id:  friend.id,
       })
       navigate('/battles')
-    } catch {
-      setSubmitting(false)
-    }
+    } catch { /* swallow */ }
   }
 
   if (error) return <p className="pack-challenges__not-found">Pack not found.</p>

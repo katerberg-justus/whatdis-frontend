@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { apiGetGame, apiGetGuesses, apiSubmitGuess, apiCreateGame, apiRequestHint } from '@shared/api/games'
+import {
+  apiGetGame,
+  apiGetGuesses,
+  useCreateGameMutation,
+  useSubmitGuessMutation,
+  useRequestHintMutation,
+} from '@shared/api/games'
 
 const HINT_ENERGY_COST = 5
 
@@ -36,6 +42,9 @@ export default function GamePage() {
   const [game,     setGame]       = useState(null)
   const [winDismissed, setWinDismissed] = useState(false)
   const inputRef                  = useRef(null)
+  const submitMutation = useSubmitGuessMutation(gameId)
+  const hintMutation   = useRequestHintMutation(gameId)
+  const createGameMutation = useCreateGameMutation()
 
   useEffect(() => {
     setGame(null)
@@ -99,7 +108,7 @@ export default function GamePage() {
     setLoading(true)
     setMessages(prev => [...prev, { question, answer: '...', finalAnswer: null }])
     try {
-      const guess = await apiSubmitGuess(gameId, question)
+      const guess = await submitMutation.mutateAsync(question)
       // Keep the pending entry so the ChatWindow can animate the spinner stopping on the final answer.
       setMessages(prev => {
         if (prev.length === 0) return prev
@@ -143,7 +152,7 @@ export default function GamePage() {
     setLoading(true)
     setMessages(prev => [...prev, { question: t('game.hint'), answer: '...', finalAnswer: null, kind: 'hint' }])
     try {
-      const hint = await apiRequestHint(gameId)
+      const hint = await hintMutation.mutateAsync()
       setMessages(prev => {
         if (prev.length === 0) return prev
         const copy = prev.slice()
@@ -182,7 +191,7 @@ export default function GamePage() {
   async function handleNext() {
     if (!nextChallenge) return
     try {
-      const newGame = await apiCreateGame({ challenge_id: nextChallenge.id })
+      const newGame = await createGameMutation.mutateAsync({ challenge_id: nextChallenge.id })
       navigate(`/games/${newGame.id}`)
     } catch {}
   }

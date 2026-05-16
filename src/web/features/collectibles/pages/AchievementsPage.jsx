@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
-import { apiGetAchievements, apiGetMyAchievements } from '@shared/api/collectibles'
+import { useAchievementsQuery, useMyAchievementsQuery } from '@shared/api/collectibles'
 import './CollectiblesPage.scss'
 
 function formatDate(iso) {
@@ -11,18 +10,25 @@ function formatDate(iso) {
 
 const CATEGORY_ORDER = ['daily', 'questions', 'streak', 'wins']
 
-export default function AchievementsPage() {
-  const { user }             = useAuth()
-  const { t }                = useLang()
-  const [all,    setAll]     = useState([])
-  const [earned, setEarned]  = useState([])
-  const isGuest              = !user || user.is_guest
+const CheckSvg = () => (
+  <svg viewBox="0 0 14 12" width="14" height="12" fill="currentColor" shapeRendering="crispEdges">
+    <rect x="0" y="4" width="4" height="4" />
+    <rect x="2" y="6" width="4" height="4" />
+    <rect x="4" y="8" width="4" height="4" />
+    <rect x="6" y="6" width="4" height="4" />
+    <rect x="8" y="4" width="4" height="4" />
+    <rect x="10" y="2" width="4" height="4" />
+    <rect x="10" y="0" width="4" height="4" />
+  </svg>
+)
 
-  useEffect(() => {
-    apiGetAchievements().then(setAll).catch(() => {})
-    if (isGuest) return
-    apiGetMyAchievements().then(setEarned).catch(() => {})
-  }, [isGuest])
+export default function AchievementsPage() {
+  const { user }  = useAuth()
+  const { t }     = useLang()
+  const isGuest   = !user || user.is_guest
+
+  const { data: all = [] }    = useAchievementsQuery()
+  const { data: earned = [] } = useMyAchievementsQuery({ enabled: !isGuest })
 
   const visibleEarned = isGuest ? [] : earned
   const earnedMap = Object.fromEntries(visibleEarned.map(e => [e.achievement_id ?? e.id, e]))
@@ -41,7 +47,7 @@ export default function AchievementsPage() {
         <section key={cat} className="collectibles__section">
           <h2 className="collectibles__section-title">{t(`collectibles.cat.${cat}`)}</h2>
           <div className="collectibles__grid">
-            {items.map((achievement) => {
+            {items.map((achievement, i) => {
               const userAchievement = earnedMap[achievement.id]
               const isEarned = Boolean(userAchievement)
               const isNext   = !isEarned && achievement.id === nextId
@@ -50,8 +56,15 @@ export default function AchievementsPage() {
               return (
                 <div
                   key={achievement.id}
-                  className={['collectibles__card', isHidden && 'collectibles__card--locked'].filter(Boolean).join(' ')}
+                  className={[
+                    'collectibles__card',
+                    'collectibles__card-enter',
+                    isEarned && 'collectibles__card--earned',
+                    isHidden && 'collectibles__card--locked',
+                  ].filter(Boolean).join(' ')}
+                  style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
                 >
+                  {isEarned && <span className="collectibles__card-check"><CheckSvg /></span>}
                   <span className="collectibles__card-icon">{isHidden ? '?' : achievement.icon}</span>
                   <span className={`collectibles__card-name${isHidden ? ' collectibles__card-name--blur' : ''}`}>
                     {isHidden ? 'Hidden Achievement' : achievement.name}

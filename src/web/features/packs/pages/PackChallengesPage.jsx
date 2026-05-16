@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { apiGetPack, apiGetPackChallenges } from '@shared/api/challenges'
-import { apiCreateGame } from '@shared/api/games'
+import { usePackQuery, usePackChallengesQuery } from '@shared/api/challenges'
+import { useCreateGameMutation } from '@shared/api/games'
 import IconButton from '../../../components/IconButton'
 import { BackIcon } from '../../../components/icons'
 import ChallengeCard from '../../../components/ChallengeCard'
@@ -10,19 +9,16 @@ import './PackChallengesPage.scss'
 export default function PackChallengesPage() {
   const { packId } = useParams()
   const navigate = useNavigate()
-  const [pack, setPack] = useState(null)
-  const [challenges, setChallenges] = useState([])
-  const [error, setError] = useState(false)
 
-  useEffect(() => {
-    Promise.all([apiGetPack(packId), apiGetPackChallenges(packId)])
-      .then(([p, ch]) => { setPack(p); setChallenges(ch) })
-      .catch(() => setError(true))
-  }, [packId])
+  const { data: pack, error: packError } = usePackQuery(packId)
+  const { data: challenges = [], error: challengesError } = usePackChallengesQuery(packId)
+  const createGameMutation = useCreateGameMutation()
+
+  const error = Boolean(packError || challengesError)
 
   async function handleChallengeClick(challenge, position) {
     try {
-      const game = await apiCreateGame({ challenge_id: challenge.id })
+      const game = await createGameMutation.mutateAsync({ challenge_id: challenge.id })
       navigate(`/games/${game.id}`, {
         state: {
           label:      pack?.name ?? '',
@@ -31,7 +27,7 @@ export default function PackChallengesPage() {
           difficulty: challenge.difficulty,
         },
       })
-    } catch {}
+    } catch { /* swallow */ }
   }
 
   if (error) return <p className="pack-challenges__not-found">Pack not found.</p>

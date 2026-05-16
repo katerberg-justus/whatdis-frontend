@@ -1,4 +1,6 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from './clients'
+import { qk } from './queryKeys'
 
 export async function apiGetSubscription() {
   const { data } = await apiClient.get('/me/subscription')
@@ -17,4 +19,30 @@ export async function apiStartCheckout(planId, currency) {
 
 export async function apiCancelSubscription() {
   await apiClient.delete('/me/subscription')
+}
+
+export function useSubscriptionQuery(options = {}) {
+  return useQuery({
+    queryKey: qk.subscription,
+    queryFn: apiGetSubscription,
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  })
+}
+
+export function useStartCheckoutMutation() {
+  return useMutation({
+    mutationFn: ({ planId, currency }) => apiStartCheckout(planId, currency),
+  })
+}
+
+export function useCancelSubscriptionMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: apiCancelSubscription,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.subscription })
+      qc.invalidateQueries({ queryKey: qk.me })
+    },
+  })
 }

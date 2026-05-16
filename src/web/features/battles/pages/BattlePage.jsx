@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { useNotifications } from '../../../context/NotificationContext'
-import { apiGetBattle, apiSubmitBattleGuess } from '@shared/api/battles'
+import { useBattleQuery, useSubmitBattleGuessMutation } from '@shared/api/battles'
 import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
 import Input from '../../../components/Input'
@@ -46,65 +46,28 @@ export default function BattlePage() {
   const { notify }    = useNotifications()
   const navigate      = useNavigate()
 
-  const [battle,   setBattle]   = useState(null)
+  const { data: battle } = useBattleQuery(battleId, {
+    refetchInterval: (query) => {
+      const b = query.state.data
+      if (!b || b.status !== 'active') return false
+      if (b.current_turn_id === user?.id) return false
+      return 15 * 1000
+    },
+    refetchIntervalInBackground: false,
+  })
+
+  const submitMutation = useSubmitBattleGuessMutation(battleId)
+
   const [input,    setInput]    = useState('')
-  const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState(null)
   const [pendingMessage, setPendingMessage] = useState(null)
   const [resultDismissed, setResultDismissed] = useState(false)
-  const pollRef = useRef(null)
   const inputRef = useRef(null)
   const pendingTimerRef = useRef(null)
 
-  const loadBattle = useCallback(async () => {
-    try {
-      const data = await apiGetBattle(battleId)
-      setBattle(data)
-      return data
-    } catch {
-      return undefined
-    }
-  }, [battleId])
-
-  useEffect(() => {
-    window.clearTimeout(pendingTimerRef.current)
-    const loadTimer = window.setTimeout(loadBattle, 0)
-    return () => {
-      window.clearTimeout(loadTimer)
-      window.clearTimeout(pendingTimerRef.current)
-    }
-  }, [loadBattle])
-
-  useEffect(() => {
-    if (!battle || battle.status !== 'active') return
-    const isMyTurn = battle.current_turn_id === user?.id
-    if (isMyTurn) return
-
-    const start = () => {
-      clearInterval(pollRef.current)
-      pollRef.current = setInterval(loadBattle, 15000)
-    }
-    const stop = () => clearInterval(pollRef.current)
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        loadBattle()
-        start()
-      } else {
-        stop()
-      }
-    }
-
-    if (document.visibilityState === 'visible') start()
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      stop()
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [battle?.status, battle?.current_turn_id, user?.id, loadBattle])
-
   if (!battle) return <div className="battle" />
 
+  const loading = submitMutation.isPending
   const { opp } = resolvePlayer(battle, user?.id)
   const opponentName = oppDisplayName(opp)
   const isMyTurn   = battle.current_turn_id === user?.id
@@ -133,7 +96,6 @@ export default function BattlePage() {
   async function handleSubmit() {
     if (!input.trim() || loading) return
     const question = input.trim()
-    setLoading(true)
     setError(null)
     setInput('')
     setPendingMessage({
@@ -145,7 +107,7 @@ export default function BattlePage() {
       isMe: true,
     })
     try {
-      const guess = await apiSubmitBattleGuess(battleId, question)
+      const guess = await submitMutation.mutateAsync(question)
       setPendingMessage(current => current && ({
         ...current,
         id: guess.id,
@@ -160,7 +122,6 @@ export default function BattlePage() {
           link: '/achievements',
         })
       }
-      await loadBattle()
       window.clearTimeout(pendingTimerRef.current)
       pendingTimerRef.current = window.setTimeout(() => {
         setPendingMessage(null)
@@ -174,8 +135,6 @@ export default function BattlePage() {
           ? t('battles.outOfEnergy')
           : t('battles.submitError')
       )
-    } finally {
-      setLoading(false)
     }
   }
 

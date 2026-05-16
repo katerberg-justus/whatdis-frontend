@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router'
 import { useLang } from '../../../context/LangContext'
-import { apiGetPacks } from '@shared/api/challenges'
-import { apiGetFriends } from '@shared/api/friends'
+import { usePacksQuery } from '@shared/api/challenges'
+import { useFriendsQuery } from '@shared/api/friends'
 import Button from '../../../components/Button'
 import '../../challenges/pages/ChallengesPage.scss'
 import '../../packs/pages/PackChallengesPage.scss'
@@ -30,25 +30,17 @@ export default function PickBattlePackPage() {
   const location         = useLocation()
   const { t }            = useLang()
 
-  const [friend, setFriend] = useState(location.state?.friend ?? null)
-  const [packs,  setPacks]  = useState([])
+  const stateFriend = location.state?.friend ?? null
+  const { data: friendsList = [] } = useFriendsQuery({ enabled: !stateFriend })
+  const friend = stateFriend
+    ?? friendsList.find(f => f.id === friendshipId)?.friend
+    ?? null
 
-  useEffect(() => {
-    if (!friend) {
-      apiGetFriends()
-        .then(data => {
-          const match = data.find(f => f.id === friendshipId)
-          if (match) setFriend(match.friend)
-        })
-        .catch(() => {})
-    }
-  }, [friendshipId, friend])
-
-  useEffect(() => {
-    apiGetPacks()
-      .then(data => setPacks(data.filter(p => (p.total_count ?? 0) > 0 && p.is_battle === true && !p.is_locked)))
-      .catch(() => {})
-  }, [])
+  const { data: allPacks = [] } = usePacksQuery()
+  const packs = useMemo(
+    () => allPacks.filter(p => (p.total_count ?? 0) > 0 && p.is_battle === true && !p.is_locked),
+    [allPacks]
+  )
 
   const friendName = friend?.name ?? ''
 

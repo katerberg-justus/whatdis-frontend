@@ -26,7 +26,7 @@
 
   &__sticker-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
 
     @media (min-width: 480px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -132,7 +132,7 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 0.75rem;
 
     @media (min-width: 480px) { grid-template-columns: repeat(3, 1fr); }
@@ -141,25 +141,93 @@
 
   &__card {
     @include card;
+    border-width: 4px;
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 0.75rem;
     text-align: center;
+    background:
+      linear-gradient(135deg, rgba($blue, 0.08) 0 14%, transparent 14% 100%),
+      $bg-raised;
+
+    &::before {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      image-rendering: pixelated;
+      inset: 0;
+      border: 0;
+      box-shadow:
+        inset 8px 0 0 rgba($blue-muted, 0.07),
+        inset -8px 0 0 rgba($blue-dark, 0.22),
+        inset 0 -8px 0 rgba($bg, 0.2);
+    }
+
+    &--earned {
+      border-color: $green;
+      background:
+        linear-gradient(135deg, rgba($green, 0.1) 0 14%, transparent 14% 100%),
+        $bg-raised;
+
+      &::before {
+        box-shadow:
+          inset 8px 0 0 rgba($green, 0.08),
+          inset -8px 0 0 rgba($green-dark, 0.24),
+          inset 0 -8px 0 rgba($bg, 0.2);
+      }
+    }
 
     &--locked {
       opacity: 0.35;
       filter: grayscale(1);
+      background:
+        linear-gradient(135deg, rgba($pink, 0.07) 0 14%, transparent 14% 100%),
+        $bg-raised;
+
+      &::before {
+        box-shadow:
+          inset 8px 0 0 rgba($pink-muted, 0.06),
+          inset -8px 0 0 rgba($pink-dark, 0.2),
+          inset 0 -8px 0 rgba($bg, 0.2);
+      }
     }
   }
 
+  &__card-check {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    color: #fff;
+    background: $green;
+    line-height: 0;
+    padding: calc(0.35rem + 2px) 0.4rem 0.3rem calc(0.4rem + 2px);
+    box-shadow: inset 2px 2px 0 0 $green-dark;
+  }
+
   &__card-icon {
+    position: relative;
+    z-index: 1;
     font-size: 2rem;
     line-height: 1;
+    filter: drop-shadow(2px 2px 0 rgba($bg, 0.72));
+  }
+
+  &__card--locked &__card-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__card-name {
+    position: relative;
+    z-index: 1;
     font-size: $text-xs;
     color: $text;
 
@@ -171,6 +239,8 @@
   }
 
   &__card-desc {
+    position: relative;
+    z-index: 1;
     font-size: $text-xs;
     color: $text-muted;
     line-height: $leading;
@@ -182,15 +252,52 @@
   }
 
   &__card-date {
+    position: relative;
+    z-index: 1;
     font-size: $text-xs;
     color: $green;
     margin-top: auto;
+    padding-right: 1.5rem;
   }
 
   &__card-locked {
+    position: relative;
+    z-index: 1;
     font-size: $text-xs;
     color: $text-muted;
     margin-top: auto;
     text-transform: uppercase;
+  }
+
+  &__card-enter {
+    animation: collectibles-card-enter 280ms steps(4, end) both;
+    animation-delay: var(--card-enter-delay, 0ms);
+    transform-origin: center bottom;
+  }
+}
+
+@keyframes collectibles-card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    clip-path: inset(0 0 12% 0);
+  }
+
+  50% {
+    opacity: 0.72;
+    transform: translateY(3px);
+    clip-path: inset(0 0 4% 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collectibles__card-enter {
+    animation: none;
   }
 }

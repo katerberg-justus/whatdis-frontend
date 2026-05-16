@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useLang } from '../../../context/LangContext'
-import { apiGetFriends, apiRemoveFriend } from '@shared/api/friends'
+import { useFriendsQuery, useRemoveFriendMutation } from '@shared/api/friends'
 import Button from '../../../components/Button'
 import './BattlesPage.scss'
 
@@ -9,19 +9,17 @@ export default function FriendPage() {
   const { friendshipId } = useParams()
   const navigate         = useNavigate()
   const { t }            = useLang()
-  const [friend, setFriend] = useState(null)
 
-  useEffect(() => {
-    apiGetFriends()
-      .then(data => {
-        const match = data.find(f => f.id === friendshipId)
-        if (match) setFriend(match)
-      })
-      .catch(() => {})
-  }, [friendshipId])
+  const { data: friends = [] } = useFriendsQuery()
+  const removeMutation = useRemoveFriendMutation()
+
+  const friend = useMemo(() => friends.find(f => f.id === friendshipId), [friends, friendshipId])
 
   async function handleRemove() {
-    try { await apiRemoveFriend(friendshipId); navigate('/battles/friends') } catch {}
+    try {
+      await removeMutation.mutateAsync(friendshipId)
+      navigate('/battles/friends')
+    } catch { /* swallow */ }
   }
 
   if (!friend) return null

@@ -47,7 +47,7 @@ const CheckSvg = () => (
   </svg>
 )
 
-export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, disabled, freeBadge, className, style }) {
+export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, disabled, freeBadge, className, style, subjectPlacement = 'before' }) {
   const { t } = useLang()
   const mod = DIFF_MOD[difficulty] ?? 'blue'
   const diffKey = DIFF_LABEL_KEY[difficulty]
@@ -81,9 +81,10 @@ export default function ChallengeCard({ difficulty, label, subject, sticker, ico
         )}
       </div>
       {label && (
-        <span className="challenge-card__label">
-          {showSubject && <span className="challenge-card__subject">{subject}</span>}
+        <span className={['challenge-card__label', subjectPlacement === 'below' && 'challenge-card__label--subject-below'].filter(Boolean).join(' ')}>
+          {showSubject && subjectPlacement !== 'below' && <span className="challenge-card__subject">{subject}</span>}
           <span className={showSubject ? 'challenge-card__position' : undefined}>{label}</span>
+          {showSubject && subjectPlacement === 'below' && <span className="challenge-card__subject">{subject}</span>}
         </span>
       )}
     </div>

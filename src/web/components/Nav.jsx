@@ -106,7 +106,7 @@ export default function Nav() {
         <ul className="nav__links">
           {mainLinks.map(({ to, label, icon }) => (
             <li key={to}>
-              <NavLink to={to} end className="nav__link" onClick={close}>
+              <NavLink to={to} className="nav__link" onClick={close}>
                 <span className="nav__icon">{icon}</span>
                 <span>{label}</span>
               </NavLink>

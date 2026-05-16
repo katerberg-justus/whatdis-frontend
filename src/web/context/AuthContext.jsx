@@ -1,13 +1,20 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { apiLogin, apiGuestAuth, apiClaimAccount, apiLogout } from '@shared/api/auth'
 import { apiMe } from '@shared/api/users'
 import { hasCsrfToken } from '@shared/api/clients'
+import { qk } from '@shared/api/queryKeys'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
+  const qc = useQueryClient()
   const [user,    setUser]    = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const seed = (data) => {
+    if (data) qc.setQueryData(qk.me, data)
+  }
 
   useEffect(() => {
     const stored = localStorage.getItem('user')
@@ -15,6 +22,7 @@ export function AuthProvider({ children }) {
       const parsed = JSON.parse(stored)
       if (parsed?.id) {
         setUser(parsed)
+        seed(parsed)
         setLoading(false)
         return
       }
@@ -24,14 +32,14 @@ export function AuthProvider({ children }) {
     const hasSession = hasCsrfToken()
     if (hasSession) {
       apiMe()
-        .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data) })
+        .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data); seed(data) })
         .catch(() => {})
         .finally(() => setLoading(false))
       return
     }
     apiGuestAuth(navigator.language)
       .then(() => apiMe())
-      .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data) })
+      .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data); seed(data) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -41,14 +49,17 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('logged_out')
     localStorage.setItem('user', JSON.stringify(u))
     setUser(u)
+    seed(u)
   }
 
   const login = async (username, password) => {
+    qc.clear()
     await apiLogin(username, password)
     persist(await apiMe(), username)
   }
 
   const register = async (name, email, password) => {
+    qc.clear()
     const data = await apiClaimAccount(name, email, password)
     persist(data, name)
   }
@@ -60,6 +71,7 @@ export function AuthProvider({ children }) {
     try { await apiLogout() } catch {
       // The local logout state is authoritative even if the server session is already gone.
     }
+    qc.clear()
     window.location.replace('/login')
   }
 

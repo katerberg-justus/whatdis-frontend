@@ -107,6 +107,17 @@
       height: 14px;
     }
   }
+
+  &__progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: $blue;
+    transform-origin: left center;
+    animation: notification-progress linear forwards;
+  }
 }
 
 @keyframes notification-in {
@@ -117,5 +128,14 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes notification-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
   }
 }

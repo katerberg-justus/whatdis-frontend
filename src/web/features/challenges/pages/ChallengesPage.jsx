@@ -178,10 +178,21 @@ export default function ChallengesPage() {
                     <PackArt locked={pack.is_locked} />
                     <div className="challenges__pack-copy">
                       <span className="challenges__pack-name">{pack.name}</span>
+                      {pack.description && (
+                        <span className="challenges__pack-description">{pack.description}</span>
+                      )}
                     </div>
                     <span className="challenges__pack-count">
                       {completed != null ? `${completed}/${total}` : total}
                     </span>
+                    {completed != null && total > 0 && (
+                      <div className="challenges__progress">
+                        <div
+                          className="challenges__progress-fill"
+                          style={{ width: `${Math.min(100, (completed / total) * 100)}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )
               })}

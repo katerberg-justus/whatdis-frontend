@@ -178,7 +178,16 @@
     text-align: center;
     margin-top: 0.25rem;
 
-    a { color: $blue; }
+    a {
+      color: $blue;
+      display: inline-block;
+      padding: 0.5rem 0.75rem;
+      margin: -0.5rem -0.75rem;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
 

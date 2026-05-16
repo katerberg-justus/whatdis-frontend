@@ -67,6 +67,8 @@ const translations = {
     'notifications.yourTurn':       'Your turn',
     'notifications.newFriendRequest': 'New friend request',
     'notifications.achievementUnlocked': 'Achievement unlocked',
+    'notifications.newDailyChallenge': 'New daily challenge',
+    'notifications.newChallengesAdded': 'New challenges added',
     'notifications.nrgPurchaseSuccess': 'NRG added',
     'notifications.nrgPurchaseCancelled': 'NRG purchase cancelled',
     'notifications.subscriptionPurchaseSuccess': 'Subscription updated',
@@ -278,6 +280,8 @@ const translations = {
     'challenges.playFree':          'Juega Gratis',
 
     'notifications.achievementUnlocked': 'Logro desbloqueado',
+    'notifications.newDailyChallenge': 'Nuevo reto diario',
+    'notifications.newChallengesAdded': 'Nuevos retos agregados',
 
     'battles.tabBattles':           'Batallas',
     'battles.tabFriends':           'Amigos',
@@ -479,6 +483,8 @@ const translations = {
     'challenges.playFree':          'Jouer Gratuit',
 
     'notifications.achievementUnlocked': 'Succès débloqué',
+    'notifications.newDailyChallenge': 'Nouveau défi quotidien',
+    'notifications.newChallengesAdded': 'Nouveaux défis ajoutés',
 
     'battles.tabBattles':           'Batailles',
     'battles.tabFriends':           'Amis',
@@ -680,6 +686,8 @@ const translations = {
     'challenges.playFree':          'Gratis Spielen',
 
     'notifications.achievementUnlocked': 'Erfolg freigeschaltet',
+    'notifications.newDailyChallenge': 'Neue Tagesherausforderung',
+    'notifications.newChallengesAdded': 'Neue Herausforderungen hinzugefuegt',
 
     'battles.tabBattles':           'Duelle',
     'battles.tabFriends':           'Freunde',
@@ -881,6 +889,8 @@ const translations = {
     'challenges.playFree':          'Gratis Spelen',
 
     'notifications.achievementUnlocked': 'Prestatie ontgrendeld',
+    'notifications.newDailyChallenge': 'Nieuwe dagelijkse uitdaging',
+    'notifications.newChallengesAdded': 'Nieuwe uitdagingen toegevoegd',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Vrienden',
@@ -1082,6 +1092,8 @@ const translations = {
     'challenges.playFree':          'Jogue Grátis',
 
     'notifications.achievementUnlocked': 'Conquista desbloqueada',
+    'notifications.newDailyChallenge': 'Novo desafio diario',
+    'notifications.newChallengesAdded': 'Novos desafios adicionados',
 
     'battles.tabBattles':           'Batalhas',
     'battles.tabFriends':           'Amigos',

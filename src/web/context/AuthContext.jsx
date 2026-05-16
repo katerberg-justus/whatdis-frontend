@@ -6,6 +6,10 @@ import { hasCsrfToken } from '@shared/api/clients'
 import { qk } from '@shared/api/queryKeys'
 
 const AuthContext = createContext(null)
+const NOTIFICATION_STATUS_KEYS = [
+  'notifications.lastDailyChallengeId',
+  'notifications.lastChallengeCount',
+]
 
 export function AuthProvider({ children }) {
   const qc = useQueryClient()
@@ -71,6 +75,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     setUser(null)
     localStorage.removeItem('user')
+    NOTIFICATION_STATUS_KEYS.forEach(key => localStorage.removeItem(key))
     localStorage.setItem('logged_out', '1')
     try { await apiLogout() } catch {
       // The local logout state is authoritative even if the server session is already gone.

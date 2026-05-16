@@ -31,9 +31,21 @@ export function TourProvider({ children }) {
   const isActive = index !== null
   const step = isActive ? STEPS[index] : null
   const demoStage = step?.demoStage ?? 0
+  const navigate = useNavigate()
+  const location = useLocation()
+  const returnToRef = useRef(null)
 
-  const start = useCallback(() => setIndex(0), [])
-  const close = useCallback(() => setIndex(null), [])
+  const start = useCallback(() => {
+    returnToRef.current = location.pathname + location.search + location.hash
+    setIndex(0)
+  }, [location.pathname, location.search, location.hash])
+  const close = useCallback(() => {
+    setIndex(null)
+    if (returnToRef.current) {
+      navigate(returnToRef.current)
+      returnToRef.current = null
+    }
+  }, [navigate])
   const next  = useCallback(() => setIndex(i => (i == null ? null : Math.min(i + 1, STEPS.length - 1))), [])
   const prev  = useCallback(() => setIndex(i => (i == null ? null : Math.max(i - 1, 0))), [])
 

@@ -6,7 +6,6 @@ import { useSubscription } from '../context/SubscriptionContext'
 import UpgradeDialog from './UpgradeDialog'
 import Logo from './Logo'
 import { useTour } from './Tour'
-import { useNavigate } from 'react-router'
 import './Nav.scss'
 
 // Pixel-art icons — 16×16 viewBox, each logical pixel = 2×2 units
@@ -110,7 +109,6 @@ export default function Nav() {
   const { t } = useLang()
   const { isActive, subscription } = useSubscription()
   const tour = useTour()
-  const navigate = useNavigate()
   const isGuest = !user || user.is_guest
 
   const mainLinks = [
@@ -145,7 +143,6 @@ export default function Nav() {
               className="nav__link"
               onClick={() => {
                 close()
-                navigate('/challenges')
                 tour?.start()
               }}
             >

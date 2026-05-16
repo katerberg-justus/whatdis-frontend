@@ -1,0 +1,122 @@
+@use '../styles/variables' as *;
+
+.tour {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+  font-family: $font;
+}
+
+.tour__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  pointer-events: auto;
+}
+
+.tour__spotlight {
+  position: fixed;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.72),
+              0 0 0 2px $blue,
+              0 0 18px rgba(0, 166, 255, 0.55);
+  pointer-events: auto;
+  transition: top 180ms ease, left 180ms ease, width 180ms ease, height 180ms ease;
+}
+
+.tour__tooltip {
+  position: fixed;
+  background: $bg-raised;
+  border: 2px solid $bg-border;
+  padding: 22px 28px 16px 20px;
+  color: $text;
+  pointer-events: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: $bg-raised;
+    border-left: 2px solid $bg-border;
+    border-top: 2px solid $bg-border;
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  &--top::before  { top: -8px; }
+  &--bottom::before {
+    bottom: -8px;
+    transform: translateX(-50%) rotate(225deg);
+  }
+}
+
+.tour__close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  color: $text-muted;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+
+  &:hover { color: $text; }
+}
+
+.tour__text {
+  margin: 0 0 14px;
+  font-size: $text-sm;
+  line-height: $leading;
+}
+
+.tour__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.tour__progress {
+  font-size: $text-xs;
+  color: $text-muted;
+}
+
+.tour__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.tour__btn {
+  font-family: $font;
+  font-size: $text-xs;
+  padding: 8px 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &--muted {
+    background: transparent;
+    color: $text-muted;
+    border-color: $bg-border;
+
+    &:not(:disabled):hover { color: $text; border-color: $text-muted; }
+  }
+
+  &--primary {
+    background: $pink;
+    color: white;
+    border-color: $pink-dark;
+
+    &:not(:disabled):hover { background: $pink-muted; }
+  }
+}

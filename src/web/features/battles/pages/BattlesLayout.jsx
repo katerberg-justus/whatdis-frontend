@@ -24,7 +24,9 @@ export default function BattlesLayout() {
     <>
     <div className="locked-wrap">
       <div className={isGuest ? 'locked-wrap__content' : undefined}>
-        <Tabs tabs={tabs} />
+        <div data-tour="battles-tabs">
+          <Tabs tabs={tabs} />
+        </div>
         <Outlet />
       </div>
       {isGuest && (

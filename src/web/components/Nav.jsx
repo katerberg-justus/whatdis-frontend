@@ -5,6 +5,8 @@ import { useLang } from '../context/LangContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import UpgradeDialog from './UpgradeDialog'
 import Logo from './Logo'
+import { useTour } from './Tour'
+import { useNavigate } from 'react-router'
 import './Nav.scss'
 
 // Pixel-art icons — 16×16 viewBox, each logical pixel = 2×2 units
@@ -77,6 +79,17 @@ const IconClose = () => (
   </svg>
 )
 
+// Question mark for the "how to play" help button
+const IconHelp = () => (
+  <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#00A6FF" d="M5 1h6v1H5zM4 2h8v2H4zM3 4h3v3H3zM10 4h3v4h-3zM8 8h3v2H8zM6 10h3v3H6zM6 14h3v1H6z" />
+    <path fill="#6FD1FF" d="M5 1h3v1H5zM4 2h3v2H4zM3 4h2v3H3zM8 8h1v2H8zM6 10h1v3H6zM6 14h1v1H6z" />
+    <path fill="#0075C9" d="M9 1h2v1H9zM10 2h2v2h-2zM11 4h2v4h-2zM10 8h1v2h-1zM8 10h1v3H8zM8 14h1v1H8z" />
+    <path fill="#FF007B" d="M6 4h4v2H6zM8 6h2v2H8zM7 13h1v1H7z" />
+    <path fill="#C80061" d="M9 4h1v2H9zM9 6h1v2H9zM8 13h1v1H8z" />
+  </svg>
+)
+
 // Person: square head + body block + two legs
 const IconAccount = () => (
   <svg shapeRendering="crispEdges" width="100%" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" role="img">
@@ -96,6 +109,8 @@ export default function Nav() {
   const { user } = useAuth()
   const { t } = useLang()
   const { isActive, subscription } = useSubscription()
+  const tour = useTour()
+  const navigate = useNavigate()
   const isGuest = !user || user.is_guest
 
   const mainLinks = [
@@ -125,6 +140,19 @@ export default function Nav() {
               </NavLink>
             </li>
           ))}
+          <li>
+            <button
+              className="nav__link"
+              onClick={() => {
+                close()
+                navigate('/challenges')
+                tour?.start()
+              }}
+            >
+              <span className="nav__icon"><IconHelp /></span>
+              <span>{t('nav.howToPlay')}</span>
+            </button>
+          </li>
           {!isGuest && !isActive && subscription !== undefined && (
             <li>
               <button

@@ -12,7 +12,9 @@ export default function CollectiblesLayout() {
 
   return (
     <>
-      <Tabs tabs={tabs} />
+      <div data-tour="collectibles-tabs">
+        <Tabs tabs={tabs} />
+      </div>
       <Outlet />
     </>
   )

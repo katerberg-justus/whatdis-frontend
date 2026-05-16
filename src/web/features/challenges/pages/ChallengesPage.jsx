@@ -116,7 +116,7 @@ export default function ChallengesPage() {
     <div className="challenges">
 
       {dailyCards.length > 0 && (
-        <section className="challenges__daily-section">
+        <section className="challenges__daily-section" data-tour="daily">
           <div className="challenges__section-heading">
             <h2 className="challenges__section-title">{t('challenges.dailySection')}</h2>
             <p className="challenges__section-date">{dailyDate}</p>
@@ -156,7 +156,7 @@ export default function ChallengesPage() {
         <h2 className="challenges__section-title">{t('challenges.packsSection')}</h2>
         <div className="locked-wrap">
           <div className={isGuest ? 'locked-wrap__content' : undefined}>
-            <div className="challenges__packs">
+            <div className="challenges__packs" data-tour="packs">
               {packs.map((pack, i) => {
                 const total     = pack.total_count ?? 0
                 const completed = pack.completed_count ?? pack.completed ?? null

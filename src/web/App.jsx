@@ -29,6 +29,8 @@ import StickersPage from './features/collectibles/pages/StickersPage'
 import AchievementsPage from './features/collectibles/pages/AchievementsPage'
 import LoginPage from './features/auth/pages/LoginPage'
 import RegisterPage from './features/auth/pages/RegisterPage'
+import HowToPlayDemoPage from './features/howtoplay/HowToPlayDemoPage'
+import { TourProvider } from './components/Tour'
 
 const AUTH_ROUTES = ['/login', '/register']
 
@@ -72,6 +74,7 @@ function Layout() {
             <Route index element={<StickersPage />} />
             <Route path="achievements" element={<AchievementsPage />} />
           </Route>
+          <Route path="/how-to-play/demo" element={<HowToPlayDemoPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
         </Routes>
@@ -91,7 +94,9 @@ function App() {
                 <NotificationProvider>
                   <BattlesProvider>
                     <FriendsProvider>
-                      <Layout />
+                      <TourProvider>
+                        <Layout />
+                      </TourProvider>
                     </FriendsProvider>
                   </BattlesProvider>
                 </NotificationProvider>

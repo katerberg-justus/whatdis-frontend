@@ -803,7 +803,7 @@ const translations = {
     'nav.battles':                  'Battles',
     'nav.account':                  'Account',
     'nav.signUp':                   'Aanmelden',
-    'nav.howToPlay':                'Speluitleg',
+    'nav.howToPlay':                'Uitleg',
 
     'tour.next':                    'Volgende',
     'tour.prev':                    'Vorige',
@@ -817,7 +817,7 @@ const translations = {
     'tour.demoAsk':                 'Typ een ja/nee-vraag en druk op Vragen. Elke vraag kost energie.',
     'tour.demoAnswer':              'De uitdaging antwoordt eerlijk: ja, nee, deels, enz. Gebruik de aanwijzingen om dichterbij te komen.',
     'tour.demoWin':                 'Als je zeker bent, raad je het onderwerp direct om te winnen. Dat is alles. Veel plezier!',
-    'tour.demoPack':                'Speluitleg',
+    'tour.demoPack':                'Uitleg',
     'tour.demoEmpty':               'Stel een ja/nee-vraag om te beginnen.',
     'tour.demoQuestion':            'Is het een dier?',
     'tour.demoFinal':               'Is het een kat?',

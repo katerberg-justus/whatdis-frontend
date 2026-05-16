@@ -54,8 +54,12 @@
   }
 
   &--disabled {
-    cursor: not-allowed;
+    pointer-events: none;
+    cursor: default;
     opacity: 0.4;
+    color: $text-muted;
+    border-color: $bg-border;
+    box-shadow: none;
 
     &:hover {
       color: $text-muted;
@@ -68,6 +72,12 @@
         inset 4px 4px 0 rgba(255, 255, 255, 0.07),
         inset -4px -4px 0 rgba(0, 0, 0, 0.2);
     }
+  }
+
+  &--disabled.radio-btn--checked {
+    color: $text-muted;
+    border-color: $bg-border;
+    box-shadow: none;
   }
 
   &--full {

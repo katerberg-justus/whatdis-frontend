@@ -38,12 +38,11 @@ function Layout() {
   const { pathname } = useLocation()
   const { user } = useAuth()
   const mustLogin = !user && localStorage.getItem('logged_out') === '1'
+  const isAuth = AUTH_ROUTES.includes(pathname)
 
-  if (mustLogin && pathname !== '/login') {
+  if (mustLogin && !isAuth) {
     return <Navigate to="/login" replace />
   }
-
-  const isAuth = AUTH_ROUTES.includes(pathname)
 
   return (
     <>

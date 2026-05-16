@@ -12,6 +12,14 @@ export async function apiUpdateMe(payload) {
   return data
 }
 
+export async function apiCheckUserAvailability({ name, email } = {}) {
+  const params = {}
+  if (name) params.name = name
+  if (email) params.email = email
+  const { data } = await apiClient.get('/users/check', { params })
+  return data
+}
+
 export async function apiChangePassword(currentPassword, newPassword) {
   const { data } = await apiClient.post('/me/change-password', {
     current_password: currentPassword,

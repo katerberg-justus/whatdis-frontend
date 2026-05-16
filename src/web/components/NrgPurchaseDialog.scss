@@ -1,0 +1,125 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.nrg-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+
+  &__copy {
+    margin: 0;
+    color: $text-muted;
+    font-size: $text-sm;
+    line-height: $leading;
+    text-align: center;
+  }
+
+  &__packs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.375rem;
+    width: 100%;
+
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+      gap: 0.5rem;
+    }
+  }
+
+  &__pack {
+    min-width: 0;
+    min-height: 132px;
+    padding: 1.65rem 0.125rem 0.75rem;
+    flex-direction: column;
+    gap: 0.625rem;
+    overflow: visible;
+
+    .radio-btn__label {
+      display: grid;
+      grid-template-rows: 64px auto;
+      justify-items: center;
+      align-items: center;
+      gap: 0.625rem;
+      width: 100%;
+      min-width: 0;
+
+      @media (max-width: 767px) {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .radio-btn__mark {
+      display: none;
+    }
+  }
+
+  &__popular {
+    position: absolute;
+    top: -0.85rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    font-family: $font;
+    font-size: 0.5rem;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0.25rem 0.375rem;
+    background: $pink;
+    box-shadow:
+      0 -2px 0 0 $pink-dark,
+      0 2px 0 0 $pink-dark,
+      -2px 0 0 0 $pink-dark,
+      2px 0 0 0 $pink-dark,
+      inset 0 -2px 0 0 rgba($pink-dark, 0.5),
+      inset 0 2px 0 0 rgba($pink-muted, 0.55);
+  }
+
+  &__cans {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+
+  &__can-label {
+    position: absolute;
+    left: 50%;
+    bottom: 9px;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 0.875rem;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  &__amount {
+    color: $text;
+    font-size: $text-sm;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  &__price {
+    color: $green;
+    font-size: $text-sm;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}

@@ -1,6 +1,7 @@
 export const qk = {
   me:               ['me'],
   subscription:     ['me', 'subscription'],
+  nrgBoosters:      ['nrg-boosters'],
   myAchievements:   ['me', 'achievements'],
   achievements:     ['achievements'],
 

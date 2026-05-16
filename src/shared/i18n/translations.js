@@ -191,6 +191,12 @@ const translations = {
     'upgrade.redirecting':          'Redirecting...',
     'upgrade.playForFree':          'Play for free',
 
+    'nrg.title':                    'Buy NRG',
+    'nrg.usp':                      'Get a lot more plays without starting a subscription.',
+    'nrg.cta':                      'Buy NRG',
+    'nrg.redirecting':              'Redirecting...',
+    'nrg.popular':                  'Popular',
+
     'subscription.title':           'Subscription',
     'subscription.renewsOn':        'Renews on',
     'subscription.cancelsOn':       'Cancels on',

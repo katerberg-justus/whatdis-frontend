@@ -1,32 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useEnergy } from '../context/EnergyContext'
+import { useAuth } from '../context/AuthContext'
+import EnergyDrinkIcon from './EnergyDrinkIcon'
+import NrgPurchaseDialog from './NrgPurchaseDialog'
 import './StatusBar.scss'
 
 const FILL_DURATION_MS = 800
-
-const EnergyDrinkIcon = () => (
-  <div className="status-bar__can">
-    <svg viewBox="0 0 10 14" width="15" height="21" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges" aria-hidden="true">
-      <rect x="1" y="0"  width="8" height="1" fill="#00A6FF" />
-      <rect x="0" y="1"  width="10" height="1" fill="#00A6FF" />
-      <rect x="0" y="2"  width="10" height="10" fill="#00A6FF" />
-      <rect x="1" y="2"  width="2" height="1" fill="#6FD1FF" />
-      <rect x="1" y="3"  width="1" height="2" fill="#6FD1FF" />
-      <rect x="8" y="2"  width="2" height="10" fill="#0075C9" />
-      <rect x="0" y="10" width="8" height="2" fill="#008BDD" />
-      <rect x="3" y="4"  width="4" height="1" fill="#FF007B" />
-      <rect x="0" y="5"  width="10" height="3" fill="#FF007B" />
-      <rect x="1" y="5"  width="2" height="3" fill="#FF5BAD" />
-      <rect x="8" y="5"  width="2" height="3" fill="#C80061" />
-      <rect x="3" y="8"  width="4" height="1" fill="#FF007B" />
-      <rect x="0" y="12" width="10" height="1" fill="#00A6FF" />
-      <rect x="1" y="13" width="8" height="1" fill="#00A6FF" />
-      <rect x="8" y="12" width="2" height="1" fill="#0075C9" />
-      <rect x="7" y="13" width="2" height="1" fill="#0075C9" />
-    </svg>
-    <span className="status-bar__can-nrg">NRG</span>
-  </div>
-)
 
 const BLOCK_COUNT = 10
 
@@ -38,24 +17,23 @@ function energyColor(ratio) {
 
 export default function StatusBar() {
   const { energy, maxEnergy } = useEnergy()
+  const { user } = useAuth()
   const hasEnergy = energy !== null
+  const canBuyNrg = Boolean(user && !user.is_guest)
+  const [purchaseOpen, setPurchaseOpen] = useState(false)
   const [displayEnergy, setDisplayEnergy] = useState(0)
   const animatedRef = useRef(false)
 
   useEffect(() => {
     if (!hasEnergy) return
+    let raf
     if (animatedRef.current) {
-      setDisplayEnergy(energy)
-      return
+      raf = requestAnimationFrame(() => setDisplayEnergy(energy))
+      return () => cancelAnimationFrame(raf)
     }
     animatedRef.current = true
     const target = energy
-    if (target <= 0) {
-      setDisplayEnergy(0)
-      return
-    }
     const start = performance.now()
-    let raf
     const tick = (now) => {
       const t = Math.min(1, (now - start) / FILL_DURATION_MS)
       setDisplayEnergy(Math.round(t * target))
@@ -71,19 +49,41 @@ export default function StatusBar() {
   const color  = energyColor(ratio)
   const padWidth = hasEnergy ? String(energy).length : 1
   const paddedCurrent = String(current).padStart(padWidth, '0')
+  const openPurchaseDialog = () => {
+    if (canBuyNrg) setPurchaseOpen(true)
+  }
 
   return (
-    <div className="status-bar">
-      <EnergyDrinkIcon />
-      <div className="status-bar__track" aria-label={hasEnergy ? `${energy} of ${maxEnergy} energy` : 'Energy loading'}>
-        {Array.from({ length: BLOCK_COUNT }, (_, i) => (
-          <span
-            key={i}
-            className={`status-bar__block status-bar__block--${i < filled ? color : 'empty'}`}
+    <>
+      <div className="status-bar">
+        <button
+          type="button"
+          className="status-bar__energy"
+          aria-label={canBuyNrg ? 'Buy NRG' : undefined}
+          disabled={!canBuyNrg}
+          onClick={openPurchaseDialog}
+        >
+          <EnergyDrinkIcon className="status-bar__can" />
+          <span className="status-bar__track" aria-label={hasEnergy ? `${energy} of ${maxEnergy} energy` : 'Energy loading'}>
+            {Array.from({ length: BLOCK_COUNT }, (_, i) => (
+              <span
+                key={i}
+                className={`status-bar__block status-bar__block--${i < filled ? color : 'empty'}`}
+              />
+            ))}
+          </span>
+          <span className="status-bar__count">{hasEnergy ? `${paddedCurrent}/${maxEnergy}` : '\u00a0'}</span>
+        </button>
+        {canBuyNrg && (
+          <button
+            type="button"
+            className="status-bar__add"
+            aria-label="Buy NRG"
+            onClick={openPurchaseDialog}
           />
-        ))}
+        )}
       </div>
-      <span className="status-bar__count">{hasEnergy ? `${paddedCurrent}/${maxEnergy}` : '\u00a0'}</span>
-    </div>
+      {canBuyNrg && purchaseOpen && <NrgPurchaseDialog onClose={() => setPurchaseOpen(false)} />}
+    </>
   )
 }

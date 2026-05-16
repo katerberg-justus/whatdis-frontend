@@ -1,0 +1,18 @@
+.energy-drink-icon {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  line-height: 0;
+
+  &__nrg {
+    position: absolute;
+    bottom: calc(2px * var(--can-scale, 1));
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: calc(0.5rem * var(--can-scale, 1));
+    color: white;
+    white-space: nowrap;
+    line-height: 1;
+    pointer-events: none;
+  }
+}

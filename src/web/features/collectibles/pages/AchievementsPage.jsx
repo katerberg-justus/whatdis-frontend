@@ -25,13 +25,11 @@ const CheckSvg = () => (
 export default function AchievementsPage() {
   const { user }  = useAuth()
   const { t }     = useLang()
-  const isGuest   = !user || user.is_guest
 
   const { data: all = [] }    = useAchievementsQuery()
-  const { data: earned = [] } = useMyAchievementsQuery({ enabled: !isGuest })
+  const { data: earned = [] } = useMyAchievementsQuery({ enabled: Boolean(user) })
 
-  const visibleEarned = isGuest ? [] : earned
-  const earnedMap = Object.fromEntries(visibleEarned.map(e => [e.achievement_id ?? e.id, e]))
+  const earnedMap = Object.fromEntries(earned.map(e => [e.achievement_id ?? e.id, e]))
 
   const grouped = CATEGORY_ORDER.reduce((acc, cat) => {
     const items = all.filter(a => a.category === cat)
@@ -52,6 +50,7 @@ export default function AchievementsPage() {
               const isEarned = Boolean(userAchievement)
               const isNext   = !isEarned && achievement.id === nextId
               const isHidden = !isEarned && !isNext
+              const displayAchievement = userAchievement ?? achievement
 
               return (
                 <div
@@ -65,12 +64,12 @@ export default function AchievementsPage() {
                   style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
                 >
                   {isEarned && <span className="collectibles__card-check"><CheckSvg /></span>}
-                  <span className="collectibles__card-icon">{isHidden ? '?' : achievement.icon}</span>
+                  <span className="collectibles__card-icon">{isHidden ? '?' : displayAchievement.icon}</span>
                   <span className={`collectibles__card-name${isHidden ? ' collectibles__card-name--blur' : ''}`}>
-                    {isHidden ? 'Hidden Achievement' : achievement.name}
+                    {isHidden ? 'Hidden Achievement' : displayAchievement.name}
                   </span>
                   <span className={`collectibles__card-desc${isHidden ? ' collectibles__card-desc--blur' : ''}`}>
-                    {isHidden ? 'Keep playing to unlock this secret achievement.' : achievement.description}
+                    {isHidden ? 'Keep playing to unlock this secret achievement.' : displayAchievement.description}
                   </span>
                   {isEarned ? (
                     <span className="collectibles__card-date">{formatDate(userAchievement.earned_at)}</span>

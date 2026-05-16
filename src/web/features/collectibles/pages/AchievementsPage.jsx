@@ -8,7 +8,7 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
-const CATEGORY_ORDER = ['daily', 'questions', 'streak', 'wins']
+const CATEGORY_ORDER = ['daily', 'guesses', 'streak', 'wins', 'battle_played', 'battle_won']
 
 const CheckSvg = () => (
   <svg viewBox="0 0 14 12" width="14" height="12" fill="currentColor" shapeRendering="crispEdges">

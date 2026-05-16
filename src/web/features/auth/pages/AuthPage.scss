@@ -147,6 +147,8 @@
     padding: 0.75rem 1rem 2rem;
     width: 100%;
     max-width: 420px;
+    animation: auth-form-enter 280ms steps(4, end) both;
+    transform-origin: center bottom;
 
     @media (min-width: 768px) {
       padding: 0.75rem 2rem 2rem;
@@ -191,6 +193,26 @@
   }
 }
 
+@keyframes auth-form-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    clip-path: inset(0 0 12% 0);
+  }
+
+  50% {
+    opacity: 0.72;
+    transform: translateY(3px);
+    clip-path: inset(0 0 4% 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 @keyframes auth-star-glow-a {
   0%, 100% { opacity: 0.24; }
   20% { opacity: 0.85; }
@@ -211,6 +233,10 @@
   .auth {
     &::before,
     &::after {
+      animation: none;
+    }
+
+    &__form {
       animation: none;
     }
   }

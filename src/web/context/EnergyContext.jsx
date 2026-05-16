@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from './AuthContext'
 import { useLang } from './LangContext'
@@ -20,43 +20,45 @@ export function EnergyProvider({ children }) {
   const { isActive } = useSubscription()
   const { t } = useLang()
   const navigate = useNavigate()
-  const [energy,    setEnergy]    = useState(null)
-  const [maxEnergy, setMaxEnergy] = useState(10)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [localEnergy, setLocalEnergy] = useState(null)
+  const [dialogDismissed, setDialogDismissed] = useState(false)
+  const [dialogForcedOpen, setDialogForcedOpen] = useState(false)
 
   const { data: me } = useMeQuery({
-    enabled: Boolean(user) && user?.energy === undefined,
+    enabled: Boolean(user),
+    refetchOnMount: 'always',
   })
 
-  useEffect(() => {
-    if (!user) return
+  const source = me ?? user
+  const serverEnergy = source?.energy ?? null
+  const energy = localEnergy?.serverEnergy === serverEnergy ? localEnergy.value : serverEnergy
+  const maxEnergy = source?.max_energy ?? Math.max(10, energy ?? 0)
+  const dialogOpen = energy === 0 && (dialogForcedOpen || !dialogDismissed)
 
-    if (user.energy !== undefined) {
-      const e = user.energy ?? null
-      setEnergy(e)
-      setMaxEnergy(user.max_energy ?? Math.max(10, e ?? 0))
-      return
-    }
+  const depleteEnergy = (cost = 1) => {
+    setDialogDismissed(false)
+    setLocalEnergy(current => {
+      const currentEnergy = current?.serverEnergy === serverEnergy ? current.value : serverEnergy
+      const value = (currentEnergy !== null && currentEnergy > 0) ? Math.max(0, currentEnergy - cost) : currentEnergy
+      return { serverEnergy, value }
+    })
+  }
 
-    if (me) {
-      const e = me.energy ?? null
-      setEnergy(e)
-      setMaxEnergy(me.max_energy ?? Math.max(10, e ?? 0))
-    }
-  }, [user, me])
-
-  useEffect(() => {
-    if (energy === 0) setDialogOpen(true)
-  }, [energy])
-
-  const depleteEnergy = (cost = 1) =>
-    setEnergy(e => (e !== null && e > 0) ? Math.max(0, e - cost) : e)
-
-  const syncEnergy = (value) =>
-    setEnergy(value ?? null)
+  const syncEnergy = (value) => {
+    const next = value ?? null
+    setDialogDismissed(false)
+    setLocalEnergy({ serverEnergy, value: next })
+  }
 
   const isOutOfEnergy = energy === 0
-  const promptOutOfEnergy = useCallback(() => setDialogOpen(true), [])
+  const promptOutOfEnergy = useCallback(() => {
+    setDialogDismissed(false)
+    setDialogForcedOpen(true)
+  }, [])
+  const closeDialog = () => {
+    setDialogDismissed(true)
+    setDialogForcedOpen(false)
+  }
 
   const isGuest = !user || user.is_guest
   const showRegister = dialogOpen && isGuest
@@ -66,7 +68,7 @@ export function EnergyProvider({ children }) {
     <EnergyContext.Provider value={{ energy, maxEnergy, depleteEnergy, syncEnergy, isOutOfEnergy, promptOutOfEnergy }}>
       {children}
       {showRegister && (
-        <Dialog title={t('register.energyTitle')} onClose={() => setDialogOpen(false)}>
+        <Dialog title={t('register.energyTitle')} onClose={closeDialog}>
           <ul className="upgrade__perks">
             {REGISTER_PERKS.map(({ title, desc }) => (
               <li key={title} className="upgrade__perk">
@@ -79,12 +81,12 @@ export function EnergyProvider({ children }) {
             ))}
           </ul>
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <Button color="pink" fullWidth onClick={() => { setDialogOpen(false); navigate('/register') }}>{t('register.submit')}</Button>
-            <Button color="blue" fullWidth onClick={() => { setDialogOpen(false); navigate('/login') }}>{t('register.signIn')}</Button>
+            <Button color="pink" fullWidth onClick={() => { closeDialog(); navigate('/register') }}>{t('register.submit')}</Button>
+            <Button color="blue" fullWidth onClick={() => { closeDialog(); navigate('/login') }}>{t('register.signIn')}</Button>
           </div>
         </Dialog>
       )}
-      {showUpgrade && <UpgradeDialog onClose={() => setDialogOpen(false)} />}
+      {showUpgrade && <UpgradeDialog onClose={closeDialog} />}
     </EnergyContext.Provider>
   )
 }

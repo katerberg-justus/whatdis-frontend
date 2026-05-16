@@ -1,10 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
+import { useFriends } from '../../../context/FriendsContext'
 import {
-  apiGetFriends,
-  apiGetFriendRequests,
   apiSendFriendInvite,
   apiAcceptFriendRequest,
   apiRemoveFriend,
@@ -28,24 +26,16 @@ const SwordIcon = () => (
 )
 
 export default function FriendsPage() {
-  const { user }   = useAuth()
   const { t }      = useLang()
   const navigate   = useNavigate()
+  const { friends, requests, refresh: load } = useFriends()
 
-  const [friends,   setFriends]   = useState([])
-  const [requests,  setRequests]  = useState([])
+  useEffect(() => { load() }, [load])
+
   const [email,     setEmail]     = useState('')
   const [sending,   setSending]   = useState(false)
   const [error,     setError]     = useState('')
   const [success,   setSuccess]   = useState('')
-
-  const load = useCallback(() => {
-    if (!user) return
-    apiGetFriends().then(data => setFriends(data.filter(f => f.status === 'accepted'))).catch(() => {})
-    apiGetFriendRequests().then(data => setRequests(data.filter(r => r.direction === 'received'))).catch(() => {})
-  }, [user])
-
-  useEffect(() => { load() }, [load])
 
   async function handleSendInvite(e) {
     e.preventDefault()

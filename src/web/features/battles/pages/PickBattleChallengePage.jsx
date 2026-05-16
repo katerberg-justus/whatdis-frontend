@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router'
 import { useLang } from '../../../context/LangContext'
-import { apiGetPack, apiGetPackChallenges } from '@shared/api/challenges'
+import { apiGetPack } from '@shared/api/challenges'
 import { apiGetFriends } from '@shared/api/friends'
-import { apiCreateBattle } from '@shared/api/battles'
+import { apiCreateBattle, apiGetBattlePackChallenges } from '@shared/api/battles'
 import Button from '../../../components/Button'
 import ChallengeCard from '../../../components/ChallengeCard'
 import '../../packs/pages/PackChallengesPage.scss'
@@ -33,14 +33,21 @@ export default function PickBattleChallengePage() {
   }, [friendshipId, friend])
 
   useEffect(() => {
-    const packPromise = pack ? Promise.resolve(pack) : apiGetPack(packId)
-    Promise.all([packPromise, apiGetPackChallenges(packId)])
-      .then(([p, ch]) => { setPack(p); setChallenges(ch) })
+    if (pack) return
+    apiGetPack(packId)
+      .then(setPack)
       .catch(() => setError(true))
-  }, [packId])
+  }, [packId, pack])
+
+  useEffect(() => {
+    if (!friend?.id) return
+    apiGetBattlePackChallenges(packId, friend.id)
+      .then(setChallenges)
+      .catch(() => setError(true))
+  }, [packId, friend?.id])
 
   async function handleChallengeClick(challenge) {
-    if (submitting || !friend) return
+    if (submitting || !friend || challenge.battle_completed_by_participant) return
     setSubmitting(true)
     try {
       await apiCreateBattle({
@@ -86,6 +93,7 @@ export default function PickBattleChallengePage() {
             icon={challenge.icon}
             locked={challenge.is_locked}
             completed={challenge.completed}
+            disabled={challenge.battle_completed_by_participant}
             onClick={() => handleChallengeClick(challenge)}
           />
         ))}

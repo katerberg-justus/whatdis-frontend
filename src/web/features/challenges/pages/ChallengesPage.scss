@@ -14,6 +14,20 @@
     margin-bottom: 0.75rem;
   }
 
+  &__section-heading {
+    margin-bottom: 0.75rem;
+
+    .challenges__section-title {
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  &__section-date {
+    font-size: $text-xs;
+    color: $text-muted;
+    margin: 0;
+  }
+
   &__card-enter {
     animation: challenges-card-enter 280ms steps(4, end) both;
     animation-delay: var(--card-enter-delay, 0ms);
@@ -37,7 +51,7 @@
 
     .challenge-card {
       flex: 1;
-      aspect-ratio: 16/9;
+      aspect-ratio: 4/3;
 
       @media (min-width: 768px) {
         aspect-ratio: unset;

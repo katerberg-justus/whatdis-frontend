@@ -1,0 +1,121 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.notifications {
+  position: fixed;
+  top: calc(#{$status-bar-height} + 0.5rem);
+  left: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1400;
+  pointer-events: none;
+
+  @media (min-width: 768px) {
+    top: calc(#{$status-bar-height} + 1rem);
+    left: auto;
+    right: 1rem;
+    max-width: 360px;
+  }
+}
+
+.notification {
+  @include card;
+  border-width: 4px;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem 3rem 0.75rem 1.5rem;
+  min-width: min(220px, 100vw);
+  background:
+    linear-gradient(135deg, rgba($blue, 0.08) 0 14%, transparent 14% 100%),
+    $bg-raised;
+  animation: notification-in 220ms ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    image-rendering: pixelated;
+    inset: 0;
+    border: 0;
+    box-shadow:
+      inset 8px 0 0 rgba($blue-muted, 0.07),
+      inset -8px 0 0 rgba($blue-dark, 0.22),
+      inset 0 -8px 0 rgba($bg, 0.2);
+  }
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      border-color: $blue;
+      box-shadow: 0 0 20px rgba($blue, 0.16);
+    }
+  }
+
+  &__body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__title {
+    font-size: $text-sm;
+    line-height: $leading;
+    color: $text;
+    text-transform: uppercase;
+  }
+
+  &__message {
+    font-size: $text-xs;
+    line-height: $leading;
+    color: $text-muted;
+    text-transform: uppercase;
+    word-break: break-word;
+  }
+
+  &__close {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    z-index: 2;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: $text-muted;
+
+    &:hover {
+      background: transparent;
+      color: $text;
+      box-shadow: none;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+@keyframes notification-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

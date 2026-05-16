@@ -10,6 +10,13 @@ export async function apiGetBattles() {
   return Array.isArray(data) ? data : (data.battles ?? [])
 }
 
+export async function apiGetBattlePackChallenges(packId, opponentId) {
+  const { data } = await apiClient.get(`/battles/challenge-packs/${packId}/challenges`, {
+    params: { opponent_id: opponentId },
+  })
+  return Array.isArray(data) ? data : (data.challenges ?? [])
+}
+
 export async function apiGetBattle(battleId) {
   const { data } = await apiClient.get(`/battles/${battleId}`)
   return data

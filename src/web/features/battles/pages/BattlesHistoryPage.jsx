@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
-import { apiGetBattles } from '@shared/api/battles'
+import { useBattles } from '../../../context/BattlesContext'
 import './BattlesPage.scss'
 
 function battleOpponent(battle, userId) {
@@ -24,12 +24,9 @@ function formatDate(iso) {
 export default function BattlesHistoryPage() {
   const { user } = useAuth()
   const { t }    = useLang()
-  const [battles, setBattles] = useState([])
-
-  useEffect(() => {
-    if (!user) return
-    apiGetBattles().then(all => setBattles(all.filter(b => b.status === 'finished'))).catch(() => {})
-  }, [user])
+  const navigate = useNavigate()
+  const { battles: allBattles } = useBattles()
+  const battles = allBattles.filter(b => b.status === 'finished')
 
   return (
     <div className="battles">
@@ -48,6 +45,7 @@ export default function BattlesHistoryPage() {
                       key={battle.id}
                       className="battles__battle battles__battle--history battles__card-enter"
                       style={{ '--card-enter-delay': `${Math.min(i, 7) * 22}ms` }}
+                      onClick={() => navigate(`/battles/${battle.id}`)}
                     >
                       <div className="battles__info">
                         <span className="battles__opponent">{battleOpponent(battle, user?.id)}</span>

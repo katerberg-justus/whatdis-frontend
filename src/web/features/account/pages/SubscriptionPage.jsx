@@ -3,6 +3,8 @@ import { useLang } from '../../../context/LangContext'
 import { useCurrency } from '../../../context/CurrencyContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
 import Button from '../../../components/Button'
+import { useDateLocale } from '../../../hooks/useDateLocale'
+import { formatLocalizedDate } from '../../../utils/dateFormat'
 import './AccountPage.scss'
 
 const PLANS = [
@@ -17,14 +19,9 @@ const PERKS = [
   { title: 'upgrade.perk3', desc: 'upgrade.perk3desc' },
 ]
 
-function formatDate(value) {
-  if (!value) return ''
-  const d = typeof value === 'number' ? new Date(value * 1000) : new Date(value)
-  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
-}
-
 export default function SubscriptionPage() {
   const { t } = useLang()
+  const dateLocale = useDateLocale()
   const { currency } = useCurrency()
   const { subscription, isActive, startCheckout, cancelSubscription } = useSubscription()
 
@@ -74,8 +71,8 @@ export default function SubscriptionPage() {
           </span>
           <span className="account__sub-meta">
             {isCancelling
-              ? `${t('subscription.cancelsOn')} ${formatDate(subscription.current_period_end)}`
-              : `${t('subscription.renewsOn')} ${formatDate(subscription.current_period_end)}`}
+              ? `${t('subscription.cancelsOn')} ${formatLocalizedDate(subscription.current_period_end, dateLocale)}`
+              : `${t('subscription.renewsOn')} ${formatLocalizedDate(subscription.current_period_end, dateLocale)}`}
           </span>
         </div>
       )}

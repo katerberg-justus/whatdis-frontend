@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
-import { apiGetBattles, apiAcceptBattle, apiDeclineBattle } from '@shared/api/battles'
+import { useBattles } from '../../../context/BattlesContext'
+import { apiAcceptBattle, apiDeclineBattle } from '@shared/api/battles'
 import Button from '../../../components/Button'
 import './BattlesPage.scss'
 
@@ -51,50 +52,20 @@ export default function BattlesPage() {
   const { user }  = useAuth()
   const navigate  = useNavigate()
   const { t }     = useLang()
-  const [battles, setBattles] = useState([])
+  const { battles, refresh } = useBattles()
 
-  const loadBattles = useCallback(() => {
-    if (!user) return
-    apiGetBattles().then(setBattles).catch(() => undefined)
-  }, [user])
-
-  useEffect(() => { loadBattles() }, [loadBattles])
-
-  useEffect(() => {
-    let pollId = null
-    const start = () => {
-      clearInterval(pollId)
-      pollId = setInterval(loadBattles, 15000)
-    }
-    const stop = () => clearInterval(pollId)
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        loadBattles()
-        start()
-      } else {
-        stop()
-      }
-    }
-
-    if (document.visibilityState === 'visible') start()
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      stop()
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [loadBattles])
+  useEffect(() => { refresh() }, [refresh])
 
   const invites = battles.filter(b => b.status === 'pending' && b.player2?.id === user?.id)
   const sentInvites = battles.filter(b => b.status === 'pending' && b.player1?.id === user?.id)
   const ongoing = battles.filter(b => b.status === 'active')
 
   async function handleAccept(battleId) {
-    try { await apiAcceptBattle(battleId); loadBattles() } catch { return undefined }
+    try { await apiAcceptBattle(battleId); refresh() } catch { return undefined }
   }
 
   async function handleDecline(battleId) {
-    try { await apiDeclineBattle(battleId); loadBattles() } catch { return undefined }
+    try { await apiDeclineBattle(battleId); refresh() } catch { return undefined }
   }
 
   return (

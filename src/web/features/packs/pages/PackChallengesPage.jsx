@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { apiGetPack, apiGetPackChallenges } from '@shared/api/challenges'
 import { apiCreateGame } from '@shared/api/games'
-import Button from '../../../components/Button'
+import IconButton from '../../../components/IconButton'
+import { BackIcon } from '../../../components/icons'
 import ChallengeCard from '../../../components/ChallengeCard'
 import './PackChallengesPage.scss'
 
@@ -28,7 +29,6 @@ export default function PackChallengesPage() {
           packId,
           position,
           difficulty: challenge.difficulty,
-          guessLimit: challenge.guess_limit,
         },
       })
     } catch {}
@@ -40,7 +40,7 @@ export default function PackChallengesPage() {
     <div className="pack-challenges">
 
       <div className="pack-challenges__header">
-        <Button color="muted" icon={null} onClick={() => navigate('/challenges')}>&lt; Back</Button>
+        <IconButton icon={<BackIcon />} onClick={() => navigate('/challenges')} aria-label="Back" />
         <div className="pack-challenges__heading">
           <h2 className="pack-challenges__title">{pack?.name ?? ''}</h2>
           {pack?.description && <p className="pack-challenges__description">{pack.description}</p>}

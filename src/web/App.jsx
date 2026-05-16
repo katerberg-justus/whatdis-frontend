@@ -4,6 +4,9 @@ import { LangProvider } from './context/LangContext'
 import { CurrencyProvider } from './context/CurrencyContext'
 import { EnergyProvider } from './context/EnergyContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
+import { NotificationProvider } from './context/NotificationContext'
+import { BattlesProvider } from './context/BattlesContext'
+import { FriendsProvider } from './context/FriendsContext'
 import Nav from './components/Nav'
 import StatusBar from './components/StatusBar'
 import ChallengesPage from './features/challenges/pages/ChallengesPage'
@@ -85,7 +88,13 @@ function App() {
           <CurrencyProvider>
             <SubscriptionProvider>
               <EnergyProvider>
-                <Layout />
+                <NotificationProvider>
+                  <BattlesProvider>
+                    <FriendsProvider>
+                      <Layout />
+                    </FriendsProvider>
+                  </BattlesProvider>
+                </NotificationProvider>
               </EnergyProvider>
             </SubscriptionProvider>
           </CurrencyProvider>

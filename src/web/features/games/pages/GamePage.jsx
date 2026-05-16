@@ -15,6 +15,7 @@ import Dialog from '../../../components/Dialog'
 import IconButton from '../../../components/IconButton'
 import { BackIcon } from '../../../components/icons'
 import { useEnergy } from '../../../context/EnergyContext'
+import { useNotifications } from '../../../context/NotificationContext'
 import Sticker, { stickerFrameTier } from '../../../components/Sticker'
 import '../../collectibles/pages/CollectiblesPage.scss'
 import './GamePage.scss'
@@ -22,6 +23,7 @@ import './GamePage.scss'
 export default function GamePage() {
   const { gameId }                = useParams()
   const { energy, depleteEnergy, syncEnergy, promptOutOfEnergy } = useEnergy()
+  const { notify }                = useNotifications()
   const navigate                  = useNavigate()
   const { t }                     = useLang()
   const [messages, setMessages]   = useState([])
@@ -65,8 +67,7 @@ export default function GamePage() {
       .catch(() => {})
   }, [gameId])
 
-  const remaining = game?.guess_limit != null ? game.guess_limit - messages.length : null
-  const done = won || (remaining !== null && remaining <= 0)
+  const done = won
 
   useEffect(() => {
     if (!timerOn || done) return
@@ -111,6 +112,14 @@ export default function GamePage() {
         return copy
       })
       syncEnergy(guess.energy_remaining)
+      for (const a of guess.new_achievements ?? []) {
+        notify({
+          key: `achievement-${a.id}`,
+          title: t('notifications.achievementUnlocked'),
+          message: a.icon ? `${a.icon} ${a.name}` : a.name,
+          link: '/achievements',
+        })
+      }
       if (guess.response === 'win') {
         setWon(true)
         const endMs = guess.created_at ? new Date(guess.created_at).getTime() : Date.now()

@@ -9,6 +9,8 @@ import Banner from '../../../components/Banner'
 import ChallengeCard from '../../../components/ChallengeCard'
 import LockedOverlay from '../../../components/LockedOverlay'
 import UpgradeDialog from '../../../components/UpgradeDialog'
+import { useDateLocale } from '../../../hooks/useDateLocale'
+import { formatLocalizedDate } from '../../../utils/dateFormat'
 import './ChallengesPage.scss'
 
 const LockBadge = () => (
@@ -67,6 +69,7 @@ export default function ChallengesPage() {
   const location = useLocation()
   const { user } = useAuth()
   const { t }        = useLang()
+  const dateLocale = useDateLocale()
   const { isActive, subscription } = useSubscription()
   const [packs,         setPacks]         = useState([])
   const [dailies,       setDailies]       = useState([])
@@ -85,6 +88,7 @@ export default function ChallengesPage() {
   const isGuest = !user || user.is_guest
   const showUpgradeBanner = !isGuest && !isActive && subscription !== undefined
   const showSignUpBanner = isGuest
+  const dailyDate = formatLocalizedDate(new Date(), dateLocale)
 
   useEffect(() => {
     apiGetPacks().then(data => setPacks(data.filter(p => {
@@ -104,10 +108,11 @@ export default function ChallengesPage() {
         state: {
           label:      t('challenges.dailySection'),
           difficulty: daily.difficulty,
-          guessLimit: daily.guess_limit,
         },
       })
-    } catch {}
+    } catch {
+      // Game creation failures are ignored here; the card remains playable.
+    }
   }
 
   return (
@@ -116,7 +121,10 @@ export default function ChallengesPage() {
 
       {dailyCards.length > 0 && (
         <section className="challenges__daily-section">
-          <h2 className="challenges__section-title">{t('challenges.dailySection')}</h2>
+          <div className="challenges__section-heading">
+            <h2 className="challenges__section-title">{t('challenges.dailySection')}</h2>
+            <p className="challenges__section-date">{dailyDate}</p>
+          </div>
           <div className="challenges__daily">
             {dailyCards.map(daily => (
               <ChallengeCard

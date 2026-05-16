@@ -47,17 +47,19 @@ const CheckSvg = () => (
   </svg>
 )
 
-export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, freeBadge, className, style }) {
+export default function ChallengeCard({ difficulty, label, subject, sticker, icon, onClick, locked, completed, disabled, freeBadge, className, style }) {
   const { t } = useLang()
   const mod = DIFF_MOD[difficulty] ?? 'blue'
   const diffKey = DIFF_LABEL_KEY[difficulty]
   const showSubject = completed && subject
+  const isDisabled = locked || disabled
 
   return (
     <div
-      className={['challenge-card', locked && 'challenge-card--locked', completed && 'challenge-card--completed', className].filter(Boolean).join(' ')}
+      className={['challenge-card', locked && 'challenge-card--locked', completed && 'challenge-card--completed', disabled && 'challenge-card--disabled', className].filter(Boolean).join(' ')}
       style={style}
-      onClick={locked ? undefined : onClick}
+      onClick={isDisabled ? undefined : onClick}
+      aria-disabled={isDisabled || undefined}
     >
       <div className="challenge-card__badges">
         <span className={`challenge-card__badge challenge-card__badge--${mod}`}>

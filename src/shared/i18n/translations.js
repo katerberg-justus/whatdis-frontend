@@ -43,6 +43,11 @@ const translations = {
     'challenges.signUpBannerEnergy':'30 daily energy',
     'challenges.playFree':          'Play Free',
 
+    'notifications.newInvite':      'New battle invite',
+    'notifications.yourTurn':       'Your turn',
+    'notifications.newFriendRequest': 'New friend request',
+    'notifications.achievementUnlocked': 'Achievement unlocked',
+
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Friends',
     'battles.tabHistory':           'History',
@@ -147,7 +152,7 @@ const translations = {
 
     'nav.upgrade':                  'Upgrade',
     'upgrade.title':                'Go Pro',
-    'upgrade.perk1':                '500 NRG per day',
+    'upgrade.perk1':                '250 NRG per day',
     'upgrade.perk1desc':            'Never run out of guesses — play as much as you want.',
     'upgrade.perk2':                'All Challenge Packs',
     'upgrade.perk2desc':            'Unlock every curated pack with hundreds of challenges.',
@@ -215,6 +220,8 @@ const translations = {
     'challenges.signUpBannerPacks': 'desbloquear packs de retos',
     'challenges.signUpBannerEnergy':'30 de energía diaria',
     'challenges.playFree':          'Juega Gratis',
+
+    'notifications.achievementUnlocked': 'Logro desbloqueado',
 
     'battles.tabBattles':           'Batallas',
     'battles.tabFriends':           'Amigos',
@@ -320,7 +327,7 @@ const translations = {
 
     'nav.upgrade':                  'Mejorar',
     'upgrade.title':                'Hazte Pro',
-    'upgrade.perk1':                '500 NRG al día',
+    'upgrade.perk1':                '250 NRG al día',
     'upgrade.perk1desc':            'Nunca te quedes sin intentos — juega sin límites.',
     'upgrade.perk2':                'Todos los Packs de Retos',
     'upgrade.perk2desc':            'Desbloquea todos los packs con cientos de retos.',
@@ -388,6 +395,8 @@ const translations = {
     'challenges.signUpBannerPacks': 'débloquer les packs de défis',
     'challenges.signUpBannerEnergy':'30 d’énergie quotidienne',
     'challenges.playFree':          'Jouer Gratuit',
+
+    'notifications.achievementUnlocked': 'Succès débloqué',
 
     'battles.tabBattles':           'Batailles',
     'battles.tabFriends':           'Amis',
@@ -493,7 +502,7 @@ const translations = {
 
     'nav.upgrade':                  'Premium',
     'upgrade.title':                'Devenir Pro',
-    'upgrade.perk1':                '500 NRG par jour',
+    'upgrade.perk1':                '250 NRG par jour',
     'upgrade.perk1desc':            'Ne manquez jamais de tentatives — jouez sans limites.',
     'upgrade.perk2':                'Tous les Packs de Défis',
     'upgrade.perk2desc':            'Débloquez tous les packs avec des centaines de défis.',
@@ -561,6 +570,8 @@ const translations = {
     'challenges.signUpBannerPacks': 'Aufgaben-Packs',
     'challenges.signUpBannerEnergy':'30 tägliche Energie',
     'challenges.playFree':          'Gratis Spielen',
+
+    'notifications.achievementUnlocked': 'Erfolg freigeschaltet',
 
     'battles.tabBattles':           'Duelle',
     'battles.tabFriends':           'Freunde',
@@ -666,7 +677,7 @@ const translations = {
 
     'nav.upgrade':                  'Upgrade',
     'upgrade.title':                'Pro werden',
-    'upgrade.perk1':                '500 NRG pro Tag',
+    'upgrade.perk1':                '250 NRG pro Tag',
     'upgrade.perk1desc':            'Nie wieder ohne Versuche — spiele ohne Grenzen.',
     'upgrade.perk2':                'Alle Aufgaben-Packs',
     'upgrade.perk2desc':            'Schalte alle Packs mit hunderten von Aufgaben frei.',
@@ -734,6 +745,8 @@ const translations = {
     'challenges.signUpBannerPacks': 'Challenge Packs',
     'challenges.signUpBannerEnergy':'30 dagelijkse energie',
     'challenges.playFree':          'Gratis Spelen',
+
+    'notifications.achievementUnlocked': 'Prestatie ontgrendeld',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Vrienden',
@@ -839,7 +852,7 @@ const translations = {
 
     'nav.upgrade':                  'Upgraden',
     'upgrade.title':                'Word Pro',
-    'upgrade.perk1':                '500 NRG per dag',
+    'upgrade.perk1':                '250 NRG per dag',
     'upgrade.perk1desc':            'Nooit zonder pogingen — speel zoveel als je wilt.',
     'upgrade.perk2':                'Alle Challenge Packs',
     'upgrade.perk2desc':            'Ontgrendel alle Challenge Packs met honderden uitdagingen.',
@@ -907,6 +920,8 @@ const translations = {
     'challenges.signUpBannerPacks': 'desbloquear pacotes de desafios',
     'challenges.signUpBannerEnergy':'30 de energia diária',
     'challenges.playFree':          'Jogue Grátis',
+
+    'notifications.achievementUnlocked': 'Conquista desbloqueada',
 
     'battles.tabBattles':           'Batalhas',
     'battles.tabFriends':           'Amigos',
@@ -1012,7 +1027,7 @@ const translations = {
 
     'nav.upgrade':                  'Atualizar',
     'upgrade.title':                'Seja Pro',
-    'upgrade.perk1':                '500 NRG por dia',
+    'upgrade.perk1':                '250 NRG por dia',
     'upgrade.perk1desc':            'Nunca fique sem tentativas — jogue sem limites.',
     'upgrade.perk2':                'Todos os pacotes de desafios',
     'upgrade.perk2desc':            'Desbloqueie todos os pacotes com centenas de desafios.',

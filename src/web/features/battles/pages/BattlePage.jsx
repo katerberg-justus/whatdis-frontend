@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
+import { useNotifications } from '../../../context/NotificationContext'
 import { apiGetBattle, apiSubmitBattleGuess } from '@shared/api/battles'
 import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
@@ -42,6 +43,7 @@ export default function BattlePage() {
   const { battleId }  = useParams()
   const { user }      = useAuth()
   const { t }         = useLang()
+  const { notify }    = useNotifications()
   const navigate      = useNavigate()
 
   const [battle,   setBattle]   = useState(null)
@@ -150,6 +152,14 @@ export default function BattlePage() {
         question: guess.content,
         finalAnswer: responseKey(guess),
       }))
+      for (const a of guess.new_achievements ?? []) {
+        notify({
+          key: `achievement-${a.id}`,
+          title: t('notifications.achievementUnlocked'),
+          message: a.icon ? `${a.icon} ${a.name}` : a.name,
+          link: '/achievements',
+        })
+      }
       await loadBattle()
       window.clearTimeout(pendingTimerRef.current)
       pendingTimerRef.current = window.setTimeout(() => {

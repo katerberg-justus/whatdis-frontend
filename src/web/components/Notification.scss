@@ -31,9 +31,7 @@
   gap: 0.5rem;
   padding: 0.75rem 3rem 0.75rem 1.5rem;
   min-width: min(220px, 100vw);
-  background:
-    linear-gradient(135deg, rgba($blue, 0.08) 0 14%, transparent 14% 100%),
-    $bg-raised;
+  background: $bg-raised;
   animation: notification-in 220ms ease-out;
 
   &::before {

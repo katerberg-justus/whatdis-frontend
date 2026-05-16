@@ -14,6 +14,122 @@ $control-line-height: 1;
   box-shadow: 0 0 20px rgba($blue, 0.04);
 }
 
+@mixin pixel-panel-colors(
+  $accent: $blue,
+  $accent-dark: $blue-dark,
+  $accent-muted: $blue-muted,
+  $gradient-alpha: 0.08,
+  $start-alpha: 0.07,
+  $end-alpha: 0.22
+) {
+  background: $bg-raised;
+
+  &::before {
+    border: 2px solid rgba($accent, 0.24);
+    box-shadow:
+      inset 0 0 0 6px rgba($bg-surface, 0.62);
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+@mixin pixel-panel(
+  $accent: $blue,
+  $accent-dark: $blue-dark,
+  $accent-muted: $blue-muted,
+  $gradient-alpha: 0.08,
+  $start-alpha: 0.07,
+  $end-alpha: 0.22
+) {
+  @include card;
+  @include pixel-panel-colors($accent, $accent-dark, $accent-muted, $gradient-alpha, $start-alpha, $end-alpha);
+  border-width: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    image-rendering: pixelated;
+    inset: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    image-rendering: pixelated;
+    inset: 4px;
+  }
+}
+
+@mixin pixel-panel-framed-colors(
+  $accent: $blue,
+  $accent-dark: $blue-dark,
+  $accent-muted: $blue-muted,
+  $gradient-alpha: 0.1,
+  $border-alpha: 0.24,
+  $start-alpha: 0.08,
+  $end-alpha: 0.28
+) {
+  background: $bg-raised;
+
+  &::before {
+    border: 2px solid rgba($accent-dark, 0.82);
+    box-shadow:
+      inset 0 0 0 6px rgba($accent, $border-alpha);
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+@mixin pixel-panel-framed(
+  $accent: $blue,
+  $accent-dark: $blue-dark,
+  $accent-muted: $blue-muted,
+  $gradient-alpha: 0.1,
+  $border-alpha: 0.24,
+  $start-alpha: 0.08,
+  $end-alpha: 0.28
+) {
+  @include card;
+  @include pixel-panel-framed-colors($accent, $accent-dark, $accent-muted, $gradient-alpha, $border-alpha, $start-alpha, $end-alpha);
+  border-width: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    image-rendering: pixelated;
+    inset: 6px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    image-rendering: pixelated;
+    inset: 6px;
+  }
+}
+
+@mixin pixel-panel-hover($accent: $blue) {
+  border-color: $accent;
+  box-shadow: 0 0 20px rgba($accent, 0.16);
+}
+
+@mixin pixel-panel-muted-hover {
+  border-color: $bg-border;
+  box-shadow: 0 0 20px rgba($blue, 0.04);
+}
+
 // Retro outlined button — inherits $font, snaps on hover (no transition)
 @mixin retro-btn($color: $text) {
   box-sizing: border-box;

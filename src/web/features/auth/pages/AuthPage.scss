@@ -138,7 +138,7 @@
   }
 
   &__form {
-    @include card;
+    @include pixel-panel;
     position: relative;
     z-index: 1;
     display: flex;

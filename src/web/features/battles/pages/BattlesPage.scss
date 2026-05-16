@@ -47,30 +47,12 @@ $battle-card-x-mobile: 1rem;
   &__invite,
   &__battle {
     --battle-icon-cutout: #{$bg-raised};
-    @include card;
-    border-width: 4px;
-    position: relative;
-    overflow: hidden;
+    @include pixel-panel;
     display: flex;
     align-items: center;
     gap: 1rem;
     padding: $battle-card-x;
     flex-wrap: wrap;
-    background:
-      linear-gradient(135deg, rgba($blue, 0.08) 0 14%, transparent 14% 100%),
-      $bg-raised;
-
-    &::before {
-      content: '';
-      position: absolute;
-      pointer-events: none;
-      image-rendering: pixelated;
-      inset: 0;
-      box-shadow:
-        inset 8px 0 0 rgba($blue-muted, 0.07),
-        inset -8px 0 0 rgba($blue-dark, 0.22),
-        inset 0 -8px 0 rgba($bg, 0.2);
-    }
 
     > * {
       position: relative;
@@ -83,8 +65,7 @@ $battle-card-x-mobile: 1rem;
     cursor: pointer;
 
     &:hover {
-      border-color: $blue;
-      box-shadow: 0 0 20px rgba($blue, 0.16);
+      @include pixel-panel-hover;
     }
   }
 

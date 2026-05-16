@@ -33,9 +33,7 @@
   // ── CTA — green dominant ────────────────────────────────────────────────────
 
   &--cta {
-    background:
-      linear-gradient(135deg, rgba($green, 0.12) 0 12%, transparent 12% 100%),
-      rgba($green, 0.06);
+    background: rgba($green, 0.06);
     border-color: $green;
     box-shadow: 0 0 20px rgba($green, 0.1);
   }
@@ -43,9 +41,7 @@
   // ── Muted — background surface, green border ────────────────────────────────
 
   &--muted {
-    background:
-      linear-gradient(135deg, rgba($blue, 0.08) 0 12%, transparent 12% 100%),
-      $bg-raised;
+    background: $bg-raised;
     border-color: rgba($green, 0.3);
 
     &::before {

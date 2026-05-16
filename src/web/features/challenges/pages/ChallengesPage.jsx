@@ -160,9 +160,6 @@ export default function ChallengesPage() {
               {packs.map((pack, i) => {
                 const total     = pack.total_count ?? 0
                 const completed = pack.completed_count ?? pack.completed ?? null
-                const pct       = completed != null && total > 0
-                  ? Math.round((completed / total) * 100)
-                  : null
                 return (
                   <div
                     key={pack.id}
@@ -181,18 +178,10 @@ export default function ChallengesPage() {
                     <PackArt locked={pack.is_locked} />
                     <div className="challenges__pack-copy">
                       <span className="challenges__pack-name">{pack.name}</span>
-                      {pack.description && (
-                        <span className="challenges__pack-description">{pack.description}</span>
-                      )}
                     </div>
                     <span className="challenges__pack-count">
                       {completed != null ? `${completed}/${total}` : total}
                     </span>
-                    {pct != null && (
-                      <div className="challenges__progress">
-                        <div className="challenges__progress-fill" style={{ width: `${pct}%` }} />
-                      </div>
-                    )}
                   </div>
                 )
               })}

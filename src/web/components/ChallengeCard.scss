@@ -2,40 +2,20 @@
 @use '../styles/mixins' as *;
 
 .challenge-card {
-  @include card;
-  border-width: 4px;
-  position: relative;
-  overflow: hidden;
+  @include pixel-panel;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
   cursor: pointer;
-  background:
-    linear-gradient(135deg, rgba($blue, 0.08) 0 14%, transparent 14% 100%),
-    $bg-raised;
 
   @media (max-width: 559px) {
     min-height: 11rem;
   }
 
-  &::before {
-    content: '';
-    position: absolute;
-    pointer-events: none;
-    image-rendering: pixelated;
-    inset: 0;
-    border: 0;
-    box-shadow:
-      inset 8px 0 0 rgba($blue-muted, 0.07),
-      inset -8px 0 0 rgba($blue-dark, 0.22),
-      inset 0 -8px 0 rgba($bg, 0.2);
-  }
-
   &:hover {
-    border-color: $blue;
-    box-shadow: 0 0 20px rgba($blue, 0.16);
+    @include pixel-panel-hover;
   }
 
   &--disabled {
@@ -44,46 +24,25 @@
     opacity: 0.48;
 
     &:hover {
-      border-color: $bg-border;
-      box-shadow: 0 0 20px rgba($blue, 0.04);
+      @include pixel-panel-muted-hover;
     }
   }
 
   &--locked {
     cursor: default;
-    background:
-      linear-gradient(135deg, rgba($pink, 0.07) 0 14%, transparent 14% 100%),
-      $bg-raised;
-
-    &::before {
-      box-shadow:
-        inset 8px 0 0 rgba($pink-muted, 0.06),
-        inset -8px 0 0 rgba($pink-dark, 0.2),
-        inset 0 -8px 0 rgba($bg, 0.2);
-    }
+    @include pixel-panel-colors($pink, $pink-dark, $pink-muted, 0.07, 0.06, 0.2);
 
     &:hover {
-      border-color: $bg-border;
-      box-shadow: 0 0 20px rgba($blue, 0.04);
+      @include pixel-panel-muted-hover;
     }
   }
 
   &--completed {
     border-color: $green;
-    background:
-      linear-gradient(135deg, rgba($green, 0.1) 0 14%, transparent 14% 100%),
-      $bg-raised;
-
-    &::before {
-      box-shadow:
-        inset 8px 0 0 rgba($green, 0.08),
-        inset -8px 0 0 rgba($green-dark, 0.24),
-        inset 0 -8px 0 rgba($bg, 0.2);
-    }
+    @include pixel-panel-colors($green, $green-dark, $green, 0.1, 0.08, 0.24);
 
     &:hover {
-      border-color: $green;
-      box-shadow: 0 0 20px rgba($green, 0.16);
+      @include pixel-panel-hover($green);
     }
   }
 

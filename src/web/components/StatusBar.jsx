@@ -7,7 +7,32 @@ import './StatusBar.scss'
 
 const FILL_DURATION_MS = 800
 
-const BLOCK_COUNT = 10
+const BLOCK_BREAKPOINTS = [
+  { query: '(min-width: 400px)', count: 10 },
+  { query: '(min-width: 360px)', count: 8 },
+]
+const BLOCK_COUNT_FALLBACK = 6
+
+function pickBlockCount() {
+  if (typeof window === 'undefined' || !window.matchMedia) return 10
+  for (const { query, count } of BLOCK_BREAKPOINTS) {
+    if (window.matchMedia(query).matches) return count
+  }
+  return BLOCK_COUNT_FALLBACK
+}
+
+function useBlockCount() {
+  const [count, setCount] = useState(pickBlockCount)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    const mqls = BLOCK_BREAKPOINTS.map(({ query }) => window.matchMedia(query))
+    const update = () => setCount(pickBlockCount())
+    update()
+    mqls.forEach((mql) => mql.addEventListener('change', update))
+    return () => mqls.forEach((mql) => mql.removeEventListener('change', update))
+  }, [])
+  return count
+}
 
 function energyColor(ratio) {
   if (ratio > 0.6) return 'blue'
@@ -18,6 +43,7 @@ function energyColor(ratio) {
 export default function StatusBar() {
   const { energy, maxEnergy } = useEnergy()
   const { user } = useAuth()
+  const blockCount = useBlockCount()
   const hasEnergy = energy !== null
   const canBuyNrg = Boolean(user && !user.is_guest)
   const [purchaseOpen, setPurchaseOpen] = useState(false)
@@ -44,9 +70,10 @@ export default function StatusBar() {
   }, [hasEnergy, energy])
 
   const current = hasEnergy ? displayEnergy : 0
-  const filled = hasEnergy ? Math.round((current / maxEnergy) * BLOCK_COUNT) : 0
+  const overMax = hasEnergy && current > maxEnergy
+  const filled = hasEnergy ? Math.min(blockCount, Math.round((current / maxEnergy) * blockCount)) : 0
   const ratio  = hasEnergy ? current / maxEnergy : 0
-  const color  = energyColor(ratio)
+  const color  = overMax ? 'pink' : energyColor(ratio)
   const padWidth = hasEnergy ? String(energy).length : 1
   const paddedCurrent = String(current).padStart(padWidth, '0')
   const openPurchaseDialog = () => {
@@ -65,14 +92,21 @@ export default function StatusBar() {
         >
           <EnergyDrinkIcon className="status-bar__can" />
           <span className="status-bar__track" aria-label={hasEnergy ? `${energy} of ${maxEnergy} energy` : 'Energy loading'}>
-            {Array.from({ length: BLOCK_COUNT }, (_, i) => (
+            {Array.from({ length: blockCount }, (_, i) => (
               <span
                 key={i}
                 className={`status-bar__block status-bar__block--${i < filled ? color : 'empty'}`}
               />
             ))}
           </span>
-          <span className="status-bar__count">{hasEnergy ? `${paddedCurrent}/${maxEnergy}` : '\u00a0'}</span>
+          <span className="status-bar__count">
+            {hasEnergy ? (
+              <>
+                <span className={overMax ? 'status-bar__count-current--pink' : undefined}>{paddedCurrent}</span>
+                {`/${maxEnergy}`}
+              </>
+            ) : '\u00a0'}
+          </span>
         </button>
         {canBuyNrg && (
           <button

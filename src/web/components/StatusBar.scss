@@ -123,6 +123,10 @@
     flex-shrink: 0;
   }
 
+  &__count-current--pink {
+    color: $pink;
+  }
+
   &__add {
     position: relative;
     display: inline-flex;
@@ -131,7 +135,7 @@
     flex: 0 0 auto;
     width: 14px;
     height: 14px;
-    margin-left: -0.5rem;
+    margin-left: -0.25rem;
     padding: 0;
     border: none;
     background: transparent;
@@ -145,7 +149,7 @@
       left: 50%;
       top: 50%;
       width: 10px;
-      height: 2px;
+      height: 4px;
       background: currentColor;
       transform: translate(-50%, -50%);
     }

@@ -1,0 +1,115 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.radio-btn {
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 80px;
+  margin: 0;
+  padding: $control-padding;
+  font-family: $font;
+  font-size: $control-font-size;
+  font-weight: 400;
+  line-height: $control-line-height;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: $bg-surface;
+  border: 2px solid $bg-border;
+  color: $text-muted;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    image-rendering: pixelated;
+    box-shadow:
+      inset 4px 4px 0 rgba(255, 255, 255, 0.07),
+      inset -4px -4px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover {
+    color: $text;
+    border-color: $text-muted;
+  }
+
+  &:hover::before {
+    box-shadow:
+      inset 4px 4px 0 rgba(255, 255, 255, 0.18),
+      inset -4px -4px 0 rgba(0, 0, 0, 0.26);
+  }
+
+  &--checked {
+    color: $text;
+    border-color: $text;
+    box-shadow: 0 0 14px rgba($text, 0.18);
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+
+    &:hover {
+      color: $text-muted;
+      border-color: $bg-border;
+      box-shadow: none;
+    }
+  }
+
+  &--full {
+    width: 100%;
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &__label,
+  &__mark {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__label {
+    min-width: 0;
+  }
+
+  &__mark {
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    margin-left: auto;
+    border: 2px solid currentColor;
+    box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  &--checked &__mark {
+    background: currentColor;
+    box-shadow:
+      inset 2px 2px 0 rgba(255, 255, 255, 0.22),
+      inset -2px -2px 0 rgba(0, 0, 0, 0.28);
+  }
+}
+
+@media (max-width: 767px) {
+  .radio-btn {
+    font-size: $control-mobile-font-size;
+    min-height: calc(#{$control-mobile-font-size} + 1.75rem + 8px);
+  }
+}
+
+@media (min-width: 768px) {
+  .radio-btn {
+    padding: calc(0.875rem + 1px) calc(1.125rem + 1px);
+  }
+}

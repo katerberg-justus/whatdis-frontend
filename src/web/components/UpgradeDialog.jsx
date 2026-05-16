@@ -4,6 +4,7 @@ import { useCurrency } from '../context/CurrencyContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import Dialog from './Dialog'
 import Button from './Button'
+import RadioButton from './RadioButton'
 import './UpgradeDialog.scss'
 
 const PLANS = [
@@ -45,15 +46,17 @@ export default function UpgradeDialog({ onClose, fullscreen = false }) {
       </ul>
       <div className="upgrade__plans">
         {PLANS.map(({ id, key, prices }) => (
-          <button
+          <RadioButton
             key={id}
-            type="button"
-            className={['upgrade__plan', selected === id && 'upgrade__plan--active'].filter(Boolean).join(' ')}
-            onClick={() => setSelected(id)}
+            name="upgrade-plan"
+            value={id}
+            checked={selected === id}
+            className="upgrade__plan"
+            onChange={() => setSelected(id)}
           >
             <span className="upgrade__plan-period">{t(key)}</span>
             <span className="upgrade__plan-price">{prices[currency]}</span>
-          </button>
+          </RadioButton>
         ))}
       </div>
       <Button fullWidth disabled={loading} onClick={handleUpgrade}>

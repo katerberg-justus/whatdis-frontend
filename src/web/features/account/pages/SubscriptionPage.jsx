@@ -3,6 +3,7 @@ import { useLang } from '../../../context/LangContext'
 import { useCurrency } from '../../../context/CurrencyContext'
 import { useSubscription } from '../../../context/SubscriptionContext'
 import Button from '../../../components/Button'
+import RadioButton from '../../../components/RadioButton'
 import { useDateLocale } from '../../../hooks/useDateLocale'
 import { formatLocalizedDate } from '../../../utils/dateFormat'
 import './AccountPage.scss'
@@ -34,6 +35,8 @@ export default function SubscriptionPage() {
   const [confirming, setConfirming] = useState(false)
   const [error,      setError]      = useState(null)
   const userSelectedPlan = useRef(false)
+  const selectedPlanIdx = PLANS.findIndex(p => p.id === selected)
+  const hasSelectedUpgrade = !isActive || selectedPlanIdx > currentPlanIdx
 
   useEffect(() => {
     if (!userSelectedPlan.current && subscription?.plan_id) {
@@ -42,6 +45,8 @@ export default function SubscriptionPage() {
   }, [subscription?.plan_id])
 
   const handleCheckout = async () => {
+    if (!hasSelectedUpgrade) return
+
     setLoading(true)
     try { await startCheckout(selected, currency) } catch { setLoading(false) }
   }
@@ -95,25 +100,26 @@ export default function SubscriptionPage() {
         {PLANS.map(({ id, key, prices }, idx) => {
           const locked = isActive && idx <= currentPlanIdx
           return (
-          <button
-            key={id}
-            type="button"
-            className={['upgrade__plan', selected === id && 'upgrade__plan--active', locked && 'upgrade__plan--locked'].filter(Boolean).join(' ')}
-            onClick={() => {
-              if (!locked) {
+            <RadioButton
+              key={id}
+              name="subscription-plan"
+              value={id}
+              checked={selected === id}
+              disabled={locked}
+              className="upgrade__plan"
+              onChange={() => {
                 userSelectedPlan.current = true
                 setSelected(id)
-              }
-            }}
-          >
-            <span className="upgrade__plan-period">{t(key)}</span>
-            <span className="upgrade__plan-price">{prices[currency]}</span>
-          </button>
+              }}
+            >
+              <span className="upgrade__plan-period">{t(key)}</span>
+              <span className="upgrade__plan-price">{prices[currency]}</span>
+            </RadioButton>
           )
         })}
       </div>
 
-      <Button fullWidth disabled={loading} onClick={handleCheckout}>
+      <Button fullWidth disabled={loading || !hasSelectedUpgrade} onClick={handleCheckout}>
         {loading ? t('upgrade.redirecting') : isActive ? t('subscription.changePlan') : t('upgrade.cta')}
       </Button>
 

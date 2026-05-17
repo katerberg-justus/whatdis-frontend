@@ -84,21 +84,20 @@
   &__cans {
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 0.125rem;
+    justify-content: flex-end;
     min-width: 0;
   }
 
-  &__can-label {
-    position: absolute;
-    left: 50%;
-    bottom: 9px;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 0.875rem;
-    line-height: 1;
-    pointer-events: none;
+  &__cans-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+
+    & + & {
+      margin-top: -18px;
+    }
   }
 
   &__details {

@@ -7,8 +7,8 @@ export async function apiCreateBattle(payload) {
   return data
 }
 
-export async function apiGetBattles() {
-  const { data } = await apiClient.get('/battles')
+export async function apiGetBattles(params) {
+  const { data } = await apiClient.get('/battles', { params })
   return Array.isArray(data) ? data : (data.battles ?? [])
 }
 
@@ -41,11 +41,12 @@ export async function apiSubmitBattleGuess(battleId, content) {
 }
 
 export function useBattlesQuery(options = {}) {
+  const { params, ...queryOptions } = options
   return useQuery({
-    queryKey: qk.battles,
-    queryFn: apiGetBattles,
+    queryKey: params ? [...qk.battles, params] : qk.battles,
+    queryFn: () => apiGetBattles(params),
     staleTime: 10 * 1000,
-    ...options,
+    ...queryOptions,
   })
 }
 

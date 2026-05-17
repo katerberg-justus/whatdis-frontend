@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from './clients'
 import { qk } from './queryKeys'
 
-export async function apiGetGames() {
-  const { data } = await apiClient.get('/games')
+export async function apiGetGames(params) {
+  const { data } = await apiClient.get('/games', { params })
   return Array.isArray(data) ? data : (data.games ?? [])
 }
 
@@ -33,11 +33,12 @@ export async function apiRequestHint(gameId) {
 }
 
 export function useGamesQuery(options = {}) {
+  const { params, ...queryOptions } = options
   return useQuery({
-    queryKey: qk.games,
-    queryFn: apiGetGames,
+    queryKey: params ? [...qk.games, params] : qk.games,
+    queryFn: () => apiGetGames(params),
     staleTime: 30 * 1000,
-    ...options,
+    ...queryOptions,
   })
 }
 

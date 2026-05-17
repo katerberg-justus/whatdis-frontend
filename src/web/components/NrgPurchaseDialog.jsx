@@ -14,10 +14,10 @@ const FALLBACK_BOOSTERS = [
   { booster_id: 'nrg_booster_10k', name: '10K NRG Booster', energy_boost: 10000 },
 ]
 
-const CAN_COUNT = {
-  nrg_booster_1k: 1,
-  nrg_booster_5k: 2,
-  nrg_booster_10k: 3,
+const CAN_LAYOUT = {
+  nrg_booster_1k:  [[1]],
+  nrg_booster_5k:  [[2], [1]],
+  nrg_booster_10k: [[3], [2], [1]],
 }
 
 const PRICES = {
@@ -71,10 +71,13 @@ export default function NrgPurchaseDialog({ onClose }) {
                 <span className="nrg-dialog__popular">{t('nrg.popular')}</span>
               )}
               <span className="nrg-dialog__cans">
-                {Array.from({ length: CAN_COUNT[booster.booster_id] ?? 1 }, (_, index) => (
-                  <EnergyDrinkIcon key={index} label={false} scale={1.8} />
+                {(CAN_LAYOUT[booster.booster_id] ?? [[1]]).map((count, rowIdx) => (
+                  <span key={rowIdx} className="nrg-dialog__cans-row">
+                    {Array.from({ length: count }, (_, i) => (
+                      <EnergyDrinkIcon key={i} scale={1.4} />
+                    ))}
+                  </span>
                 ))}
-                <span className="nrg-dialog__can-label">NRG</span>
               </span>
               <span className="nrg-dialog__details">
                 <span className="nrg-dialog__amount">{formatEnergy(booster.energy_boost)} NRG</span>

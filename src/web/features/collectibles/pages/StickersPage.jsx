@@ -28,8 +28,8 @@ export default function StickersPage() {
   const { user } = useAuth()
   const { t } = useLang()
 
-  const { data: games = [] }   = useGamesQuery()
-  const { data: battles = [] } = useBattlesQuery()
+  const { data: games = [] }   = useGamesQuery({ params: { completed: true } })
+  const { data: battles = [] } = useBattlesQuery({ params: { completed: true } })
   const { data: packs = [] }   = usePacksQuery()
   const { data: dailies = [] } = useDailyChallengesQuery()
 

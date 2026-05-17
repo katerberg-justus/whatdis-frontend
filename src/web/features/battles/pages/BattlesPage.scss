@@ -277,6 +277,69 @@ $battle-card-x-mobile: 1rem;
     flex-wrap: wrap;
   }
 
+  .friends__referral {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .friends__referral-copy,
+  .friends__referral-share {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .friends__referral-copy {
+    align-items: stretch;
+    margin: 0.375rem 0 0.625rem;
+  }
+
+  .friends__referral-url {
+    @include retro-input;
+    flex: 1 1 16rem;
+    min-width: 0;
+    width: auto;
+    border-color: rgba($blue-muted, 0.45);
+
+    &:focus {
+      border-color: $blue;
+    }
+  }
+
+  .friends__referral-share-title {
+    width: 100%;
+    margin: 0;
+    font-size: $text-xs;
+    color: $text-muted;
+    text-transform: uppercase;
+  }
+
+  .friends__referral-share {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .friends__referral-share-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding-block: 0.625rem;
+    font-size: $text-xs;
+
+    .btn__label {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
   // ── Fixed footer ──────────────────────────────────────────────────────────
 
   &__footer {
@@ -322,6 +385,14 @@ $battle-card-x-mobile: 1rem;
   @media (max-width: 520px) {
     gap: 1.5rem;
 
+    .friends__referral-share {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .friends__referral-copy > button {
+      flex: 1 1 100%;
+    }
+
     &__invite,
     &__battle {
       align-items: flex-start;
@@ -352,6 +423,12 @@ $battle-card-x-mobile: 1rem;
       > * {
         width: 100%;
       }
+    }
+  }
+
+  @media (max-width: 360px) {
+    .friends__referral-share {
+      grid-template-columns: 1fr;
     }
   }
 }

@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useLang } from '../../../context/LangContext'
 import { useFriends } from '../../../context/FriendsContext'
+import { useMeQuery } from '@shared/api/users'
 import {
   useSendFriendInviteMutation,
   useAcceptFriendRequestMutation,
   useRemoveFriendMutation,
 } from '@shared/api/friends'
+import Banner from '../../../components/Banner'
 import Button from '../../../components/Button'
 import IconButton from '../../../components/IconButton'
 import { TrashIcon, EyeIcon } from '../../../components/icons'
@@ -25,10 +27,21 @@ const SwordIcon = () => (
   </svg>
 )
 
+function getReferralUrl(code) {
+  if (!code || typeof window === 'undefined') return ''
+  return new URL(`/register?ref=${encodeURIComponent(code)}`, window.location.origin).toString()
+}
+
+function openShareWindow(url) {
+  if (typeof window === 'undefined') return
+  window.open(url, '_blank', 'noopener,noreferrer,width=720,height=640')
+}
+
 export default function FriendsPage() {
   const { t }      = useLang()
   const navigate   = useNavigate()
   const { friends, requests } = useFriends()
+  const { data: me } = useMeQuery()
 
   const sendInviteMutation = useSendFriendInviteMutation()
   const acceptMutation = useAcceptFriendRequestMutation()
@@ -37,8 +50,24 @@ export default function FriendsPage() {
   const [email,     setEmail]     = useState('')
   const [error,     setError]     = useState('')
   const [success,   setSuccess]   = useState('')
+  const [copied,    setCopied]    = useState(false)
 
   const sending = sendInviteMutation.isPending
+  const referralUrl = useMemo(() => getReferralUrl(me?.referral_code), [me?.referral_code])
+  const shareText = t('friends.referralShareText')
+  const encodedText = encodeURIComponent(shareText)
+  const encodedUrl = encodeURIComponent(referralUrl)
+
+  async function handleCopyReferral() {
+    if (!referralUrl || typeof navigator === 'undefined') return
+    try {
+      await navigator.clipboard.writeText(referralUrl)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1800)
+    } catch {
+      setError(t('friends.referralCopyError'))
+    }
+  }
 
   async function handleSendInvite(e) {
     e.preventDefault()
@@ -65,7 +94,6 @@ export default function FriendsPage() {
   return (
     <>
     <div className="battles">
-
           {/* Incoming requests */}
           {requests.length > 0 && (
             <section className="battles__section">
@@ -134,6 +162,64 @@ export default function FriendsPage() {
             {error   && <p className="battles__error">{error}</p>}
             {success && <p className="battles__success">{success}</p>}
           </section>
+
+          {referralUrl && (
+            <Banner
+              variant="muted"
+              title={t('friends.referralTitle')}
+              message={t('friends.referralMessage')}
+            >
+              <div className="friends__referral">
+                <div className="friends__referral-copy">
+                  <input
+                    className="friends__referral-url"
+                    value={referralUrl}
+                    readOnly
+                    aria-label={t('friends.referralUrlLabel')}
+                    onFocus={e => e.target.select()}
+                  />
+                  <Button color="blue" icon={null} onClick={handleCopyReferral}>
+                    {copied ? t('friends.referralCopied') : t('friends.referralCopy')}
+                  </Button>
+                </div>
+                <p className="friends__referral-share-title">{t('friends.referralShareTitle')}</p>
+                <div className="friends__referral-share" aria-label={t('friends.referralShareTitle')}>
+                  <Button
+                    color="muted"
+                    className="friends__referral-share-btn"
+                    icon={null}
+                    onClick={() => openShareWindow(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`)}
+                  >
+                    {t('game.shareX')}
+                  </Button>
+                  <Button
+                    color="muted"
+                    className="friends__referral-share-btn"
+                    icon={null}
+                    onClick={() => openShareWindow(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`)}
+                  >
+                    {t('game.shareFacebook')}
+                  </Button>
+                  <Button
+                    color="muted"
+                    className="friends__referral-share-btn"
+                    icon={null}
+                    onClick={() => openShareWindow(`https://wa.me/?text=${encodedText}%20${encodedUrl}`)}
+                  >
+                    {t('game.shareWhatsApp')}
+                  </Button>
+                  <Button
+                    color="muted"
+                    className="friends__referral-share-btn"
+                    icon={null}
+                    onClick={() => openShareWindow(`https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`)}
+                  >
+                    {t('game.shareReddit')}
+                  </Button>
+                </div>
+              </div>
+            </Banner>
+          )}
 
     </div>
     </>

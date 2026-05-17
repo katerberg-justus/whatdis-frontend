@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { apiCheckUserAvailability } from '@shared/api/users'
@@ -11,6 +11,7 @@ import './AuthPage.scss'
 export default function RegisterPage() {
   const { register } = useAuth()
   const navigate     = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t }        = useLang()
   const [username, setUsername] = useState('')
   const [email,    setEmail]    = useState('')
@@ -45,7 +46,7 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
     try {
-      await register(username, email, password)
+      await register(username, email, password, searchParams.get('ref') || searchParams.get('referral_code'))
       navigate('/challenges', { state: { promptUpgrade: true } })
     } catch (err) {
       setError(err.message)

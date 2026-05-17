@@ -62,13 +62,13 @@ export function AuthProvider({ children }) {
     persist(await apiMe(), username)
   }
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, referralCode) => {
     qc.clear()
     if (!user) {
       localStorage.removeItem('logged_out')
-      await apiGuestAuth(navigator.language)
+      await apiGuestAuth(navigator.language, referralCode)
     }
-    const data = await apiClaimAccount(name, email, password)
+    const data = await apiClaimAccount(name, email, password, referralCode)
     persist(data, name)
   }
 

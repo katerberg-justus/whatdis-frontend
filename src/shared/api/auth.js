@@ -2,17 +2,45 @@ import { useMutation } from '@tanstack/react-query'
 import { authClient, apiClient, clearCsrfTokens, getCsrfToken } from './clients'
 import { queryClient } from './queryClient'
 
+const REFERRAL_STORAGE_KEY = 'referral_code'
+
+function getReferralCode(explicitCode) {
+  if (typeof window === 'undefined') return null
+  if (explicitCode) {
+    localStorage.setItem(REFERRAL_STORAGE_KEY, explicitCode)
+    return explicitCode
+  }
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('ref') || params.get('referral_code')
+  if (code) {
+    localStorage.setItem(REFERRAL_STORAGE_KEY, code)
+    return code
+  }
+  return localStorage.getItem(REFERRAL_STORAGE_KEY)
+}
+
 export async function apiLogin(username, password) {
   const { data } = await authClient.post('/auth/login', { username, password })
   return data
 }
 
-export async function apiGuestAuth(language) {
-  await authClient.post('/auth/guest', language ? { language } : {})
+export async function apiGuestAuth(language, referralCode) {
+  const code = getReferralCode(referralCode)
+  await authClient.post('/auth/guest', {
+    ...(language ? { language } : {}),
+    ...(code ? { referral_code: code } : {}),
+  })
 }
 
-export async function apiClaimAccount(name, email, password) {
-  const { data } = await apiClient.post('/me/claim', { name, email, password })
+export async function apiClaimAccount(name, email, password, referralCode) {
+  const code = getReferralCode(referralCode)
+  const { data } = await apiClient.post('/me/claim', {
+    name,
+    email,
+    password,
+    ...(code ? { referral_code: code } : {}),
+  })
+  localStorage.removeItem(REFERRAL_STORAGE_KEY)
   return data
 }
 
@@ -47,7 +75,7 @@ export function useLogoutMutation() {
 
 export function useClaimAccountMutation() {
   return useMutation({
-    mutationFn: ({ name, email, password }) => apiClaimAccount(name, email, password),
+    mutationFn: ({ name, email, password, referralCode }) => apiClaimAccount(name, email, password, referralCode),
     onSuccess: () => {
       queryClient.clear()
     },

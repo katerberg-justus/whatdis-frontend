@@ -71,13 +71,16 @@ export default function NrgPurchaseDialog({ onClose }) {
                 <span className="nrg-dialog__popular">{t('nrg.popular')}</span>
               )}
               <span className="nrg-dialog__cans">
-                {(CAN_LAYOUT[booster.booster_id] ?? [[1]]).map((count, rowIdx) => (
-                  <span key={rowIdx} className="nrg-dialog__cans-row">
-                    {Array.from({ length: count }, (_, i) => (
-                      <EnergyDrinkIcon key={i} scale={1.4} />
-                    ))}
-                  </span>
-                ))}
+                {(() => {
+                  const rows = CAN_LAYOUT[booster.booster_id] ?? [[1]]
+                  return rows.map((count, rowIdx) => (
+                    <span key={rowIdx} className="nrg-dialog__cans-row">
+                      {Array.from({ length: count }, (_, i) => (
+                        <EnergyDrinkIcon key={i} scale={1.4} label={rowIdx === rows.length - 1} />
+                      ))}
+                    </span>
+                  ))
+                })()}
               </span>
               <span className="nrg-dialog__details">
                 <span className="nrg-dialog__amount">{formatEnergy(booster.energy_boost)} NRG</span>

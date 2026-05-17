@@ -30,6 +30,13 @@
 @media (max-width: 767px) {
   .input {
     font-size: $control-mobile-font-size;
+
+    // iOS Safari auto-zooms on focus for inputs under 16px. Scope the bump
+    // to iOS only via the -webkit-touch-callout heuristic so Android keeps
+    // the smaller font.
+    @supports (-webkit-touch-callout: none) {
+      font-size: 1rem;
+    }
   }
 }
 

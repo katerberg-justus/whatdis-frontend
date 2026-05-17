@@ -1,6 +1,18 @@
 @use '../styles/variables' as *;
 @use '../styles/mixins' as *;
 
+$dialog-transition: 0.25s ease;
+
+@keyframes dialog-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .dialog-overlay {
   position: fixed;
   inset: 0;
@@ -10,6 +22,7 @@
   justify-content: center;
   z-index: 1500;
   padding: 0.75rem;
+  animation: dialog-overlay-in $dialog-transition both;
 
   @media (min-width: 768px) {
     padding: 1.5rem;
@@ -20,6 +33,7 @@
   @include card;
   border-width: 4px;
   position: relative;
+  animation: dialog-in $dialog-transition both;
   width: 100%;
   max-width: 400px;
   padding: 1rem;

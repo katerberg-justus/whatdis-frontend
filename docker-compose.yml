@@ -26,12 +26,12 @@ services:
       /bin/sh -c "trap exit TERM;
         PRIMARY=app.whatdis.nl;
         EMAIL=justuskaterberg@hotmail.com;
-        DOMAIN_ARGS='-d whatdis.nl -d app.whatdis.nl -d api.whatdis.nl';
+        DOMAIN_ARGS='-d whatdis.nl -d app.whatdis.nl -d api.whatdis.nl -d whatdis.app';
         sleep 10;
         while :; do
           if [ ! -s \"/etc/letsencrypt/live/$$PRIMARY/fullchain.pem\" ] \
              || openssl x509 -in /etc/letsencrypt/live/$$PRIMARY/fullchain.pem -noout -issuer | grep -q \"CN=$$PRIMARY\" \
-             || ! openssl x509 -in /etc/letsencrypt/live/$$PRIMARY/fullchain.pem -noout -ext subjectAltName | grep -q \"DNS:whatdis.nl\"; then
+             || ! openssl x509 -in /etc/letsencrypt/live/$$PRIMARY/fullchain.pem -noout -ext subjectAltName | grep -q \"DNS:whatdis.app\"; then
             echo \"Issuing initial Let's Encrypt cert for $$DOMAIN_ARGS\";
             certbot certonly --webroot -w /var/www/certbot \
               $$DOMAIN_ARGS --email $$EMAIL --agree-tos -n --expand --force-renewal || true;

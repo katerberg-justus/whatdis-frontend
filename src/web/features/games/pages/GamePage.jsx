@@ -9,6 +9,7 @@ import {
 } from '@shared/api/games'
 
 const HINT_ENERGY_COST = 5
+const MIN_GUESSES_FOR_HINT = 20
 
 function isHintCommand(text) {
   return text.replace(/[\s\p{P}\p{S}]+/gu, '').toLowerCase() === 'hint'
@@ -42,11 +43,13 @@ export default function GamePage() {
   const [game,     setGame]       = useState(null)
   const [winDismissed, setWinDismissed] = useState(false)
   const inputRef                  = useRef(null)
+  const prevGuessCountRef         = useRef(null)
   const submitMutation = useSubmitGuessMutation(gameId)
   const hintMutation   = useRequestHintMutation(gameId)
   const createGameMutation = useCreateGameMutation()
 
   useEffect(() => {
+    prevGuessCountRef.current = null
     setGame(null)
     setMessages([])
     setWon(false)
@@ -83,6 +86,19 @@ export default function GamePage() {
     const id = setInterval(() => setElapsed(s => s + 1), 1000)
     return () => clearInterval(id)
   }, [timerOn, done])
+
+  useEffect(() => {
+    const guessCount = messages.filter(m => m.kind !== 'hint').length
+    const prev = prevGuessCountRef.current
+    prevGuessCountRef.current = guessCount
+    if (prev !== null && prev < MIN_GUESSES_FOR_HINT && guessCount >= MIN_GUESSES_FOR_HINT) {
+      notify({
+        key: 'hint-unlocked',
+        title: t('game.hint'),
+        message: t('game.hintUnlocked'),
+      })
+    }
+  }, [messages])
 
   function formatTime(s) {
     const h = Math.floor(s / 3600)
@@ -144,6 +160,15 @@ export default function GamePage() {
   }
 
   async function handleHint() {
+    const guessCount = messages.filter(m => m.kind !== 'hint').length
+    if (guessCount < MIN_GUESSES_FOR_HINT) {
+      notify({
+        key: 'hint-locked',
+        title: t('game.hint'),
+        message: t('game.hintLocked'),
+      })
+      return
+    }
     if (energy !== null && energy < HINT_ENERGY_COST) { promptOutOfEnergy(); return }
     setInput('')
     if (startMs === null) setStartMs(Date.now())

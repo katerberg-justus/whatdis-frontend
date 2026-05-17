@@ -27,6 +27,16 @@ import Sticker, { stickerFrameTier } from '../../../components/Sticker'
 import '../../collectibles/pages/CollectiblesPage.scss'
 import './GamePage.scss'
 
+function getShareUrl(gameId) {
+  if (typeof window === 'undefined') return ''
+  return new URL(`/games/${gameId}`, window.location.origin).toString()
+}
+
+function openShareWindow(url) {
+  if (typeof window === 'undefined') return
+  window.open(url, '_blank', 'noopener,noreferrer,width=720,height=640')
+}
+
 export default function GamePage() {
   const { gameId }                = useParams()
   const { energy, depleteEnergy, syncEnergy, promptOutOfEnergy } = useEnergy()
@@ -218,7 +228,9 @@ export default function GamePage() {
     try {
       const newGame = await createGameMutation.mutateAsync({ challenge_id: nextChallenge.id })
       navigate(`/games/${newGame.id}`)
-    } catch {}
+    } catch {
+      // Keep the win dialog open if creating the next game fails.
+    }
   }
 
   return (
@@ -268,6 +280,12 @@ export default function GamePage() {
 
       {done && won && !winDismissed && (() => {
         const challenge = game?.challenge
+        const shareUrl = getShareUrl(gameId)
+        const shareText = t('game.shareText')
+          .replace('{count}', messages.length)
+          .replace('{guesses}', messages.length === 1 ? t('game.guess') : t('game.guesses'))
+        const encodedText = encodeURIComponent(shareText)
+        const encodedUrl = encodeURIComponent(shareUrl)
         return (
           <Dialog title={t('game.wonTitle')} onClose={() => setWinDismissed(true)}>
             <Sticker
@@ -284,6 +302,41 @@ export default function GamePage() {
               {nextChallenge && (
                 <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
               )}
+            </div>
+            <p className="game__share-title">{t('game.shareTitle')}</p>
+            <div className="game__share-actions" aria-label={t('game.shareTitle')}>
+              <Button
+                color="muted"
+                className="game__share-btn"
+                icon={null}
+                onClick={() => openShareWindow(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`)}
+              >
+                {t('game.shareX')}
+              </Button>
+              <Button
+                color="muted"
+                className="game__share-btn"
+                icon={null}
+                onClick={() => openShareWindow(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`)}
+              >
+                {t('game.shareFacebook')}
+              </Button>
+              <Button
+                color="muted"
+                className="game__share-btn"
+                icon={null}
+                onClick={() => openShareWindow(`https://wa.me/?text=${encodedText}%20${encodedUrl}`)}
+              >
+                {t('game.shareWhatsApp')}
+              </Button>
+              <Button
+                color="muted"
+                className="game__share-btn"
+                icon={null}
+                onClick={() => openShareWindow(`https://www.reddit.com/submit?url=${encodedUrl}&title=${encodedText}`)}
+              >
+                {t('game.shareReddit')}
+              </Button>
             </div>
           </Dialog>
         )

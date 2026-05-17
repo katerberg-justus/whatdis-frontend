@@ -108,6 +108,49 @@
     color: $blue;
   }
 
+  &__share-title {
+    margin: 0.25rem 0 -0.75rem;
+    font-size: $text-xs;
+    color: $text-muted;
+    text-align: center;
+  }
+
+  &__share-actions {
+    width: 100%;
+    margin-bottom: -0.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+
+    @media (min-width: 520px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  &__share-btn {
+    min-width: 0;
+    min-height: 0;
+    padding-block: 0.625rem;
+    font-size: $text-xs;
+
+    .btn__label {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 767px) {
+      min-height: 0;
+      padding-block: 0.625rem;
+    }
+
+    @media (min-width: 768px) {
+      padding-block: 0.625rem;
+    }
+  }
+
   &__won-actions {
     width: 100%;
     display: flex;

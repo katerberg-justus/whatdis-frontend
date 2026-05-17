@@ -118,6 +118,9 @@
   }
 
   &__count {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
     font-size: $text-xs;
     color: $text-muted;
     flex-shrink: 0;
@@ -125,6 +128,13 @@
 
   &__count-current--pink {
     color: $pink;
+  }
+
+  &__count-boost {
+    font-size: 0.625rem;
+    color: $pink;
+    line-height: 1;
+    margin-top: 2px;
   }
 
   &__add {

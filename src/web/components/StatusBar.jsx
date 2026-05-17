@@ -41,7 +41,7 @@ function energyColor(ratio) {
 }
 
 export default function StatusBar() {
-  const { energy, maxEnergy } = useEnergy()
+  const { energy, maxEnergy, energyBoost } = useEnergy()
   const { user } = useAuth()
   const blockCount = useBlockCount()
   const hasEnergy = energy !== null
@@ -100,12 +100,17 @@ export default function StatusBar() {
             ))}
           </span>
           <span className="status-bar__count">
-            {hasEnergy ? (
-              <>
-                <span className={overMax ? 'status-bar__count-current--pink' : undefined}>{paddedCurrent}</span>
-                {`/${maxEnergy}`}
-              </>
-            ) : '\u00a0'}
+            <span className="status-bar__count-main">
+              {hasEnergy ? (
+                <>
+                  <span className={overMax ? 'status-bar__count-current--pink' : undefined}>{paddedCurrent}</span>
+                  {`/${maxEnergy}`}
+                </>
+              ) : '\u00a0'}
+            </span>
+            {hasEnergy && energyBoost > 0 && (
+              <span className="status-bar__count-boost">{`${energyBoost} boost`}</span>
+            )}
           </span>
         </button>
         {canBuyNrg && (

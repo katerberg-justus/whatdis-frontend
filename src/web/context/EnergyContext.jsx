@@ -33,6 +33,7 @@ export function EnergyProvider({ children }) {
   const serverEnergy = source?.energy ?? null
   const energy = localEnergy?.serverEnergy === serverEnergy ? localEnergy.value : serverEnergy
   const maxEnergy = source?.max_energy ?? Math.max(10, energy ?? 0)
+  const energyBoost = source?.energy_boost ?? 0
   const dialogOpen = energy === 0 && (dialogForcedOpen || !dialogDismissed)
 
   const depleteEnergy = (cost = 1) => {
@@ -65,7 +66,7 @@ export function EnergyProvider({ children }) {
   const showUpgrade = dialogOpen && !isGuest && !isActive
 
   return (
-    <EnergyContext.Provider value={{ energy, maxEnergy, depleteEnergy, syncEnergy, isOutOfEnergy, promptOutOfEnergy }}>
+    <EnergyContext.Provider value={{ energy, maxEnergy, energyBoost, depleteEnergy, syncEnergy, isOutOfEnergy, promptOutOfEnergy }}>
       {children}
       {showRegister && (
         <Dialog title={t('register.energyTitle')} onClose={closeDialog}>

@@ -80,7 +80,7 @@ export default function ChallengesPage() {
     }
   }, [])
 
-  const { data: allPacks = [] } = usePacksQuery()
+  const { data: allPacks = [] } = usePacksQuery({ enabled: Boolean(user) })
   const { data: dailies = [], isLoading: dailiesLoading } = useDailyChallengesQuery()
   const createGameMutation = useCreateGameMutation()
 

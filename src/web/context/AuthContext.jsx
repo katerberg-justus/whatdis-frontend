@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { apiLogin, apiGuestAuth, apiClaimAccount, apiLogout } from '@shared/api/auth'
 import { apiMe } from '@shared/api/users'
-import { hasCsrfToken } from '@shared/api/clients'
+import { clearCsrfTokens, hasCsrfToken } from '@shared/api/clients'
 import { qk } from '@shared/api/queryKeys'
 
 const AuthContext = createContext(null)
@@ -21,31 +21,53 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    let cancelled = false
+    const finishWithUser = (data) => {
+      if (cancelled) return
+      localStorage.setItem('user', JSON.stringify(data))
+      setUser(data)
+      seed(data)
+    }
+    const startGuestSession = () => apiGuestAuth(navigator.language)
+      .then(() => apiMe())
+      .then(finishWithUser)
+
     const stored = localStorage.getItem('user')
     if (stored) {
       const parsed = JSON.parse(stored)
       if (parsed?.id) {
-        setUser(parsed)
-        seed(parsed)
-        setLoading(false)
-        return
+        apiMe()
+          .then(finishWithUser)
+          .catch(() => {
+            localStorage.removeItem('user')
+            clearCsrfTokens()
+            if (localStorage.getItem('logged_out')) return null
+            return startGuestSession()
+          })
+          .finally(() => {
+            if (!cancelled) setLoading(false)
+          })
+        return () => { cancelled = true }
       }
     }
     // Previously authenticated users should go to login, not get a guest session
-    if (localStorage.getItem('logged_out')) { setLoading(false); return }
+    if (localStorage.getItem('logged_out')) { setLoading(false); return () => { cancelled = true } }
     const hasSession = hasCsrfToken()
     if (hasSession) {
       apiMe()
-        .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data); seed(data) })
+        .then(finishWithUser)
         .catch(() => {})
-        .finally(() => setLoading(false))
-      return
+        .finally(() => {
+          if (!cancelled) setLoading(false)
+        })
+      return () => { cancelled = true }
     }
-    apiGuestAuth(navigator.language)
-      .then(() => apiMe())
-      .then(data => { localStorage.setItem('user', JSON.stringify(data)); setUser(data); seed(data) })
+    startGuestSession()
       .catch(() => {})
-      .finally(() => setLoading(false))
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
   }, [])
 
   const persist = (data, username) => {

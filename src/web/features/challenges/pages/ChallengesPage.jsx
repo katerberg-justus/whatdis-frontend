@@ -10,7 +10,9 @@ import ChallengeCard from '../../../components/ChallengeCard'
 import LockedOverlay from '../../../components/LockedOverlay'
 import UpgradeDialog from '../../../components/UpgradeDialog'
 import { useDateLocale } from '../../../hooks/useDateLocale'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import { formatLocalizedDate } from '../../../utils/dateFormat'
+import { useNotifications } from '../../../context/NotificationContext'
 import './ChallengesPage.scss'
 
 const LockBadge = () => (
@@ -69,6 +71,8 @@ export default function ChallengesPage() {
   const location = useLocation()
   const { user } = useAuth()
   const { t }        = useLang()
+  const { notify } = useNotifications()
+  const isOnline = useOnlineStatus()
   const dateLocale = useDateLocale()
   const { isActive, subscription } = useSubscription()
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
@@ -98,6 +102,15 @@ export default function ChallengesPage() {
   const dailyDate = formatLocalizedDate(new Date(), dateLocale)
 
   async function playDaily(daily) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     try {
       const game = await createGameMutation.mutateAsync({ challenge_id: daily.challenge_id })
       navigate(`/games/${game.id}`, {
@@ -134,6 +147,7 @@ export default function ChallengesPage() {
                 sticker={daily.sticker}
                 icon={daily.icon}
                 completed={daily.completed}
+                disabled={!isOnline}
                 freeBadge={isGuest && !daily.isPlaceholder ? t('challenges.playFree') : undefined}
                 onClick={daily.isPlaceholder ? undefined : () => playDaily(daily)}
               />

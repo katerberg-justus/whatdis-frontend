@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useLang } from '../../../context/LangContext'
 import { useFriends } from '../../../context/FriendsContext'
+import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import { useMeQuery } from '@shared/api/users'
 import {
   useSendFriendInviteMutation,
@@ -41,6 +43,8 @@ export default function FriendsPage() {
   const { t }      = useLang()
   const navigate   = useNavigate()
   const { friends, requests } = useFriends()
+  const { notify } = useNotifications()
+  const isOnline = useOnlineStatus()
   const { data: me } = useMeQuery()
 
   const sendInviteMutation = useSendFriendInviteMutation()
@@ -72,6 +76,15 @@ export default function FriendsPage() {
   async function handleSendInvite(e) {
     e.preventDefault()
     if (!email.trim()) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     setError('')
     setSuccess('')
     try {
@@ -84,10 +97,28 @@ export default function FriendsPage() {
   }
 
   function handleAccept(id) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     acceptMutation.mutate(id)
   }
 
   function handleRemove(id) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     removeMutation.mutate(id)
   }
 
@@ -110,8 +141,8 @@ export default function FriendsPage() {
                       <span className="battles__meta">{req.friend.email}</span>
                     </div>
                     <div className="battles__actions">
-                      <Button color="green" onClick={() => handleAccept(req.id)}>{t('battles.accept')}</Button>
-                      <IconButton icon={<TrashIcon />} onClick={() => handleRemove(req.id)} aria-label={t('battles.decline')} />
+                      <Button color="green" onClick={() => handleAccept(req.id)} disabled={!isOnline}>{t('battles.accept')}</Button>
+                      <IconButton icon={<TrashIcon />} onClick={() => handleRemove(req.id)} aria-label={t('battles.decline')} disabled={!isOnline} />
                     </div>
                   </li>
                 ))}
@@ -136,7 +167,7 @@ export default function FriendsPage() {
                       <span className="battles__opponent">{f.friend.name}</span>
                     </div>
                     <div className="battles__actions">
-                      <Button color="pink" icon={<SwordIcon />} onClick={() => navigate(`/battles/new/${f.id}`, { state: { friend: f.friend } })}>{t('battles.challenge')}</Button>
+                      <Button color="pink" icon={<SwordIcon />} onClick={() => navigate(`/battles/new/${f.id}`, { state: { friend: f.friend } })} disabled={!isOnline}>{t('battles.challenge')}</Button>
                       <Button color="muted" icon={<span className="battles__button-icon"><EyeIcon /></span>} onClick={() => navigate(`/friends/${f.id}`)}>{t('friends.view')}</Button>
                     </div>
                   </li>
@@ -155,7 +186,7 @@ export default function FriendsPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
-              <Button color="blue" fullWidth disabled={sending || !email.trim()}>
+              <Button color="blue" fullWidth disabled={sending || !isOnline || !email.trim()}>
                 {sending ? t('friends.sending') : t('friends.send')}
               </Button>
             </form>

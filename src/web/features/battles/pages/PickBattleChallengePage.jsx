@@ -1,5 +1,7 @@
 import { useParams, useNavigate, useLocation } from 'react-router'
 import { useLang } from '../../../context/LangContext'
+import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import { usePackQuery } from '@shared/api/challenges'
 import { useFriendsQuery } from '@shared/api/friends'
 import {
@@ -16,6 +18,8 @@ export default function PickBattleChallengePage() {
   const navigate                 = useNavigate()
   const location                 = useLocation()
   const { t }                    = useLang()
+  const { notify }               = useNotifications()
+  const isOnline                 = useOnlineStatus()
 
   const stateFriend = location.state?.friend ?? null
   const { data: friendsList = [] } = useFriendsQuery({ enabled: !stateFriend })
@@ -38,6 +42,15 @@ export default function PickBattleChallengePage() {
 
   async function handleChallengeClick(challenge) {
     if (createBattleMutation.isPending || !friend || challenge.battle_completed_by_participant) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     try {
       await createBattleMutation.mutateAsync({
         challenge_id: challenge.id,
@@ -80,7 +93,7 @@ export default function PickBattleChallengePage() {
             icon={challenge.icon}
             locked={challenge.is_locked}
             completed={challenge.completed}
-            disabled={challenge.battle_completed_by_participant}
+            disabled={challenge.battle_completed_by_participant || !isOnline}
             onClick={() => handleChallengeClick(challenge)}
           />
         ))}

@@ -46,6 +46,8 @@ export function NotificationProvider({ children }) {
   const { t } = useLang()
   const [items, setItems] = useState([])
   const timersRef = useRef(new Map())
+  const offlineNotificationRef = useRef(null)
+  const wasOfflineRef = useRef(typeof navigator !== 'undefined' ? !navigator.onLine : false)
   const { data: dailies = [], isSuccess: dailiesLoaded } = useDailyChallengesQuery({
     enabled: Boolean(user),
     refetchInterval: user ? 5 * 60 * 1000 : false,
@@ -91,6 +93,51 @@ export function NotificationProvider({ children }) {
     timersRef.current.forEach(clearTimeout)
     timersRef.current.clear()
   }, [])
+
+  useEffect(() => {
+    function showOfflineNotification() {
+      if (offlineNotificationRef.current) {
+        dismiss(offlineNotificationRef.current)
+      }
+
+      wasOfflineRef.current = true
+      offlineNotificationRef.current = notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+    }
+
+    function showOnlineNotification() {
+      const offlineId = offlineNotificationRef.current
+      if (offlineId) {
+        dismiss(offlineId)
+        offlineNotificationRef.current = null
+      }
+
+      if (!wasOfflineRef.current) return
+      wasOfflineRef.current = false
+
+      notify({
+        key: `network-online-${Date.now()}`,
+        title: t('notifications.onlineTitle'),
+        duration: 3500,
+      })
+    }
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      showOfflineNotification()
+    }
+
+    window.addEventListener('offline', showOfflineNotification)
+    window.addEventListener('online', showOnlineNotification)
+
+    return () => {
+      window.removeEventListener('offline', showOfflineNotification)
+      window.removeEventListener('online', showOnlineNotification)
+    }
+  }, [dismiss, notify, t])
 
   useEffect(() => {
     if (!dailiesLoaded) return

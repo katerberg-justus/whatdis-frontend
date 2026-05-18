@@ -23,6 +23,7 @@ import IconButton from '../../../components/IconButton'
 import { BackIcon } from '../../../components/icons'
 import { useEnergy } from '../../../context/EnergyContext'
 import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import Sticker, { stickerFrameTier } from '../../../components/Sticker'
 import '../../collectibles/pages/CollectiblesPage.scss'
 import './GamePage.scss'
@@ -41,6 +42,7 @@ export default function GamePage() {
   const { gameId }                = useParams()
   const { energy, depleteEnergy, syncEnergy, promptOutOfEnergy } = useEnergy()
   const { notify }                = useNotifications()
+  const isOnline                  = useOnlineStatus()
   const navigate                  = useNavigate()
   const { t }                     = useLang()
   const [messages, setMessages]   = useState([])
@@ -121,6 +123,15 @@ export default function GamePage() {
 
   async function handleAsk() {
     if (!input.trim() || done || loading) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     const question = input.trim()
     if (isHintCommand(question)) {
       await handleHint()
@@ -170,6 +181,15 @@ export default function GamePage() {
   }
 
   async function handleHint() {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     const guessCount = messages.filter(m => m.kind !== 'hint').length
     if (guessCount < MIN_GUESSES_FOR_HINT) {
       notify({
@@ -225,6 +245,15 @@ export default function GamePage() {
 
   async function handleNext() {
     if (!nextChallenge) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     try {
       const newGame = await createGameMutation.mutateAsync({ challenge_id: nextChallenge.id })
       navigate(`/games/${newGame.id}`)
@@ -272,10 +301,10 @@ export default function GamePage() {
           value={input}
           onChange={e => setInput(e.target.value.slice(0, 80))}
           onKeyDown={handleKeyDown}
-          disabled={done}
+          disabled={done || !isOnline}
           maxLength={80}
         />
-        <Button color="blue" onClick={handleAsk} disabled={done || loading || input.trim().length < 2}>{t('game.ask')}</Button>
+        <Button color="blue" onClick={handleAsk} disabled={done || loading || !isOnline || input.trim().length < 2}>{t('game.ask')}</Button>
       </div>
 
       {done && won && !winDismissed && (() => {
@@ -300,7 +329,7 @@ export default function GamePage() {
             <div className="game__won-actions">
               <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
               {nextChallenge && (
-                <Button fullWidth onClick={handleNext}>{t('game.nextChallenge')}</Button>
+                <Button fullWidth onClick={handleNext} disabled={!isOnline}>{t('game.nextChallenge')}</Button>
               )}
             </div>
             <p className="game__share-title">{t('game.shareTitle')}</p>

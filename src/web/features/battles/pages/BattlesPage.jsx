@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { useBattles } from '../../../context/BattlesContext'
+import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import { useAcceptBattleMutation, useDeclineBattleMutation } from '@shared/api/battles'
 import Button from '../../../components/Button'
 import './BattlesPage.scss'
@@ -51,6 +53,8 @@ export default function BattlesPage() {
   const { user }  = useAuth()
   const navigate  = useNavigate()
   const { t }     = useLang()
+  const { notify } = useNotifications()
+  const isOnline = useOnlineStatus()
   const { battles } = useBattles()
   const acceptMutation = useAcceptBattleMutation()
   const declineMutation = useDeclineBattleMutation()
@@ -60,10 +64,28 @@ export default function BattlesPage() {
   const ongoing = battles.filter(b => b.status === 'active')
 
   function handleAccept(battleId) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     acceptMutation.mutate(battleId)
   }
 
   function handleDecline(battleId) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     declineMutation.mutate(battleId)
   }
 
@@ -94,8 +116,8 @@ export default function BattlesPage() {
                       </span>
                     </div>
                     <div className="battles__actions">
-                      <Button color="green" icon={<CheckIcon />} onClick={() => handleAccept(battle.id)}>{t('battles.accept')}</Button>
-                      <Button color="muted" icon={<CrossIcon />} onClick={() => handleDecline(battle.id)}>{t('battles.decline')}</Button>
+                      <Button color="green" icon={<CheckIcon />} onClick={() => handleAccept(battle.id)} disabled={!isOnline}>{t('battles.accept')}</Button>
+                      <Button color="muted" icon={<CrossIcon />} onClick={() => handleDecline(battle.id)} disabled={!isOnline}>{t('battles.decline')}</Button>
                     </div>
                   </li>
                 ))}

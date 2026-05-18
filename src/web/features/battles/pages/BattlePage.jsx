@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
 import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import { useBattleQuery, useSubmitBattleGuessMutation } from '@shared/api/battles'
 import ChatWindow from '../../../components/ChatWindow'
 import Button from '../../../components/Button'
@@ -44,6 +45,7 @@ export default function BattlePage() {
   const { user }      = useAuth()
   const { t }         = useLang()
   const { notify }    = useNotifications()
+  const isOnline      = useOnlineStatus()
   const navigate      = useNavigate()
 
   const { data: battle } = useBattleQuery(battleId, {
@@ -95,6 +97,15 @@ export default function BattlePage() {
 
   async function handleSubmit() {
     if (!input.trim() || loading) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     const question = input.trim()
     setError(null)
     setInput('')
@@ -138,7 +149,7 @@ export default function BattlePage() {
     }
   }
 
-  const canSubmit = isMyTurn && !!input.trim() && !loading
+  const canSubmit = isMyTurn && !!input.trim() && !loading && isOnline
 
   return (
     <div className="battle">
@@ -185,7 +196,7 @@ export default function BattlePage() {
               value={input}
               onChange={e => setInput(e.target.value.slice(0, 50))}
               onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-              disabled={!isMyTurn || loading}
+              disabled={!isMyTurn || loading || !isOnline}
               maxLength={50}
             />
             <Button

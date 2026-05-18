@@ -96,6 +96,9 @@ const translations = {
     'notifications.nrgPurchaseCancelled': 'NRG purchase cancelled',
     'notifications.subscriptionPurchaseSuccess': 'Subscription updated',
     'notifications.subscriptionPurchaseCancelled': 'Subscription checkout cancelled',
+    'notifications.offlineTitle': 'You are offline',
+    'notifications.offlineMessage': 'Some game actions need a connection.',
+    'notifications.onlineTitle': 'Back online',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Friends',
@@ -345,6 +348,9 @@ const translations = {
     'notifications.achievementUnlocked': 'Logro desbloqueado',
     'notifications.newDailyChallenge': 'Nuevo reto diario',
     'notifications.newChallengesAdded': 'Nuevos retos agregados',
+    'notifications.offlineTitle': 'Sin conexion',
+    'notifications.offlineMessage': 'Algunas acciones del juego necesitan conexion.',
+    'notifications.onlineTitle': 'Conexion restaurada',
 
     'battles.tabBattles':           'Batallas',
     'battles.tabFriends':           'Amigos',
@@ -588,6 +594,9 @@ const translations = {
     'notifications.achievementUnlocked': 'Succès débloqué',
     'notifications.newDailyChallenge': 'Nouveau défi quotidien',
     'notifications.newChallengesAdded': 'Nouveaux défis ajoutés',
+    'notifications.offlineTitle': 'Hors ligne',
+    'notifications.offlineMessage': 'Certaines actions du jeu necessitent une connexion.',
+    'notifications.onlineTitle': 'Connexion retablie',
 
     'battles.tabBattles':           'Batailles',
     'battles.tabFriends':           'Amis',
@@ -831,6 +840,9 @@ const translations = {
     'notifications.achievementUnlocked': 'Erfolg freigeschaltet',
     'notifications.newDailyChallenge': 'Neue Tagesherausforderung',
     'notifications.newChallengesAdded': 'Neue Herausforderungen hinzugefuegt',
+    'notifications.offlineTitle': 'Du bist offline',
+    'notifications.offlineMessage': 'Einige Spielaktionen brauchen eine Verbindung.',
+    'notifications.onlineTitle': 'Wieder online',
 
     'battles.tabBattles':           'Duelle',
     'battles.tabFriends':           'Freunde',
@@ -1074,6 +1086,9 @@ const translations = {
     'notifications.achievementUnlocked': 'Prestatie ontgrendeld',
     'notifications.newDailyChallenge': 'Nieuwe dagelijkse uitdaging',
     'notifications.newChallengesAdded': 'Nieuwe uitdagingen toegevoegd',
+    'notifications.offlineTitle': 'Je bent offline',
+    'notifications.offlineMessage': 'Sommige spelacties hebben verbinding nodig.',
+    'notifications.onlineTitle': 'Weer online',
 
     'battles.tabBattles':           'Battles',
     'battles.tabFriends':           'Vrienden',
@@ -1317,6 +1332,9 @@ const translations = {
     'notifications.achievementUnlocked': 'Conquista desbloqueada',
     'notifications.newDailyChallenge': 'Novo desafio diario',
     'notifications.newChallengesAdded': 'Novos desafios adicionados',
+    'notifications.offlineTitle': 'Voce esta offline',
+    'notifications.offlineMessage': 'Algumas acoes do jogo precisam de conexao.',
+    'notifications.onlineTitle': 'Conexao restaurada',
 
     'battles.tabBattles':           'Batalhas',
     'battles.tabFriends':           'Amigos',

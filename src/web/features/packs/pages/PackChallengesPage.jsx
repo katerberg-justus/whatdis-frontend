@@ -1,6 +1,9 @@
 import { useParams, useNavigate } from 'react-router'
 import { usePackQuery, usePackChallengesQuery } from '@shared/api/challenges'
 import { useCreateGameMutation } from '@shared/api/games'
+import { useLang } from '../../../context/LangContext'
+import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import IconButton from '../../../components/IconButton'
 import { BackIcon } from '../../../components/icons'
 import ChallengeCard from '../../../components/ChallengeCard'
@@ -9,6 +12,9 @@ import './PackChallengesPage.scss'
 export default function PackChallengesPage() {
   const { packId } = useParams()
   const navigate = useNavigate()
+  const { t } = useLang()
+  const { notify } = useNotifications()
+  const isOnline = useOnlineStatus()
 
   const { data: pack, error: packError } = usePackQuery(packId)
   const { data: challenges = [], error: challengesError } = usePackChallengesQuery(packId)
@@ -17,6 +23,15 @@ export default function PackChallengesPage() {
   const error = Boolean(packError || challengesError)
 
   async function handleChallengeClick(challenge, position) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     try {
       const game = await createGameMutation.mutateAsync({ challenge_id: challenge.id })
       navigate(`/games/${game.id}`, {
@@ -57,6 +72,7 @@ export default function PackChallengesPage() {
             icon={challenge.icon}
             locked={challenge.is_locked}
             completed={challenge.completed}
+            disabled={!isOnline}
             onClick={() => handleChallengeClick(challenge, i + 1)}
           />
         ))}

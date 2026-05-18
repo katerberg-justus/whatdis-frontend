@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useLang } from '../../../context/LangContext'
+import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import { useCreateCustomChallengeMutation } from '@shared/api/customChallenges'
 import Button from '../../../components/Button'
 import IconButton from '../../../components/IconButton'
@@ -16,6 +18,8 @@ const DIFFICULTY_CODES = { easy: 0, medium: 1, hard: 2, impossible: 3 }
 export default function CreateCustomChallengePage() {
   const navigate = useNavigate()
   const { t } = useLang()
+  const { notify } = useNotifications()
+  const isOnline = useOnlineStatus()
 
   const [subject,     setSubject]     = useState('')
   const [subjectHint, setSubjectHint] = useState('')
@@ -25,11 +29,21 @@ export default function CreateCustomChallengePage() {
   const createMutation = useCreateCustomChallengeMutation()
   const submitting = createMutation.isPending
 
-  const canSubmit = subject.trim().length > 0 && subjectHint.trim().length > 0 && !submitting
+  const formComplete = subject.trim().length > 0 && subjectHint.trim().length > 0
+  const canSubmit = formComplete && !submitting && isOnline
   const costHint = t('challenges.customCostHint').replace('{nrg}', NRG_COST)
 
   async function handleSubmit() {
-    if (!canSubmit) return
+    if (!formComplete || submitting) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
     setError(null)
     try {
       await createMutation.mutateAsync({

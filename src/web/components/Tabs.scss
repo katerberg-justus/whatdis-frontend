@@ -28,8 +28,13 @@
     flex-shrink: 0;
     gap: 0.5rem;
     font-family: $font;
-    font-size: $text-xs;
+    font-size: $text-sm;
     color: $text-muted;
+
+    @media (min-width: 768px) {
+      font-size: $text-xs;
+    }
+
     text-transform: uppercase;
     text-decoration: none;
     padding: 0.625rem 1rem calc(0.625rem + 4px);

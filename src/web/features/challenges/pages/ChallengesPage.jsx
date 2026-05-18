@@ -91,6 +91,7 @@ export default function ChallengesPage() {
   const [welcomeUpgradeOpen, setWelcomeUpgradeOpen] = useState(!!location.state?.promptUpgrade)
   const [installPrompt, setInstallPrompt] = useState(null)
   const [installBannerDismissed, setInstallBannerDismissed] = useState(isInstallBannerDismissed)
+  const [isPwaInstalled, setIsPwaInstalled] = useState(isRunningStandalone)
 
   useEffect(() => {
     if (location.state?.promptUpgrade) {
@@ -99,7 +100,15 @@ export default function ChallengesPage() {
   }, [location.pathname, location.state?.promptUpgrade, navigate])
 
   useEffect(() => {
-    if (isRunningStandalone()) return undefined
+    const displayMode = window.matchMedia('(display-mode: standalone)')
+
+    function syncInstalledState() {
+      const installed = isRunningStandalone()
+      setIsPwaInstalled(installed)
+      if (installed) {
+        setInstallPrompt(null)
+      }
+    }
 
     function handleBeforeInstallPrompt(event) {
       event.preventDefault()
@@ -108,14 +117,18 @@ export default function ChallengesPage() {
 
     function handleAppInstalled() {
       setInstallPrompt(null)
+      setIsPwaInstalled(true)
     }
 
+    syncInstalledState()
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleAppInstalled)
+    displayMode.addEventListener?.('change', syncInstalledState)
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       window.removeEventListener('appinstalled', handleAppInstalled)
+      displayMode.removeEventListener?.('change', syncInstalledState)
     }
   }, [])
 
@@ -134,7 +147,7 @@ export default function ChallengesPage() {
   const isGuest = !user || user.is_guest
   const showUpgradeBanner = !isGuest && !isActive && subscription !== undefined
   const showSignUpBanner = isGuest
-  const showInstallBanner = Boolean(installPrompt) && !installBannerDismissed
+  const showInstallBanner = !isPwaInstalled && Boolean(installPrompt) && !installBannerDismissed
   const dailyDate = formatLocalizedDate(new Date(), dateLocale)
 
   function dismissInstallBanner() {

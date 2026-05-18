@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>WHATDIS?! — 20 Questions with AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink:      #FF007B;
+      --pink-dark: #b30056;
+      --blue:      #00A6FF;
+      --blue-dark: #0073b3;
+      --green:     #00e59a;
+      --orange:    #ff8c00;
+      --bg:        #040c1c;
+      --bg-raised: #091530;
+      --bg-surface:#0e1c3e;
+      --bg-border: #162450;
+      --text:      #e8eaf6;
+      --text-muted:#8892b0;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Press Start 2P', system-ui, monospace;
+      line-height: 1.8;
+      image-rendering: pixelated;
+      -webkit-font-smoothing: none;
+      font-smooth: never;
+    }
+
+    body {
+      background-image: radial-gradient(ellipse at top, rgba(255,0,123,0.08), transparent 60%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 3rem 1rem 2.5rem;
+      position: relative;
+    }
+
+    .hero h1 {
+      margin: 0 0 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      filter: drop-shadow(0 0 24px rgba(255,0,123,0.35));
+    }
+    .logo__row {
+      height: clamp(56px, 12vw, 96px);
+      width: auto;
+      image-rendering: pixelated;
+      display: block;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .hero .tag {
+      font-size: 0.75rem;
+      color: var(--blue);
+      margin: 0 0 2rem;
+      letter-spacing: 0.1em;
+    }
+
+    .hero .sub {
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 2;
+    }
+
+    /* ── Buttons (mirrors Button.scss) ─────────────────────── */
+    .btn {
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+      font-size: 0.625rem;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      background: var(--bg-surface);
+      border: 2px solid var(--text);
+      color: var(--text);
+      padding: 0.875rem 1.125rem;
+      min-width: 80px;
+      margin: 0.25rem;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      image-rendering: pixelated;
+      inset: 0;
+      z-index: -1;
+      box-shadow:
+        inset 4px 4px 0 rgba(255, 255, 255, 0.07),
+        inset -4px -4px 0 rgba(0, 0, 0, 0.2);
+    }
+    .btn:hover::before {
+      box-shadow:
+        inset 4px 4px 0 rgba(255, 255, 255, 0.18),
+        inset -4px -4px 0 rgba(0, 0, 0, 0.26);
+    }
+
+    /* Outlined variants — invert on hover */
+    .btn--pink  { border-color: var(--pink);  color: var(--pink); }
+    .btn--blue  { border-color: var(--blue);  color: var(--blue); }
+    .btn--green { border-color: var(--green); color: var(--green); }
+
+    .btn--pink:hover  { background: var(--pink);  color: var(--bg); box-shadow: 0 0 14px rgba(255,0,123,0.45); }
+    .btn--blue:hover  { background: var(--blue);  color: var(--bg); box-shadow: 0 0 14px rgba(0,166,255,0.45); }
+    .btn--green:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 14px rgba(0,229,154,0.45); }
+
+    /* Filled CTA modifier */
+    .btn--cta.btn--pink  { background: var(--pink);  color: var(--bg); }
+    .btn--cta.btn--blue  { background: var(--blue);  color: var(--bg); }
+    .btn--cta.btn--green { background: var(--green); color: var(--bg); }
+    .btn--cta.btn--pink:hover  { background: var(--pink);  color: var(--bg); box-shadow: 0 0 18px rgba(255,0,123,0.6); }
+    .btn--cta.btn--blue:hover  { background: var(--blue);  color: var(--bg); box-shadow: 0 0 18px rgba(0,166,255,0.6); }
+    .btn--cta.btn--green:hover { background: var(--green); color: var(--bg); box-shadow: 0 0 18px rgba(0,229,154,0.6); }
+
+    @media (max-width: 767px) {
+      .btn {
+        font-size: 0.6875rem;
+        min-height: calc(0.6875rem + 1.75rem + 8px);
+      }
+    }
+    @media (min-width: 768px) {
+      .btn {
+        padding: calc(0.875rem + 1px) calc(1.125rem + 1px);
+      }
+    }
+
+    /* ── Panels ────────────────────────────────────────────── */
+    .panel {
+      background: var(--bg-raised);
+      border: 4px solid var(--bg-border);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px solid rgba(0,166,255,0.24);
+      box-shadow: inset 0 0 0 6px rgba(14,28,62,0.62);
+      pointer-events: none;
+    }
+
+    .panel--pink::before { border-color: rgba(255,0,123,0.35); }
+    .panel--green::before { border-color: rgba(0,229,154,0.35); }
+    .panel--orange::before { border-color: rgba(255,140,0,0.35); }
+
+    /* ── Feature grid ──────────────────────────────────────── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin: 3rem 0;
+    }
+
+    .feature {
+      padding: 1.75rem 1.25rem;
+    }
+    .feature .icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      display: block;
+      color: var(--blue);
+    }
+    .feature--pink .icon { color: var(--pink); }
+    .feature--green .icon { color: var(--green); }
+    .feature--orange .icon { color: var(--orange); }
+
+    .feature h3 {
+      font-size: 0.75rem;
+      margin: 0 0 0.75rem;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+    .feature p {
+      font-size: 0.5625rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 2;
+    }
+
+    /* ── Demo chat (mirrors ChatWindow.scss) ───────────────── */
+    .demo {
+      margin: 3rem auto;
+      max-width: 560px;
+      padding: 0;
+      background: var(--bg-raised);
+      border: 2px solid var(--bg-border);
+      box-shadow: 0 0 20px rgba(0,166,255,0.04);
+    }
+    .demo::before { display: none; }
+
+    .demo h2 {
+      font-size: 0.75rem;
+      color: var(--green);
+      margin: 0;
+      text-align: center;
+      letter-spacing: 0.05em;
+      padding: 1rem;
+      border-bottom: 4px solid var(--bg-border);
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 0;
+    }
+
+    .chat__entry {
+      display: flex;
+      flex-direction: column;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid var(--bg-border);
+    }
+    .chat__entry:first-of-type { border-top-color: var(--bg-border); }
+    .chat__entry:last-of-type  { border-bottom: 0; }
+
+    .chat__body {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      min-width: 0;
+      padding: 0.75rem;
+    }
+
+    .chat__question {
+      font-size: 0.5rem;
+      color: var(--text);
+      display: flex;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat__prompt {
+      color: var(--text-muted);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .chat__answer {
+      font-size: 0.5rem;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      text-align: right;
+    }
+    .chat__answer--yes { color: var(--green); }
+    .chat__answer--no  { color: var(--pink); }
+    .chat__answer--partly,
+    .chat__answer--indecisive { color: var(--blue); }
+    .chat__answer--possible,
+    .chat__answer--possibly_not { color: var(--orange); }
+    .chat__answer--win { color: var(--green); }
+
+    @media (max-width: 767px) {
+      .chat__body {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+      }
+      .chat__answer {
+        border-top: 2px solid rgba(22,36,80,0.5);
+        margin-inline: -0.75rem;
+        padding: 0.75rem 0.75rem 0;
+        text-align: left;
+      }
+    }
+
+    /* ── Section heading ───────────────────────────────────── */
+    .sec-title {
+      font-size: 0.875rem;
+      color: var(--blue);
+      text-align: center;
+      margin: 0 0 2rem;
+      letter-spacing: 0.1em;
+    }
+    .sec-title span { color: var(--pink); }
+
+    /* ── CTA ───────────────────────────────────────────────── */
+    .cta {
+      text-align: center;
+      margin: 4rem 0 2rem;
+      padding: 2.5rem 1.5rem;
+    }
+    .cta h2 {
+      font-size: 1rem;
+      color: var(--pink);
+      margin: 0 0 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    .cta p {
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      margin: 0 0 2rem;
+    }
+
+    /* ── Language switcher ─────────────────────────────────── */
+    .langs {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      z-index: 10;
+      background: rgba(4,12,28,0.85);
+      padding: 0.4rem;
+      border: 2px solid var(--bg-border);
+    }
+    .langs button {
+      font-family: inherit;
+      font-size: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      background: var(--bg-surface);
+      border: 2px solid var(--bg-border);
+      color: var(--text-muted);
+      cursor: pointer;
+      letter-spacing: 0.05em;
+    }
+    .langs button:hover { color: var(--blue); border-color: var(--blue); }
+    .langs button.active {
+      color: var(--bg);
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      font-size: 0.5rem;
+      color: var(--text-muted);
+      padding: 2rem 1rem;
+      letter-spacing: 0.1em;
+      border-top: 2px solid var(--bg-border);
+      margin-top: 3rem;
+    }
+
+    .blink {
+      animation: blink 1s steps(2, end) infinite;
+    }
+    @keyframes blink {
+      to { opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 1.5rem 1rem 2rem; }
+      .hero { padding: 1.5rem 0.5rem; }
+      .panel { padding: 1.25rem 1rem; }
+      .demo { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="visually-hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="logoMark" viewBox="0 0 96 96" shape-rendering="crispEdges">
+        <g transform="translate(3.38 3.38)" opacity="0.5">
+          <path fill="#9C0059" d="M3.00 28.65h4.50v2.25h-4.50z M14.25 28.65h4.50v2.25h-4.50z M27.75 28.65h4.50v2.25h-4.50z M39.00 28.65h4.50v2.25h-4.50z M54.75 28.65h11.25v2.25h-11.25z M77.25 28.65h15.75v2.25h-15.75z M3.00 30.90h4.50v2.25h-4.50z M14.25 30.90h4.50v2.25h-4.50z M27.75 30.90h4.50v2.25h-4.50z M39.00 30.90h4.50v2.25h-4.50z M52.50 30.90h4.50v2.25h-4.50z M63.75 30.90h4.50v2.25h-4.50z M81.75 30.90h6.75v2.25h-6.75z M3.00 33.15h4.50v2.25h-4.50z M14.25 33.15h4.50v2.25h-4.50z M27.75 33.15h4.50v2.25h-4.50z M39.00 33.15h4.50v2.25h-4.50z M52.50 33.15h4.50v2.25h-4.50z M63.75 33.15h4.50v2.25h-4.50z M81.75 33.15h6.75v2.25h-6.75z M3.00 35.40h4.50v2.25h-4.50z M9.75 35.40h2.25v2.25h-2.25z M14.25 35.40h4.50v2.25h-4.50z M27.75 35.40h15.75v2.25h-15.75z M52.50 35.40h15.75v2.25h-15.75z M81.75 35.40h6.75v2.25h-6.75z M3.00 37.65h15.75v2.25h-15.75z M27.75 37.65h4.50v2.25h-4.50z M39.00 37.65h4.50v2.25h-4.50z M52.50 37.65h4.50v2.25h-4.50z M63.75 37.65h4.50v2.25h-4.50z M81.75 37.65h6.75v2.25h-6.75z M3.00 39.90h6.75v2.25h-6.75z M12.00 39.90h6.75v2.25h-6.75z M27.75 39.90h4.50v2.25h-4.50z M39.00 39.90h4.50v2.25h-4.50z M52.50 39.90h4.50v2.25h-4.50z M63.75 39.90h4.50v2.25h-4.50z M81.75 39.90h6.75v2.25h-6.75z M3.00 42.15h4.50v2.25h-4.50z M14.25 42.15h4.50v2.25h-4.50z M27.75 42.15h4.50v2.25h-4.50z M39.00 42.15h4.50v2.25h-4.50z M52.50 42.15h4.50v2.25h-4.50z M63.75 42.15h4.50v2.25h-4.50z M81.75 42.15h6.75v2.25h-6.75z M60.94 51.60h11.25v2.25h-11.25z M58.69 53.85h4.50v2.25h-4.50z M69.94 53.85h4.50v2.25h-4.50z M69.94 56.10h4.50v2.25h-4.50z M67.69 58.35h4.50v2.25h-4.50z M63.19 60.60h4.50v2.25h-4.50z M63.19 65.10h4.50v2.25h-4.50z"/>
+          <path fill="#0068AA" d="M3.00 51.60h11.25v2.25h-11.25z M21.56 51.60h15.75v2.25h-15.75z M42.38 51.60h13.50v2.25h-13.50z M81.75 51.60h6.75v2.25h-6.75z M3.00 53.85h4.50v2.25h-4.50z M12.00 53.85h4.50v2.25h-4.50z M26.06 53.85h6.75v2.25h-6.75z M40.12 53.85h4.50v2.25h-4.50z M81.75 53.85h6.75v2.25h-6.75z M3.00 56.10h4.50v2.25h-4.50z M14.25 56.10h4.50v2.25h-4.50z M26.06 56.10h6.75v2.25h-6.75z M40.12 56.10h4.50v2.25h-4.50z M81.75 56.10h6.75v2.25h-6.75z M3.00 58.35h4.50v2.25h-4.50z M14.25 58.35h4.50v2.25h-4.50z M26.06 58.35h6.75v2.25h-6.75z M42.38 58.35h11.25v2.25h-11.25z M81.75 58.35h6.75v2.25h-6.75z M3.00 60.60h4.50v2.25h-4.50z M14.25 60.60h4.50v2.25h-4.50z M26.06 60.60h6.75v2.25h-6.75z M51.38 60.60h4.50v2.25h-4.50z M81.75 60.60h6.75v2.25h-6.75z M3.00 62.85h4.50v2.25h-4.50z M12.00 62.85h4.50v2.25h-4.50z M26.06 62.85h6.75v2.25h-6.75z M51.38 62.85h4.50v2.25h-4.50z M3.00 65.10h11.25v2.25h-11.25z M21.56 65.10h15.75v2.25h-15.75z M40.12 65.10h13.50v2.25h-13.50z M81.75 65.10h6.75v2.25h-6.75z"/>
+        </g>
+        <g transform="translate(1.12 1.12)" opacity="0.75">
+          <path fill="#D50071" d="M3.00 28.65h4.50v2.25h-4.50z M14.25 28.65h4.50v2.25h-4.50z M27.75 28.65h4.50v2.25h-4.50z M39.00 28.65h4.50v2.25h-4.50z M54.75 28.65h11.25v2.25h-11.25z M77.25 28.65h15.75v2.25h-15.75z M3.00 30.90h4.50v2.25h-4.50z M14.25 30.90h4.50v2.25h-4.50z M27.75 30.90h4.50v2.25h-4.50z M39.00 30.90h4.50v2.25h-4.50z M52.50 30.90h4.50v2.25h-4.50z M63.75 30.90h4.50v2.25h-4.50z M81.75 30.90h6.75v2.25h-6.75z M3.00 33.15h4.50v2.25h-4.50z M14.25 33.15h4.50v2.25h-4.50z M27.75 33.15h4.50v2.25h-4.50z M39.00 33.15h4.50v2.25h-4.50z M52.50 33.15h4.50v2.25h-4.50z M63.75 33.15h4.50v2.25h-4.50z M81.75 33.15h6.75v2.25h-6.75z M3.00 35.40h4.50v2.25h-4.50z M9.75 35.40h2.25v2.25h-2.25z M14.25 35.40h4.50v2.25h-4.50z M27.75 35.40h15.75v2.25h-15.75z M52.50 35.40h15.75v2.25h-15.75z M81.75 35.40h6.75v2.25h-6.75z M3.00 37.65h15.75v2.25h-15.75z M27.75 37.65h4.50v2.25h-4.50z M39.00 37.65h4.50v2.25h-4.50z M52.50 37.65h4.50v2.25h-4.50z M63.75 37.65h4.50v2.25h-4.50z M81.75 37.65h6.75v2.25h-6.75z M3.00 39.90h6.75v2.25h-6.75z M12.00 39.90h6.75v2.25h-6.75z M27.75 39.90h4.50v2.25h-4.50z M39.00 39.90h4.50v2.25h-4.50z M52.50 39.90h4.50v2.25h-4.50z M63.75 39.90h4.50v2.25h-4.50z M81.75 39.90h6.75v2.25h-6.75z M3.00 42.15h4.50v2.25h-4.50z M14.25 42.15h4.50v2.25h-4.50z M27.75 42.15h4.50v2.25h-4.50z M39.00 42.15h4.50v2.25h-4.50z M52.50 42.15h4.50v2.25h-4.50z M63.75 42.15h4.50v2.25h-4.50z M81.75 42.15h6.75v2.25h-6.75z M60.94 51.60h11.25v2.25h-11.25z M58.69 53.85h4.50v2.25h-4.50z M69.94 53.85h4.50v2.25h-4.50z M69.94 56.10h4.50v2.25h-4.50z M67.69 58.35h4.50v2.25h-4.50z M63.19 60.60h4.50v2.25h-4.50z M63.19 65.10h4.50v2.25h-4.50z"/>
+          <path fill="#0089D6" d="M3.00 51.60h11.25v2.25h-11.25z M21.56 51.60h15.75v2.25h-15.75z M42.38 51.60h13.50v2.25h-13.50z M81.75 51.60h6.75v2.25h-6.75z M3.00 53.85h4.50v2.25h-4.50z M12.00 53.85h4.50v2.25h-4.50z M26.06 53.85h6.75v2.25h-6.75z M40.12 53.85h4.50v2.25h-4.50z M81.75 53.85h6.75v2.25h-6.75z M3.00 56.10h4.50v2.25h-4.50z M14.25 56.10h4.50v2.25h-4.50z M26.06 56.10h6.75v2.25h-6.75z M40.12 56.10h4.50v2.25h-4.50z M81.75 56.10h6.75v2.25h-6.75z M3.00 58.35h4.50v2.25h-4.50z M14.25 58.35h4.50v2.25h-4.50z M26.06 58.35h6.75v2.25h-6.75z M42.38 58.35h11.25v2.25h-11.25z M81.75 58.35h6.75v2.25h-6.75z M3.00 60.60h4.50v2.25h-4.50z M14.25 60.60h4.50v2.25h-4.50z M26.06 60.60h6.75v2.25h-6.75z M51.38 60.60h4.50v2.25h-4.50z M81.75 60.60h6.75v2.25h-6.75z M3.00 62.85h4.50v2.25h-4.50z M12.00 62.85h4.50v2.25h-4.50z M26.06 62.85h6.75v2.25h-6.75z M51.38 62.85h4.50v2.25h-4.50z M3.00 65.10h11.25v2.25h-11.25z M21.56 65.10h15.75v2.25h-15.75z M40.12 65.10h13.50v2.25h-13.50z M81.75 65.10h6.75v2.25h-6.75z"/>
+        </g>
+        <g transform="translate(-1.12 -1.12)" opacity="0.82">
+          <path fill="#FF4DAA" d="M3.00 28.65h4.50v2.25h-4.50z M14.25 28.65h4.50v2.25h-4.50z M27.75 28.65h4.50v2.25h-4.50z M39.00 28.65h4.50v2.25h-4.50z M54.75 28.65h11.25v2.25h-11.25z M77.25 28.65h15.75v2.25h-15.75z M3.00 30.90h4.50v2.25h-4.50z M14.25 30.90h4.50v2.25h-4.50z M27.75 30.90h4.50v2.25h-4.50z M39.00 30.90h4.50v2.25h-4.50z M52.50 30.90h4.50v2.25h-4.50z M63.75 30.90h4.50v2.25h-4.50z M81.75 30.90h6.75v2.25h-6.75z M3.00 33.15h4.50v2.25h-4.50z M14.25 33.15h4.50v2.25h-4.50z M27.75 33.15h4.50v2.25h-4.50z M39.00 33.15h4.50v2.25h-4.50z M52.50 33.15h4.50v2.25h-4.50z M63.75 33.15h4.50v2.25h-4.50z M81.75 33.15h6.75v2.25h-6.75z M3.00 35.40h4.50v2.25h-4.50z M9.75 35.40h2.25v2.25h-2.25z M14.25 35.40h4.50v2.25h-4.50z M27.75 35.40h15.75v2.25h-15.75z M52.50 35.40h15.75v2.25h-15.75z M81.75 35.40h6.75v2.25h-6.75z M3.00 37.65h15.75v2.25h-15.75z M27.75 37.65h4.50v2.25h-4.50z M39.00 37.65h4.50v2.25h-4.50z M52.50 37.65h4.50v2.25h-4.50z M63.75 37.65h4.50v2.25h-4.50z M81.75 37.65h6.75v2.25h-6.75z M3.00 39.90h6.75v2.25h-6.75z M12.00 39.90h6.75v2.25h-6.75z M27.75 39.90h4.50v2.25h-4.50z M39.00 39.90h4.50v2.25h-4.50z M52.50 39.90h4.50v2.25h-4.50z M63.75 39.90h4.50v2.25h-4.50z M81.75 39.90h6.75v2.25h-6.75z M3.00 42.15h4.50v2.25h-4.50z M14.25 42.15h4.50v2.25h-4.50z M27.75 42.15h4.50v2.25h-4.50z M39.00 42.15h4.50v2.25h-4.50z M52.50 42.15h4.50v2.25h-4.50z M63.75 42.15h4.50v2.25h-4.50z M81.75 42.15h6.75v2.25h-6.75z M60.94 51.60h11.25v2.25h-11.25z M58.69 53.85h4.50v2.25h-4.50z M69.94 53.85h4.50v2.25h-4.50z M69.94 56.10h4.50v2.25h-4.50z M67.69 58.35h4.50v2.25h-4.50z M63.19 60.60h4.50v2.25h-4.50z M63.19 65.10h4.50v2.25h-4.50z"/>
+          <path fill="#4FC7FF" d="M3.00 51.60h11.25v2.25h-11.25z M21.56 51.60h15.75v2.25h-15.75z M42.38 51.60h13.50v2.25h-13.50z M81.75 51.60h6.75v2.25h-6.75z M3.00 53.85h4.50v2.25h-4.50z M12.00 53.85h4.50v2.25h-4.50z M26.06 53.85h6.75v2.25h-6.75z M40.12 53.85h4.50v2.25h-4.50z M81.75 53.85h6.75v2.25h-6.75z M3.00 56.10h4.50v2.25h-4.50z M14.25 56.10h4.50v2.25h-4.50z M26.06 56.10h6.75v2.25h-6.75z M40.12 56.10h4.50v2.25h-4.50z M81.75 56.10h6.75v2.25h-6.75z M3.00 58.35h4.50v2.25h-4.50z M14.25 58.35h4.50v2.25h-4.50z M26.06 58.35h6.75v2.25h-6.75z M42.38 58.35h11.25v2.25h-11.25z M81.75 58.35h6.75v2.25h-6.75z M3.00 60.60h4.50v2.25h-4.50z M14.25 60.60h4.50v2.25h-4.50z M26.06 60.60h6.75v2.25h-6.75z M51.38 60.60h4.50v2.25h-4.50z M81.75 60.60h6.75v2.25h-6.75z M3.00 62.85h4.50v2.25h-4.50z M12.00 62.85h4.50v2.25h-4.50z M26.06 62.85h6.75v2.25h-6.75z M51.38 62.85h4.50v2.25h-4.50z M3.00 65.10h11.25v2.25h-11.25z M21.56 65.10h15.75v2.25h-15.75z M40.12 65.10h13.50v2.25h-13.50z M81.75 65.10h6.75v2.25h-6.75z"/>
+        </g>
+        <path fill="#FF007B" d="M3.00 28.65h4.50v2.25h-4.50z M14.25 28.65h4.50v2.25h-4.50z M27.75 28.65h4.50v2.25h-4.50z M39.00 28.65h4.50v2.25h-4.50z M54.75 28.65h11.25v2.25h-11.25z M77.25 28.65h15.75v2.25h-15.75z M3.00 30.90h4.50v2.25h-4.50z M14.25 30.90h4.50v2.25h-4.50z M27.75 30.90h4.50v2.25h-4.50z M39.00 30.90h4.50v2.25h-4.50z M52.50 30.90h4.50v2.25h-4.50z M63.75 30.90h4.50v2.25h-4.50z M81.75 30.90h6.75v2.25h-6.75z M3.00 33.15h4.50v2.25h-4.50z M14.25 33.15h4.50v2.25h-4.50z M27.75 33.15h4.50v2.25h-4.50z M39.00 33.15h4.50v2.25h-4.50z M52.50 33.15h4.50v2.25h-4.50z M63.75 33.15h4.50v2.25h-4.50z M81.75 33.15h6.75v2.25h-6.75z M3.00 35.40h4.50v2.25h-4.50z M9.75 35.40h2.25v2.25h-2.25z M14.25 35.40h4.50v2.25h-4.50z M27.75 35.40h15.75v2.25h-15.75z M52.50 35.40h15.75v2.25h-15.75z M81.75 35.40h6.75v2.25h-6.75z M3.00 37.65h15.75v2.25h-15.75z M27.75 37.65h4.50v2.25h-4.50z M39.00 37.65h4.50v2.25h-4.50z M52.50 37.65h4.50v2.25h-4.50z M63.75 37.65h4.50v2.25h-4.50z M81.75 37.65h6.75v2.25h-6.75z M3.00 39.90h6.75v2.25h-6.75z M12.00 39.90h6.75v2.25h-6.75z M27.75 39.90h4.50v2.25h-4.50z M39.00 39.90h4.50v2.25h-4.50z M52.50 39.90h4.50v2.25h-4.50z M63.75 39.90h4.50v2.25h-4.50z M81.75 39.90h6.75v2.25h-6.75z M3.00 42.15h4.50v2.25h-4.50z M14.25 42.15h4.50v2.25h-4.50z M27.75 42.15h4.50v2.25h-4.50z M39.00 42.15h4.50v2.25h-4.50z M52.50 42.15h4.50v2.25h-4.50z M63.75 42.15h4.50v2.25h-4.50z M81.75 42.15h6.75v2.25h-6.75z M60.94 51.60h11.25v2.25h-11.25z M58.69 53.85h4.50v2.25h-4.50z M69.94 53.85h4.50v2.25h-4.50z M69.94 56.10h4.50v2.25h-4.50z M67.69 58.35h4.50v2.25h-4.50z M63.19 60.60h4.50v2.25h-4.50z M63.19 65.10h4.50v2.25h-4.50z"/>
+        <path fill="#00A6FF" d="M3.00 51.60h11.25v2.25h-11.25z M21.56 51.60h15.75v2.25h-15.75z M42.38 51.60h13.50v2.25h-13.50z M81.75 51.60h6.75v2.25h-6.75z M3.00 53.85h4.50v2.25h-4.50z M12.00 53.85h4.50v2.25h-4.50z M26.06 53.85h6.75v2.25h-6.75z M40.12 53.85h4.50v2.25h-4.50z M81.75 53.85h6.75v2.25h-6.75z M3.00 56.10h4.50v2.25h-4.50z M14.25 56.10h4.50v2.25h-4.50z M26.06 56.10h6.75v2.25h-6.75z M40.12 56.10h4.50v2.25h-4.50z M81.75 56.10h6.75v2.25h-6.75z M3.00 58.35h4.50v2.25h-4.50z M14.25 58.35h4.50v2.25h-4.50z M26.06 58.35h6.75v2.25h-6.75z M42.38 58.35h11.25v2.25h-11.25z M81.75 58.35h6.75v2.25h-6.75z M3.00 60.60h4.50v2.25h-4.50z M14.25 60.60h4.50v2.25h-4.50z M26.06 60.60h6.75v2.25h-6.75z M51.38 60.60h4.50v2.25h-4.50z M81.75 60.60h6.75v2.25h-6.75z M3.00 62.85h4.50v2.25h-4.50z M12.00 62.85h4.50v2.25h-4.50z M26.06 62.85h6.75v2.25h-6.75z M51.38 62.85h4.50v2.25h-4.50z M3.00 65.10h11.25v2.25h-11.25z M21.56 65.10h15.75v2.25h-15.75z M40.12 65.10h13.50v2.25h-13.50z M81.75 65.10h6.75v2.25h-6.75z"/>
+        <path fill="#FF86C8" d="M3 28.65h4.5v2.25H3z M27.75 28.65h4.5v2.25h-4.5z M54.75 28.65H66v2.25H54.75z M77.25 28.65H93v2.25H77.25z M60.94 51.6h11.25v2.25H60.94z" opacity="0.72"/>
+        <path fill="#8ADEFF" d="M3 51.6h11.25v2.25H3z M21.56 51.6h15.75v2.25H21.56z M42.38 51.6h13.5v2.25h-13.5z M81.75 51.6h6.75v2.25h-6.75z" opacity="0.72"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <nav class="langs" id="langs">
+    <button data-lang="en" class="active">EN</button>
+    <button data-lang="es">ES</button>
+    <button data-lang="fr">FR</button>
+    <button data-lang="de">DE</button>
+    <button data-lang="nl">NL</button>
+    <button data-lang="pt">PT</button>
+  </nav>
+
+  <div class="wrap">
+
+    <header class="hero">
+      <h1 aria-label="WHATDIS?!">
+        <svg class="logo__row" viewBox="0 26 96 22" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
+          <use href="#logoMark" x="0" y="0" width="96" height="96"/>
+        </svg>
+        <svg class="logo__row" viewBox="0 49 96 22" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
+          <use href="#logoMark" x="0" y="0" width="96" height="96"/>
+        </svg>
+      </h1>
+      <p class="tag">&gt; <span data-i18n="tag">20 QUESTIONS WITH AI</span> <span class="blink">_</span></p>
+      <p class="sub" data-i18n="sub">
+        Every challenge hides a secret subject. Ask yes/no questions.
+        Crack the answer. Collect stickers. Battle your friends.
+      </p>
+      <a class="btn btn--pink btn--cta" href="#play" data-i18n="playFree">PLAY FREE</a>
+      <a class="btn btn--blue" href="#how" data-i18n="howItWorks">HOW IT WORKS</a>
+    </header>
+
+    <section class="demo" id="how">
+      <h2 data-i18n="liveDemo">// LIVE DEMO</h2>
+      <div class="chat">
+        <div class="chat__entry">
+          <span class="chat__body">
+            <span class="chat__question"><span class="chat__prompt">&gt;</span><span data-i18n="q1">Is it an animal?</span></span>
+            <span class="chat__answer chat__answer--yes" data-i18n="a.yes">YES</span>
+          </span>
+        </div>
+        <div class="chat__entry">
+          <span class="chat__body">
+            <span class="chat__question"><span class="chat__prompt">&gt;</span><span data-i18n="q2">Is it bigger than a breadbox?</span></span>
+            <span class="chat__answer chat__answer--no" data-i18n="a.no">NO</span>
+          </span>
+        </div>
+        <div class="chat__entry">
+          <span class="chat__body">
+            <span class="chat__question"><span class="chat__prompt">&gt;</span><span data-i18n="q3">Does it live indoors?</span></span>
+            <span class="chat__answer chat__answer--partly" data-i18n="a.partly">PARTLY</span>
+          </span>
+        </div>
+        <div class="chat__entry">
+          <span class="chat__body">
+            <span class="chat__question"><span class="chat__prompt">&gt;</span><span data-i18n="q4">Could it be a pet?</span></span>
+            <span class="chat__answer chat__answer--possible" data-i18n="a.possible">POSSIBLE</span>
+          </span>
+        </div>
+        <div class="chat__entry">
+          <span class="chat__body">
+            <span class="chat__question"><span class="chat__prompt">&gt;</span><span data-i18n="q5">Is it a cat?</span></span>
+            <span class="chat__answer chat__answer--win" data-i18n="a.win">WIN!</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="sec-title">// <span data-i18n="features">FEATURES</span> //</h2>
+
+    <section class="features">
+      <div class="panel panel--pink feature feature--pink">
+        <span class="icon">[ * ]</span>
+        <h3 data-i18n="f1Title">DAILY CHALLENGE</h3>
+        <p data-i18n="f1Desc">One fresh mystery every day. Free for everyone.</p>
+      </div>
+
+      <div class="panel feature">
+        <span class="icon">[ # ]</span>
+        <h3 data-i18n="f2Title">CHALLENGE PACKS</h3>
+        <p data-i18n="f2Desc">Themed sets of puzzles, each with stickers to collect.</p>
+      </div>
+
+      <div class="panel panel--orange feature feature--orange">
+        <span class="icon">[ vs ]</span>
+        <h3 data-i18n="f3Title">BATTLES</h3>
+        <p data-i18n="f3Desc">Head-to-head guessing duels against players worldwide.</p>
+      </div>
+
+      <div class="panel panel--green feature feature--green">
+        <span class="icon">[ ✦ ]</span>
+        <h3 data-i18n="f4Title">ACHIEVEMENTS</h3>
+        <p data-i18n="f4Desc">Unlock secret badges and grow your collection.</p>
+      </div>
+    </section>
+
+    <section class="cta panel panel--pink" id="play">
+      <h2 data-i18n="ctaTitle">READY PLAYER ONE?</h2>
+      <p data-i18n="ctaSub">Insert coin. No download required.</p>
+      <a class="btn btn--pink btn--cta" href="https://whatdis.app" data-i18n="start">START &raquo;</a>
+    </section>
+
+  </div>
+
+  <footer data-i18n="footer">
+    © WHATDIS?! — PRESS START TO BEGIN
+  </footer>
+
+  <script>
+    const I18N = {
+      en: {
+        tag: '20 QUESTIONS WITH AI',
+        sub: 'Every challenge hides a secret subject. Ask yes/no questions. Crack the answer. Collect stickers. Battle your friends.',
+        playFree: 'PLAY FREE',
+        howItWorks: 'HOW IT WORKS',
+        liveDemo: '// LIVE DEMO',
+        q1: 'Is it an animal?',
+        q2: 'Is it bigger than a breadbox?',
+        q3: 'Does it live indoors?',
+        q4: 'Could it be a pet?',
+        q5: 'Is it a cat?',
+        'a.yes': 'YES', 'a.no': 'NO', 'a.partly': 'PARTLY', 'a.possible': 'POSSIBLE', 'a.win': 'CORRECT!',
+        features: 'FEATURES',
+        f1Title: 'DAILY CHALLENGE',  f1Desc: 'One fresh mystery every day. Free for everyone.',
+        f2Title: 'CHALLENGE PACKS',  f2Desc: 'Themed sets of puzzles, each with stickers to collect.',
+        f3Title: 'BATTLES',          f3Desc: 'Head-to-head guessing duels against players worldwide.',
+        f4Title: 'ACHIEVEMENTS',     f4Desc: 'Unlock secret badges and grow your collection.',
+        ctaTitle: 'READY PLAYER ONE?',
+        ctaSub: 'Insert coin. No download required.',
+        start: 'START »',
+        footer: '© WHATDIS?! — PRESS START TO BEGIN',
+      },
+      es: {
+        tag: '20 PREGUNTAS CON IA',
+        sub: 'Cada desafío esconde un tema secreto. Haz preguntas de sí o no. Descífralo. Colecciona pegatinas. Bate a tus amigos.',
+        playFree: 'JUGAR GRATIS',
+        howItWorks: 'CÓMO FUNCIONA',
+        liveDemo: '// DEMO EN VIVO',
+        q1: '¿Es un animal?',
+        q2: '¿Es más grande que una panera?',
+        q3: '¿Vive en interiores?',
+        q4: '¿Podría ser una mascota?',
+        q5: '¿Es un gato?',
+        'a.yes': 'SÍ', 'a.no': 'NO', 'a.partly': 'EN PARTE', 'a.possible': 'POSIBLE', 'a.win': '¡CORRECTO!',
+        features: 'CARACTERÍSTICAS',
+        f1Title: 'DESAFÍO DIARIO',    f1Desc: 'Un misterio nuevo cada día. Gratis para todos.',
+        f2Title: 'PACKS DE DESAFÍOS', f2Desc: 'Sets temáticos de puzles, cada uno con pegatinas que coleccionar.',
+        f3Title: 'BATALLAS',          f3Desc: 'Duelos de adivinanzas mano a mano contra jugadores de todo el mundo.',
+        f4Title: 'LOGROS',            f4Desc: 'Desbloquea insignias secretas y haz crecer tu colección.',
+        ctaTitle: '¿LISTO, JUGADOR?',
+        ctaSub: 'Inserta moneda. No requiere descarga.',
+        start: 'EMPEZAR »',
+        footer: '© WHATDIS?! — PULSA START PARA EMPEZAR',
+      },
+      fr: {
+        tag: '20 QUESTIONS AVEC L’IA',
+        sub: 'Chaque défi cache un sujet secret. Pose des questions oui/non. Trouve la réponse. Collectionne les stickers. Défie tes amis.',
+        playFree: 'JOUER GRATUIT',
+        howItWorks: 'COMMENT JOUER',
+        liveDemo: '// DÉMO EN DIRECT',
+        q1: 'Est-ce un animal ?',
+        q2: 'Est-ce plus grand qu’une boîte à pain ?',
+        q3: 'Vit-il à l’intérieur ?',
+        q4: 'Pourrait-ce être un animal de compagnie ?',
+        q5: 'Est-ce un chat ?',
+        'a.yes': 'OUI', 'a.no': 'NON', 'a.partly': 'EN PARTIE', 'a.possible': 'POSSIBLE', 'a.win': 'CORRECT !',
+        features: 'FONCTIONNALITÉS',
+        f1Title: 'DÉFI QUOTIDIEN',  f1Desc: 'Un nouveau mystère chaque jour. Gratuit pour tous.',
+        f2Title: 'PACKS DE DÉFIS',  f2Desc: 'Sets de puzzles à thème, chacun avec ses stickers à collectionner.',
+        f3Title: 'BATAILLES',       f3Desc: 'Duels de devinettes en tête-à-tête contre des joueurs du monde entier.',
+        f4Title: 'SUCCÈS',          f4Desc: 'Débloque des badges secrets et agrandis ta collection.',
+        ctaTitle: 'PRÊT, JOUEUR ?',
+        ctaSub: 'Insère une pièce. Aucun téléchargement requis.',
+        start: 'DÉMARRER »',
+        footer: '© WHATDIS?! — APPUIE SUR START POUR COMMENCER',
+      },
+      de: {
+        tag: '20 FRAGEN MIT KI',
+        sub: 'Jede Challenge verbirgt ein geheimes Thema. Stelle Ja/Nein-Fragen. Knack die Antwort. Sammle Sticker. Duelliere deine Freunde.',
+        playFree: 'GRATIS SPIELEN',
+        howItWorks: 'SO GEHT’S',
+        liveDemo: '// LIVE-DEMO',
+        q1: 'Ist es ein Tier?',
+        q2: 'Ist es größer als ein Brotkasten?',
+        q3: 'Lebt es drinnen?',
+        q4: 'Könnte es ein Haustier sein?',
+        q5: 'Ist es eine Katze?',
+        'a.yes': 'JA', 'a.no': 'NEIN', 'a.partly': 'TEILWEISE', 'a.possible': 'MÖGLICH', 'a.win': 'RICHTIG!',
+        features: 'FEATURES',
+        f1Title: 'TÄGLICHE CHALLENGE', f1Desc: 'Jeden Tag ein neues Rätsel. Für alle gratis.',
+        f2Title: 'CHALLENGE-PACKS',    f2Desc: 'Themen-Sets voller Rätsel, jedes mit eigenen Stickern zum Sammeln.',
+        f3Title: 'DUELLE',             f3Desc: 'Rate-Duelle Kopf-an-Kopf gegen Spieler weltweit.',
+        f4Title: 'ERFOLGE',            f4Desc: 'Schalte geheime Abzeichen frei und erweitere deine Sammlung.',
+        ctaTitle: 'BEREIT, SPIELER?',
+        ctaSub: 'Münze einwerfen. Kein Download nötig.',
+        start: 'START »',
+        footer: '© WHATDIS?! — DRÜCKE START ZUM BEGINNEN',
+      },
+      nl: {
+        tag: '20 VRAGEN MET AI',
+        sub: 'Elke uitdaging verbergt een geheim onderwerp. Stel ja/nee-vragen. Kraak het antwoord. Verzamel stickers. Battle je vrienden.',
+        playFree: 'GRATIS SPELEN',
+        howItWorks: 'HOE HET WERKT',
+        liveDemo: '// LIVE DEMO',
+        q1: 'Is het een dier?',
+        q2: 'Is het groter dan een broodtrommel?',
+        q3: 'Leeft het binnen?',
+        q4: 'Zou het een huisdier kunnen zijn?',
+        q5: 'Is het een kat?',
+        'a.yes': 'JA', 'a.no': 'NEE', 'a.partly': 'DEELS', 'a.possible': 'MOGELIJK', 'a.win': 'CORRECT!',
+        features: 'FUNCTIES',
+        f1Title: 'DAGELIJKSE UITDAGING', f1Desc: 'Elke dag een nieuw mysterie. Gratis voor iedereen.',
+        f2Title: 'UITDAGINGSPAKKETTEN',  f2Desc: 'Themasets met puzzels, elk met eigen stickers om te verzamelen.',
+        f3Title: 'BATTLES',              f3Desc: 'Eén-tegen-één raadduels tegen spelers van over de hele wereld.',
+        f4Title: 'PRESTATIES',           f4Desc: 'Ontgrendel geheime badges en laat je verzameling groeien.',
+        ctaTitle: 'KLAAR, SPELER?',
+        ctaSub: 'Werp een muntje in. Geen download nodig.',
+        start: 'START »',
+        footer: '© WHATDIS?! — DRUK OP START OM TE BEGINNEN',
+      },
+      pt: {
+        tag: '20 PERGUNTAS COM IA',
+        sub: 'Cada desafio esconde um tema secreto. Faça perguntas de sim ou não. Descubra a resposta. Colecione adesivos. Bata seus amigos.',
+        playFree: 'JOGAR GRÁTIS',
+        howItWorks: 'COMO FUNCIONA',
+        liveDemo: '// DEMO AO VIVO',
+        q1: 'É um animal?',
+        q2: 'É maior que uma caixa de pão?',
+        q3: 'Vive dentro de casa?',
+        q4: 'Poderia ser um animal de estimação?',
+        q5: 'É um gato?',
+        'a.yes': 'SIM', 'a.no': 'NÃO', 'a.partly': 'EM PARTE', 'a.possible': 'POSSÍVEL', 'a.win': 'CORRETO!',
+        features: 'RECURSOS',
+        f1Title: 'DESAFIO DIÁRIO',    f1Desc: 'Um mistério novo todo dia. Grátis para todos.',
+        f2Title: 'PACOTES DE DESAFIOS', f2Desc: 'Conjuntos temáticos de puzzles, cada um com adesivos para colecionar.',
+        f3Title: 'BATALHAS',           f3Desc: 'Duelos de adivinhação cara a cara contra jogadores do mundo todo.',
+        f4Title: 'CONQUISTAS',         f4Desc: 'Desbloqueie emblemas secretos e amplie sua coleção.',
+        ctaTitle: 'PRONTO, JOGADOR?',
+        ctaSub: 'Insira a ficha. Sem download.',
+        start: 'COMEÇAR »',
+        footer: '© WHATDIS?! — PRESSIONE START PARA COMEÇAR',
+      },
+    };
+
+    function applyLang(lang) {
+      const dict = I18N[lang] || I18N.en;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] != null) el.textContent = dict[key];
+      });
+      document.querySelectorAll('#langs button').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === lang);
+      });
+      try { localStorage.setItem('whatdis_lang', lang); } catch (e) {}
+    }
+
+    document.getElementById('langs').addEventListener('click', e => {
+      const btn = e.target.closest('button[data-lang]');
+      if (btn) applyLang(btn.dataset.lang);
+    });
+
+    const saved = (() => { try { return localStorage.getItem('whatdis_lang'); } catch (e) { return null; } })();
+    const browser = (navigator.language || 'en').slice(0, 2).toLowerCase();
+    applyLang(saved || (I18N[browser] ? browser : 'en'));
+  </script>
+</body>
+</html>

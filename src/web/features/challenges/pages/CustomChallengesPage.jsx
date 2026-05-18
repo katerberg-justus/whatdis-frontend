@@ -88,27 +88,34 @@ export default function CustomChallengesPage() {
             className="custom-challenges__cell custom-challenges__card-enter"
             style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
           >
-            <ChallengeCard
-              difficulty={c.difficulty}
-              label={c.subject}
-              completed={Boolean(c.completed_at)}
-              disabled={!isOnline}
-              onClick={() => playChallenge(c)}
-            />
-            {c.share_token && (
-              <div className="custom-challenges__actions">
-                <IconButton
-                  className="icon-btn--small custom-challenges__action-btn custom-challenges__action-btn--link"
-                  icon={<LinkIcon />}
-                  onClick={(e) => { e.stopPropagation(); copyShare(c.share_token) }}
-                  aria-label={t('challenges.customCopyLink')}
-                />
-                <IconButton
-                  className="icon-btn--small custom-challenges__action-btn"
-                  icon={<ShareIcon />}
-                  onClick={(e) => { e.stopPropagation(); setShareToken(c.share_token) }}
-                  aria-label={t('game.shareTitle')}
-                />
+            <div className="custom-challenges__card">
+              <ChallengeCard
+                difficulty={c.difficulty}
+                label={c.subject}
+                completed={Boolean(c.completed_at)}
+                disabled={!isOnline}
+                onClick={() => playChallenge(c)}
+              />
+              {c.share_token && (
+                <div className="custom-challenges__actions">
+                  <IconButton
+                    className="icon-btn--small custom-challenges__action-btn custom-challenges__action-btn--link"
+                    icon={<LinkIcon />}
+                    onClick={(e) => { e.stopPropagation(); copyShare(c.share_token) }}
+                    aria-label={t('challenges.customCopyLink')}
+                  />
+                  <IconButton
+                    className="icon-btn--small custom-challenges__action-btn"
+                    icon={<ShareIcon />}
+                    onClick={(e) => { e.stopPropagation(); setShareToken(c.share_token) }}
+                    aria-label={t('game.shareTitle')}
+                  />
+                </div>
+              )}
+            </div>
+            {c.created_by_username && (
+              <div className="custom-challenges__creator" title={c.created_by_username}>
+                @{c.created_by_username}
               </div>
             )}
           </div>

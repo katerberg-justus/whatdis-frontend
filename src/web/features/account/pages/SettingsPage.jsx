@@ -52,20 +52,24 @@ export default function SettingsPage() {
 
   return (
     <div className="account__section">
-      <h2 className="account__heading">{t('settings.language')}</h2>
-      <DropdownSelect
-        value={selectedLang}
-        options={LANGUAGES}
-        onChange={e => setSelectedLang(e.target.value)}
-        aria-label={t('settings.language')}
-      />
-      <h2 className="account__heading">{t('settings.currency')}</h2>
-      <DropdownSelect
-        value={selectedCurrency}
-        options={CURRENCIES}
-        onChange={e => setSelectedCurrency(e.target.value)}
-        aria-label={t('settings.currency')}
-      />
+      <div className="account__field">
+        <label className="account__field-label" htmlFor="settings-language">{t('settings.language')}</label>
+        <DropdownSelect
+          id="settings-language"
+          value={selectedLang}
+          options={LANGUAGES}
+          onChange={e => setSelectedLang(e.target.value)}
+        />
+      </div>
+      <div className="account__field">
+        <label className="account__field-label" htmlFor="settings-currency">{t('settings.currency')}</label>
+        <DropdownSelect
+          id="settings-currency"
+          value={selectedCurrency}
+          options={CURRENCIES}
+          onChange={e => setSelectedCurrency(e.target.value)}
+        />
+      </div>
       {success && <p className="account__success">{t('settings.success')}</p>}
       <Button fullWidth disabled={loading} icon={<CheckIcon />} onClick={handleSave}>
         {loading ? t('settings.saving') : t('settings.save')}

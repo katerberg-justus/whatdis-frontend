@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useCallback, useContext, useState, useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { apiLogin, apiGuestAuth, apiClaimAccount, apiLogout } from '@shared/api/auth'
 import { apiMe } from '@shared/api/users'
@@ -16,9 +16,9 @@ export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const seed = (data) => {
+  const seed = useCallback((data) => {
     if (data) qc.setQueryData(qk.me, data)
-  }
+  }, [qc])
 
   useEffect(() => {
     let cancelled = false
@@ -51,7 +51,12 @@ export function AuthProvider({ children }) {
       }
     }
     // Previously authenticated users should go to login, not get a guest session
-    if (localStorage.getItem('logged_out')) { setLoading(false); return () => { cancelled = true } }
+    if (localStorage.getItem('logged_out')) {
+      Promise.resolve().then(() => {
+        if (!cancelled) setLoading(false)
+      })
+      return () => { cancelled = true }
+    }
     const hasSession = hasCsrfToken()
     if (hasSession) {
       apiMe()
@@ -68,7 +73,7 @@ export function AuthProvider({ children }) {
         if (!cancelled) setLoading(false)
       })
     return () => { cancelled = true }
-  }, [])
+  }, [seed])
 
   const persist = (data, username) => {
     const u = data?.user ?? data ?? { username }

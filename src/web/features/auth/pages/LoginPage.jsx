@@ -49,24 +49,32 @@ export default function LoginPage() {
         <div className="auth__logo"><Logo /></div>
         <h1 className="auth__title">{t('login.title')}</h1>
         {error && <p className="auth__error">{error}</p>}
-        <Input
-          icon="@"
-          type="text"
-          placeholder={t('login.usernamePlaceholder')}
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          autoComplete="username"
-          required
-        />
-        <Input
-          icon={<LockIcon />}
-          type="password"
-          placeholder={t('login.passwordPlaceholder')}
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoComplete="current-password"
-          required
-        />
+        <div className="auth__field">
+          <label className="auth__label" htmlFor="login-username">{t('login.usernameLabel')}</label>
+          <Input
+            id="login-username"
+            icon="@"
+            type="text"
+            placeholder={t('login.usernamePlaceholder')}
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            autoComplete="username"
+            required
+          />
+        </div>
+        <div className="auth__field">
+          <label className="auth__label" htmlFor="login-password">{t('login.passwordLabel')}</label>
+          <Input
+            id="login-password"
+            icon={<LockIcon />}
+            type="password"
+            placeholder={t('login.passwordPlaceholder')}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+        </div>
         <Button fullWidth disabled={loading}>
           {loading ? t('login.submitting') : t('login.submit')}
         </Button>

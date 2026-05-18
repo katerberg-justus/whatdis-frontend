@@ -38,6 +38,37 @@ export const CloseIcon = () => (
   </svg>
 )
 
+export const LinkIcon = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    {/* Top-left link */}
+    <rect x="2"  y="6"  width="2" height="6" />
+    <rect x="4"  y="4"  width="6" height="2" />
+    <rect x="10" y="6"  width="2" height="2" />
+    <rect x="4"  y="10" width="2" height="2" />
+    {/* Bridge */}
+    <rect x="6"  y="11" width="12" height="2" />
+    {/* Bottom-right link */}
+    <rect x="20" y="12" width="2"  height="6" />
+    <rect x="14" y="18" width="6"  height="2" />
+    <rect x="12" y="16" width="2"  height="2" />
+    <rect x="18" y="12" width="2"  height="2" />
+  </svg>
+)
+
+export const ShareIcon = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    {/* Top-right node */}
+    <rect x="16" y="2"  width="6" height="6" />
+    {/* Left node */}
+    <rect x="2"  y="9"  width="6" height="6" />
+    {/* Bottom-right node */}
+    <rect x="16" y="16" width="6" height="6" />
+    {/* Connecting lines */}
+    <rect x="8"  y="7"  width="8" height="2" />
+    <rect x="8"  y="15" width="8" height="2" />
+  </svg>
+)
+
 export const TrashIcon = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
     {/* Handle */}

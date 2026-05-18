@@ -37,54 +37,65 @@ export default function ProfilePage() {
     <div className="account__section">
       <h2 className="account__heading">{t('profile.accountDetails')}</h2>
       <div className="account__form">
-        <label className="account__field">
-          <span className="account__field-label">{t('profile.username')}</span>
+        <div className="account__field">
+          <label className="account__field-label" htmlFor="profile-username">{t('profile.username')}</label>
           <Input
+            id="profile-username"
             type="text"
             value={user?.name ?? ''}
             autoComplete="name"
             readOnly
           />
-        </label>
-        <label className="account__field">
-          <span className="account__field-label">{t('profile.email')}</span>
+        </div>
+        <div className="account__field">
+          <label className="account__field-label" htmlFor="profile-email">{t('profile.email')}</label>
           <Input
+            id="profile-email"
             type="email"
             value={user?.email ?? ''}
             autoComplete="email"
             readOnly
           />
-        </label>
+        </div>
       </div>
       <div className="account__divider" />
       <h2 className="account__heading">{t('profile.changePassword')}</h2>
       <form className="account__form" onSubmit={handleSubmit}>
         {error   && <p className="account__error">{error}</p>}
         {success && <p className="account__success">{t('profile.success')}</p>}
-        <Input
-          type="password"
-          placeholder={t('profile.currentPassword')}
-          value={current}
-          onChange={e => setCurrent(e.target.value)}
-          autoComplete="current-password"
-          required
-        />
-        <Input
-          type="password"
-          placeholder={t('profile.newPassword')}
-          value={next}
-          onChange={e => setNext(e.target.value)}
-          autoComplete="new-password"
-          required
-        />
-        <Input
-          type="password"
-          placeholder={t('profile.confirmPassword')}
-          value={confirm}
-          onChange={e => setConfirm(e.target.value)}
-          autoComplete="new-password"
-          required
-        />
+        <div className="account__field">
+          <label className="account__field-label" htmlFor="profile-current-password">{t('profile.currentPassword')}</label>
+          <Input
+            id="profile-current-password"
+            type="password"
+            value={current}
+            onChange={e => setCurrent(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+        </div>
+        <div className="account__field">
+          <label className="account__field-label" htmlFor="profile-new-password">{t('profile.newPassword')}</label>
+          <Input
+            id="profile-new-password"
+            type="password"
+            value={next}
+            onChange={e => setNext(e.target.value)}
+            autoComplete="new-password"
+            required
+          />
+        </div>
+        <div className="account__field">
+          <label className="account__field-label" htmlFor="profile-confirm-password">{t('profile.confirmPassword')}</label>
+          <Input
+            id="profile-confirm-password"
+            type="password"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+            autoComplete="new-password"
+            required
+          />
+        </div>
         <Button fullWidth disabled={loading}>
           {loading ? t('profile.saving') : t('profile.save')}
         </Button>

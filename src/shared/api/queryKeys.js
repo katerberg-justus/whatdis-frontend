@@ -21,4 +21,7 @@ export const qk = {
   pack:             (id) => ['challenge-pack', String(id)],
   packChallenges:   (id) => ['challenge-pack', String(id), 'challenges'],
   daily:            ['daily'],
+
+  myCustomChallenges: ['me', 'custom-challenges'],
+  customChallenge:    (id) => ['custom-challenge', String(id)],
 }

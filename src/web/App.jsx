@@ -10,6 +10,9 @@ import { FriendsProvider } from './context/FriendsContext'
 import Nav from './components/Nav'
 import StatusBar from './components/StatusBar'
 import ChallengesPage from './features/challenges/pages/ChallengesPage'
+import ChallengesLayout from './features/challenges/pages/ChallengesLayout'
+import CustomChallengesPage from './features/challenges/pages/CustomChallengesPage'
+import CreateCustomChallengePage from './features/challenges/pages/CreateCustomChallengePage'
 import GamePage from './features/games/pages/GamePage'
 import BattlesLayout from './features/battles/pages/BattlesLayout'
 import BattlesPage from './features/battles/pages/BattlesPage'
@@ -51,7 +54,11 @@ function Layout() {
       <main className={isAuth ? 'main-content main-content--full' : 'main-content'}>
         <Routes>
           <Route index element={<Navigate to="/challenges" replace />} />
-          <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/challenges" element={<ChallengesLayout />}>
+            <Route index element={<ChallengesPage />} />
+            <Route path="custom" element={<CustomChallengesPage />} />
+          </Route>
+          <Route path="/challenges/custom/new" element={<CreateCustomChallengePage />} />
           <Route path="/challenges/:challengeId/games/:gameId" element={<GamePage />} />
           <Route path="/games/:gameId" element={<GamePage />} />
           <Route path="/battles" element={<BattlesLayout />}>

@@ -82,6 +82,24 @@ const TabIcon = ({ name }) => {
         <rect x="3" y="13" width="10" height="2" />
       </>
     ),
+    packs: (
+      <>
+        <rect x="3" y="2" width="10" height="3" />
+        <rect x="2" y="5" width="12" height="8" />
+        <rect x="4" y="7" width="3" height="2" />
+        <rect x="9" y="7" width="3" height="2" />
+        <rect x="4" y="10" width="8" height="1" />
+        <rect x="3" y="13" width="10" height="1" />
+      </>
+    ),
+    custom: (
+      <>
+        <rect x="6" y="3" width="4" height="2" />
+        <rect x="4" y="5" width="8" height="2" />
+        <rect x="2" y="7" width="12" height="4" />
+        <rect x="4" y="11" width="8" height="2" />
+      </>
+    ),
   }[name]
 
   if (!icon) return null
@@ -104,6 +122,7 @@ const TabIcon = ({ name }) => {
 const getTabIconName = (to) => {
   if (to === '/account') return 'account'
   if (to === '/battles') return 'battles'
+  if (to === '/challenges') return 'packs'
   if (to === '/collectibles') return 'collectibles'
 
   return to.split('/').filter(Boolean).at(-1)

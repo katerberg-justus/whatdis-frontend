@@ -96,7 +96,7 @@ export default function ChallengesPage() {
     if (location.state?.promptUpgrade) {
       navigate(location.pathname, { replace: true, state: {} })
     }
-  }, [])
+  }, [location.pathname, location.state?.promptUpgrade, navigate])
 
   useEffect(() => {
     if (isRunningStandalone()) return undefined
@@ -148,12 +148,17 @@ export default function ChallengesPage() {
   async function installPwa() {
     if (!installPrompt) return
 
-    installPrompt.prompt()
-    const choice = await installPrompt.userChoice
-    setInstallPrompt(null)
+    try {
+      installPrompt.prompt()
+      const choice = await installPrompt.userChoice
 
-    if (choice?.outcome !== 'accepted') {
+      if (choice?.outcome !== 'accepted') {
+        dismissInstallBanner()
+      }
+    } catch {
       dismissInstallBanner()
+    } finally {
+      setInstallPrompt(null)
     }
   }
 

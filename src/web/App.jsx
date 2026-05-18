@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
+import { updateSW } from '../main.jsx'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { LangProvider } from './context/LangContext'
 import { CurrencyProvider } from './context/CurrencyContext'
@@ -41,6 +43,14 @@ const AUTH_ROUTES = ['/login', '/register']
 function Layout() {
   const { pathname } = useLocation()
   const { user } = useAuth()
+
+  useEffect(() => {
+    if (window.__pwaNeedsRefresh) {
+      window.__pwaNeedsRefresh = false
+      updateSW(true)
+    }
+  }, [pathname])
+
   const mustLogin = !user && localStorage.getItem('logged_out') === '1'
   const isAuth = AUTH_ROUTES.includes(pathname)
 

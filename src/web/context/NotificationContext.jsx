@@ -12,6 +12,8 @@ const NotificationContext = createContext(null)
 const DEFAULT_DURATION = 5000
 const LAST_DAILY_CHALLENGE_ID_KEY = 'notifications.lastDailyChallengeId'
 const LAST_CHALLENGE_COUNT_KEY = 'notifications.lastChallengeCount'
+const SYSTEM_NOTIFICATIONS_ENABLED_KEY = 'notifications.systemEnabled'
+const SYSTEM_NOTIFICATION_ICON = '/pwa-192x192.png'
 
 function latestDailyChallenge(dailies) {
   return [...dailies]
@@ -38,6 +40,17 @@ function normalizePath(path) {
   return cleanPath.length > 1 ? cleanPath.replace(/\/+$/, '') : cleanPath
 }
 
+function getNotificationPermission() {
+  if (typeof Notification === 'undefined') return 'unsupported'
+  return Notification.permission
+}
+
+function supportsSystemNotifications() {
+  return typeof window !== 'undefined' &&
+    typeof Notification !== 'undefined' &&
+    'serviceWorker' in navigator
+}
+
 export function NotificationProvider({ children }) {
   const { pathname, search, hash } = useLocation()
   const navigate = useNavigate()
@@ -45,18 +58,24 @@ export function NotificationProvider({ children }) {
   const { user } = useAuth()
   const { t } = useLang()
   const [items, setItems] = useState([])
+  const [notificationPermission, setNotificationPermission] = useState(getNotificationPermission)
+  const [systemNotificationsEnabled, setSystemNotificationsEnabled] = useState(() =>
+    supportsSystemNotifications() &&
+    Notification.permission === 'granted' &&
+    localStorage.getItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY) === '1'
+  )
   const timersRef = useRef(new Map())
   const offlineNotificationRef = useRef(null)
   const wasOfflineRef = useRef(typeof navigator !== 'undefined' ? !navigator.onLine : false)
   const { data: dailies = [], isSuccess: dailiesLoaded } = useDailyChallengesQuery({
     enabled: Boolean(user),
     refetchInterval: user ? 5 * 60 * 1000 : false,
-    refetchIntervalInBackground: false,
+    refetchIntervalInBackground: true,
   })
   const { data: packs = [], isSuccess: packsLoaded } = usePacksQuery({
     enabled: Boolean(user),
     refetchInterval: user ? 5 * 60 * 1000 : false,
-    refetchIntervalInBackground: false,
+    refetchIntervalInBackground: true,
   })
 
   const dismiss = useCallback((id) => {
@@ -68,8 +87,39 @@ export function NotificationProvider({ children }) {
     setItems(curr => curr.filter(n => n.id !== id))
   }, [])
 
+  const showSystemNotification = useCallback((payload) => {
+    if (!payload.system || !supportsSystemNotifications()) return
+    if (Notification.permission !== 'granted') return
+    if (localStorage.getItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY) !== '1') return
+    if (typeof document !== 'undefined' && document.visibilityState === 'visible') return
+
+    const title = payload.title || 'WHATDIS?!'
+    const targetUrl = payload.link
+      ? new URL(payload.link, window.location.origin).toString()
+      : window.location.origin
+    const options = {
+      body: payload.message || undefined,
+      icon: SYSTEM_NOTIFICATION_ICON,
+      badge: SYSTEM_NOTIFICATION_ICON,
+      tag: payload.key || undefined,
+      data: { url: targetUrl },
+    }
+
+    navigator.serviceWorker.ready
+      .then(registration => registration.showNotification(title, options))
+      .catch(() => {
+        const notification = new Notification(title, options)
+        notification.onclick = () => {
+          window.focus()
+          if (payload.link) navigate(payload.link)
+          notification.close()
+        }
+      })
+  }, [navigate])
+
   const notify = useCallback((payload) => {
-    if (payload.link && normalizePath(payload.link) === normalizePath(pathname)) {
+    const isCurrentPath = payload.link && normalizePath(payload.link) === normalizePath(pathname)
+    if (isCurrentPath && (typeof document === 'undefined' || document.visibilityState === 'visible')) {
       return null
     }
 
@@ -86,8 +136,36 @@ export function NotificationProvider({ children }) {
       const timer = setTimeout(() => dismiss(id), duration)
       timersRef.current.set(id, timer)
     }
+
+    showSystemNotification(next)
     return id
-  }, [dismiss, pathname])
+  }, [dismiss, pathname, showSystemNotification])
+
+  const requestSystemNotifications = useCallback(async () => {
+    if (!supportsSystemNotifications()) {
+      setNotificationPermission('unsupported')
+      setSystemNotificationsEnabled(false)
+      return 'unsupported'
+    }
+
+    const permission = await Notification.requestPermission()
+    setNotificationPermission(permission)
+
+    const enabled = permission === 'granted'
+    setSystemNotificationsEnabled(enabled)
+    if (enabled) {
+      localStorage.setItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY, '1')
+    } else {
+      localStorage.removeItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY)
+    }
+    return permission
+  }, [])
+
+  const disableSystemNotifications = useCallback(() => {
+    localStorage.removeItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY)
+    setSystemNotificationsEnabled(false)
+    setNotificationPermission(getNotificationPermission())
+  }, [])
 
   useEffect(() => () => {
     timersRef.current.forEach(clearTimeout)
@@ -154,6 +232,7 @@ export function NotificationProvider({ children }) {
           key: `daily-challenge-${latestId}`,
           title: t('notifications.newDailyChallenge'),
           link: '/challenges',
+          system: true,
         })
       }, 0)
     }
@@ -173,6 +252,7 @@ export function NotificationProvider({ children }) {
           key: `challenge-count-${count}`,
           title: t('notifications.newChallengesAdded'),
           link: '/challenges',
+          system: true,
         })
       }, 0)
     }
@@ -219,7 +299,15 @@ export function NotificationProvider({ children }) {
   }, [hash, navigate, notify, pathname, qc, search, t])
 
   return (
-    <NotificationContext.Provider value={{ notify, dismiss }}>
+    <NotificationContext.Provider value={{
+      notify,
+      dismiss,
+      systemNotificationsSupported: supportsSystemNotifications(),
+      systemNotificationsEnabled,
+      notificationPermission,
+      requestSystemNotifications,
+      disableSystemNotifications,
+    }}>
       {children}
       <div className="notifications">
         {items.map(item => (

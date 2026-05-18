@@ -10,12 +10,12 @@ export function FriendsProvider({ children }) {
   const { user } = useAuth()
   const { t } = useLang()
   const { notify } = useNotifications()
-  const seenRef = useRef({ initialized: false, requestIds: new Set() })
+  const seenRef = useRef({ initialized: false, requestIds: new Set(), friendIds: new Set() })
 
   const queryOpts = {
     enabled: Boolean(user),
     refetchInterval: user ? 30 * 1000 : false,
-    refetchIntervalInBackground: false,
+    refetchIntervalInBackground: true,
   }
   const { data: rawFriends = [], refetch: refetchFriends } = useFriendsQuery(queryOpts)
   const { data: rawRequests = [], refetch: refetchRequests } = useFriendRequestsQuery(queryOpts)
@@ -30,7 +30,7 @@ export function FriendsProvider({ children }) {
 
   useEffect(() => {
     if (!user) {
-      seenRef.current = { initialized: false, requestIds: new Set() }
+      seenRef.current = { initialized: false, requestIds: new Set(), friendIds: new Set() }
     }
   }, [user])
 
@@ -38,10 +38,16 @@ export function FriendsProvider({ children }) {
     if (!user) return
 
     const requestIds = new Set()
+    const friendIds = new Set()
     const requestById = new Map()
+    const friendById = new Map()
     for (const r of requests) {
       requestIds.add(r.id)
       requestById.set(r.id, r)
+    }
+    for (const f of friends) {
+      friendIds.add(f.id)
+      friendById.set(f.id, f)
     }
 
     const prev = seenRef.current
@@ -54,13 +60,26 @@ export function FriendsProvider({ children }) {
             title: t('notifications.newFriendRequest'),
             message: req?.friend?.name ?? req?.friend?.email ?? '',
             link: '/battles/friends',
+            system: true,
+          })
+        }
+      }
+      for (const id of friendIds) {
+        if (!prev.friendIds.has(id) && !prev.requestIds.has(id)) {
+          const friendship = friendById.get(id)
+          notify({
+            key: `friend-accepted-${id}`,
+            title: t('notifications.friendAccepted'),
+            message: friendship?.friend?.name ?? friendship?.friend?.email ?? '',
+            link: '/battles/friends',
+            system: true,
           })
         }
       }
     }
 
-    seenRef.current = { initialized: true, requestIds }
-  }, [requests, user, notify, t])
+    seenRef.current = { initialized: true, requestIds, friendIds }
+  }, [friends, requests, user, notify, t])
 
   return (
     <FriendsContext.Provider value={{ friends, requests, refresh }}>

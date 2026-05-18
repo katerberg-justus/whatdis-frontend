@@ -33,6 +33,21 @@
     line-height: $leading;
   }
 
+  &__preference-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__preference-status {
+    min-width: 0;
+    font-size: $text-sm;
+    color: $text;
+    line-height: $leading;
+    overflow-wrap: anywhere;
+  }
+
   &__error {
     font-size: $text-xs;
     color: $pink;

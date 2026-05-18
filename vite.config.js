@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: [
         'favicon.svg',
         'apple-touch-icon.png',
@@ -18,6 +18,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
+        importScripts: ['/notification-sw.js'],
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'image',

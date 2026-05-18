@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLang } from '../../../context/LangContext'
 import { useCurrency } from '../../../context/CurrencyContext'
+import { useNotifications } from '../../../context/NotificationContext'
 import { apiUpdateMe } from '@shared/api/users'
 import Button from '../../../components/Button'
 import DropdownSelect from '../../../components/DropdownSelect'
@@ -34,10 +35,25 @@ const CURRENCIES = [
 export default function SettingsPage() {
   const { t, lang, setLang } = useLang()
   const { currency, setCurrency } = useCurrency()
+  const {
+    systemNotificationsSupported,
+    systemNotificationsEnabled,
+    notificationPermission,
+    requestSystemNotifications,
+    disableSystemNotifications,
+  } = useNotifications()
   const [selectedLang,     setSelectedLang]     = useState(lang)
   const [selectedCurrency, setSelectedCurrency] = useState(currency)
   const [loading,  setLoading]  = useState(false)
   const [success,  setSuccess]  = useState(false)
+
+  const notificationStatus = !systemNotificationsSupported
+    ? t('settings.notificationsUnsupported')
+    : notificationPermission === 'denied'
+      ? t('settings.notificationsBlocked')
+      : systemNotificationsEnabled
+        ? t('settings.notificationsEnabled')
+        : t('settings.notificationsDisabled')
 
   const handleSave = async () => {
     setLoading(true); setSuccess(false)
@@ -69,6 +85,26 @@ export default function SettingsPage() {
           options={CURRENCIES}
           onChange={e => setSelectedCurrency(e.target.value)}
         />
+      </div>
+      <div className="account__field">
+        <span className="account__field-label">{t('settings.notifications')}</span>
+        <div className="account__preference-row">
+          <span className="account__preference-status">{notificationStatus}</span>
+          {systemNotificationsEnabled ? (
+            <Button color="muted" icon={null} onClick={disableSystemNotifications}>
+              {t('settings.notificationsTurnOff')}
+            </Button>
+          ) : (
+            <Button
+              color="muted"
+              icon={null}
+              onClick={requestSystemNotifications}
+              disabled={!systemNotificationsSupported || notificationPermission === 'denied'}
+            >
+              {t('settings.notificationsTurnOn')}
+            </Button>
+          )}
+        </div>
       </div>
       {success && <p className="account__success">{t('settings.success')}</p>}
       <Button fullWidth disabled={loading} icon={<CheckIcon />} onClick={handleSave}>

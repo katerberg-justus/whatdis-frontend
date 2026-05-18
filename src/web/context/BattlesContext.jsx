@@ -20,7 +20,7 @@ export function BattlesProvider({ children }) {
   const { data: battles = [], refetch } = useBattlesQuery({
     enabled: Boolean(user),
     refetchInterval: user ? 15 * 1000 : false,
-    refetchIntervalInBackground: false,
+    refetchIntervalInBackground: true,
   })
 
   useEffect(() => {
@@ -58,6 +58,7 @@ export function BattlesProvider({ children }) {
             title: t('notifications.newInvite'),
             message: opponentName(battle, user.id),
             link: '/battles',
+            system: true,
           })
         }
       }
@@ -69,6 +70,7 @@ export function BattlesProvider({ children }) {
             title: t('notifications.yourTurn'),
             message: opponentName(battle, user.id),
             link: `/battles/${id}`,
+            system: true,
           })
         }
       }

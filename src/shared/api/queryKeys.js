@@ -23,5 +23,6 @@ export const qk = {
   daily:            ['daily'],
 
   myCustomChallenges: ['me', 'custom-challenges'],
+  customChallenges:   ['custom-challenges'],
   customChallenge:    (id) => ['custom-challenge', String(id)],
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate, useLocation } from 'react-router'
 import {
   apiGetGame,
   apiGetGuesses,
@@ -44,6 +44,7 @@ export default function GamePage() {
   const { notify }                = useNotifications()
   const isOnline                  = useOnlineStatus()
   const navigate                  = useNavigate()
+  const location                  = useLocation()
   const { t }                     = useLang()
   const [messages, setMessages]   = useState([])
   const [input,    setInput]      = useState('')
@@ -235,12 +236,16 @@ export default function GamePage() {
     hard:   t('game.diffHard'),
   }
 
-  const label         = game?.pack_name ?? ''
+  const routeState    = location.state ?? {}
+  const label         = routeState.label ?? game?.pack_name ?? ''
   const packId        = game?.pack_id
   const position      = game?.position
   const difficulty    = game?.difficulty ?? ''
   const isDailyChallenge = game?.challenge?.is_daily === true
-  const backTo        = !isDailyChallenge && packId ? `/packs/${packId}/challenges` : '/challenges'
+  const isCustomChallenge = game?.pack_is_custom === true
+  const backTo        = isCustomChallenge
+    ? (routeState.backTo ?? '/challenges/custom')
+    : (!isDailyChallenge && packId ? `/packs/${packId}/challenges` : '/challenges')
   const nextChallenge = game?.next_challenge ?? null
 
   async function handleNext() {

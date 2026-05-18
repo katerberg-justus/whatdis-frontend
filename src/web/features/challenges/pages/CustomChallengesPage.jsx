@@ -2,13 +2,16 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../../../context/AuthContext'
 import { useLang } from '../../../context/LangContext'
-import { useMyCustomChallengesQuery } from '@shared/api/customChallenges'
+import { useCustomChallengesQuery } from '@shared/api/customChallenges'
+import { apiCreateGame } from '@shared/api/games'
 import Button from '../../../components/Button'
 import ChallengeCard from '../../../components/ChallengeCard'
 import IconButton from '../../../components/IconButton'
 import LockedOverlay from '../../../components/LockedOverlay'
 import Dialog from '../../../components/Dialog'
 import { LinkIcon, ShareIcon } from '../../../components/icons'
+import { useNotifications } from '../../../context/NotificationContext'
+import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import './CustomChallengesPage.scss'
 
 const buildShareUrl = (token) => `${window.location.origin}/challenges/custom/share/${token}`
@@ -22,13 +25,18 @@ export default function CustomChallengesPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { t }    = useLang()
+  const { notify } = useNotifications()
+  const isOnline = useOnlineStatus()
 
   const isGuest = !user || user.is_guest
-  const { data: challenges = [], isLoading } = useMyCustomChallengesQuery({ enabled: !isGuest })
+  const { data: challenges = [], isLoading } = useCustomChallengesQuery({ enabled: !isGuest })
+  const myChallenges = challenges.filter(c => c.is_owner)
+  const sharedChallenges = challenges.filter(c => !c.is_owner)
 
   const [shareToken, setShareToken] = useState(null)
 
   async function copyShare(token) {
+    if (!token) return
     try {
       await navigator.clipboard.writeText(buildShareUrl(token))
     } catch {
@@ -36,48 +44,101 @@ export default function CustomChallengesPage() {
     }
   }
 
+  async function playChallenge(challenge) {
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
+
+    try {
+      const game = challenge.game_id
+        ? { id: challenge.game_id }
+        : await apiCreateGame({ challenge_id: challenge.id })
+      navigate(`/games/${game.id}`, {
+        state: {
+          label: t('challenges.customSharedLabel'),
+          backTo: '/challenges/custom',
+          difficulty: challenge.difficulty,
+        },
+      })
+    } catch {
+      notify({
+        key: 'custom-start-failed',
+        title: t('challenges.customLockedTitle'),
+        message: t('challenges.customShareError'),
+      })
+    }
+  }
+
   const shareUrl   = shareToken ? buildShareUrl(shareToken) : ''
   const encodedUrl = encodeURIComponent(shareUrl)
   const encodedTxt = encodeURIComponent(t('challenges.customShareText'))
 
+  function renderChallengeGrid(items) {
+    return (
+      <div className="custom-challenges__grid">
+        {items.map((c, i) => (
+          <div
+            key={c.id}
+            className="custom-challenges__cell custom-challenges__card-enter"
+            style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
+          >
+            <ChallengeCard
+              difficulty={c.difficulty}
+              label={c.subject}
+              completed={Boolean(c.completed_at)}
+              disabled={!isOnline}
+              onClick={() => playChallenge(c)}
+            />
+            {c.share_token && (
+              <div className="custom-challenges__actions">
+                <IconButton
+                  className="icon-btn--small"
+                  icon={<LinkIcon />}
+                  onClick={(e) => { e.stopPropagation(); copyShare(c.share_token) }}
+                  aria-label={t('challenges.customCopyLink')}
+                />
+                <IconButton
+                  className="icon-btn--small"
+                  icon={<ShareIcon />}
+                  onClick={(e) => { e.stopPropagation(); setShareToken(c.share_token) }}
+                  aria-label={t('game.shareTitle')}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <>
-      <div className="custom-challenges">
+      <div className="challenges custom-challenges">
         <div className="locked-wrap">
           <div className={isGuest ? 'locked-wrap__content' : undefined}>
             {!isLoading && challenges.length === 0 && (
-              <p className="custom-challenges__empty">{t('challenges.customEmpty')}</p>
+              <p className="custom-challenges__empty">{t('challenges.customOverviewEmpty')}</p>
             )}
 
-            <div className="custom-challenges__grid">
-              {challenges.map((c, i) => (
-                <div
-                  key={c.id}
-                  className="custom-challenges__cell custom-challenges__card-enter"
-                  style={{ '--card-enter-delay': `${Math.min(i, 7) * 35}ms` }}
-                >
-                  <ChallengeCard
-                    difficulty={c.difficulty}
-                    label={c.subject}
-                    onClick={() => copyShare(c.share_token)}
-                  />
-                  <div className="custom-challenges__actions">
-                    <IconButton
-                      className="icon-btn--small"
-                      icon={<LinkIcon />}
-                      onClick={(e) => { e.stopPropagation(); copyShare(c.share_token) }}
-                      aria-label={t('challenges.customCopyLink')}
-                    />
-                    <IconButton
-                      className="icon-btn--small"
-                      icon={<ShareIcon />}
-                      onClick={(e) => { e.stopPropagation(); setShareToken(c.share_token) }}
-                      aria-label={t('game.shareTitle')}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+            {myChallenges.length > 0 && (
+              <section className="custom-challenges__section">
+                <h2 className="challenges__section-title">{t('challenges.customMine')}</h2>
+                {renderChallengeGrid(myChallenges)}
+              </section>
+            )}
+
+            {sharedChallenges.length > 0 && (
+              <section className="custom-challenges__section">
+                <h2 className="challenges__section-title">{t('challenges.customShared')}</h2>
+                {renderChallengeGrid(sharedChallenges)}
+              </section>
+            )}
           </div>
           {isGuest && (
             <LockedOverlay

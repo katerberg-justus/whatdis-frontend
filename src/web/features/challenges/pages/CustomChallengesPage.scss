@@ -3,7 +3,6 @@
 .custom-challenges {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   padding-bottom: 5rem;
 
   &--share {
@@ -35,6 +34,15 @@
     @media (min-width: 1100px) {
       grid-template-columns: repeat(4, 1fr);
     }
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__section + &__section {
+    margin-top: 2rem;
   }
 
   &__cell {

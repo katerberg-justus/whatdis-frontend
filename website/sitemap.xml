@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://play.whatdis.app/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+  <url>
+    <loc>https://play.whatdis.app/en/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+  <url>
+    <loc>https://play.whatdis.app/es/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+  <url>
+    <loc>https://play.whatdis.app/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+  <url>
+    <loc>https://play.whatdis.app/de/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+  <url>
+    <loc>https://play.whatdis.app/nl/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+  <url>
+    <loc>https://play.whatdis.app/pt/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://play.whatdis.app/en/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://play.whatdis.app/es/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://play.whatdis.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://play.whatdis.app/de/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://play.whatdis.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://play.whatdis.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://play.whatdis.app/" />
+  </url>
+</urlset>

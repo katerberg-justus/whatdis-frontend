@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:website-locales": "node website/build-locales.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

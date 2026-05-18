@@ -8,7 +8,7 @@ import {
   apiDeletePushSubscription,
   apiGetVapidPublicKey,
 } from '@shared/api/pushSubscriptions'
-import Notification from '../components/Notification'
+import ToastNotification from '../components/Notification'
 import { useAuth } from './AuthContext'
 import { useLang } from './LangContext'
 
@@ -46,13 +46,20 @@ function normalizePath(path) {
 }
 
 function getNotificationPermission() {
-  if (typeof Notification === 'undefined') return 'unsupported'
-  return Notification.permission
+  if (typeof window === 'undefined' || typeof window.Notification === 'undefined') return 'unsupported'
+  return window.Notification.permission
+}
+
+function isStandalonePwa() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(display-mode: standalone)').matches ||
+    window.matchMedia?.('(display-mode: fullscreen)').matches ||
+    window.navigator.standalone === true
 }
 
 function supportsSystemNotifications() {
   return typeof window !== 'undefined' &&
-    typeof Notification !== 'undefined' &&
+    typeof window.Notification !== 'undefined' &&
     'serviceWorker' in navigator &&
     'PushManager' in window
 }
@@ -89,7 +96,7 @@ export function NotificationProvider({ children }) {
   const [notificationPermission, setNotificationPermission] = useState(getNotificationPermission)
   const [systemNotificationsEnabled, setSystemNotificationsEnabled] = useState(() =>
     supportsSystemNotifications() &&
-    Notification.permission === 'granted' &&
+    window.Notification.permission === 'granted' &&
     localStorage.getItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY) === '1'
   )
   const [systemNotificationError, setSystemNotificationError] = useState(null)
@@ -118,7 +125,7 @@ export function NotificationProvider({ children }) {
 
   const showSystemNotification = useCallback((payload) => {
     if (!payload.system || !supportsSystemNotifications()) return
-    if (Notification.permission !== 'granted') return
+    if (window.Notification.permission !== 'granted') return
     if (localStorage.getItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY) !== '1') return
     if (typeof document !== 'undefined' && document.visibilityState === 'visible') return
 
@@ -137,7 +144,7 @@ export function NotificationProvider({ children }) {
     navigator.serviceWorker.ready
       .then(registration => registration.showNotification(title, options))
       .catch(() => {
-        const notification = new Notification(title, options)
+        const notification = new window.Notification(title, options)
         notification.onclick = () => {
           window.focus()
           if (payload.link) navigate(payload.link)
@@ -178,7 +185,7 @@ export function NotificationProvider({ children }) {
       return 'unsupported'
     }
 
-    const permission = await Notification.requestPermission()
+    const permission = await window.Notification.requestPermission()
     setNotificationPermission(permission)
     setSystemNotificationError(null)
 
@@ -362,6 +369,7 @@ export function NotificationProvider({ children }) {
       notify,
       dismiss,
       systemNotificationsSupported: supportsSystemNotifications(),
+      systemNotificationsAvailable: isStandalonePwa() && supportsSystemNotifications(),
       systemNotificationsEnabled,
       systemNotificationError,
       notificationPermission,
@@ -371,7 +379,7 @@ export function NotificationProvider({ children }) {
       {children}
       <div className="notifications">
         {items.map(item => (
-          <Notification key={item.id} item={item} onDismiss={() => dismiss(item.id)} />
+          <ToastNotification key={item.id} item={item} onDismiss={() => dismiss(item.id)} />
         ))}
       </div>
     </NotificationContext.Provider>

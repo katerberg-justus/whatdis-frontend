@@ -37,6 +37,7 @@ export default function SettingsPage() {
   const { currency, setCurrency } = useCurrency()
   const {
     systemNotificationsSupported,
+    systemNotificationsAvailable,
     systemNotificationsEnabled,
     systemNotificationError,
     notificationPermission,
@@ -47,6 +48,7 @@ export default function SettingsPage() {
   const [selectedCurrency, setSelectedCurrency] = useState(currency)
   const [loading,  setLoading]  = useState(false)
   const [success,  setSuccess]  = useState(false)
+  const [notificationsChanging, setNotificationsChanging] = useState(false)
 
   const notificationStatus = !systemNotificationsSupported
     ? t('settings.notificationsUnsupported')
@@ -69,6 +71,21 @@ export default function SettingsPage() {
     setSuccess(true)
   }
 
+  const handleNotificationToggle = async () => {
+    if (notificationsChanging || notificationPermission === 'denied') return
+
+    setNotificationsChanging(true)
+    try {
+      if (systemNotificationsEnabled) {
+        await disableSystemNotifications()
+      } else {
+        await requestSystemNotifications()
+      }
+    } finally {
+      setNotificationsChanging(false)
+    }
+  }
+
   return (
     <div className="account__section">
       <div className="account__field">
@@ -89,26 +106,39 @@ export default function SettingsPage() {
           onChange={e => setSelectedCurrency(e.target.value)}
         />
       </div>
-      <div className="account__field">
-        <span className="account__field-label">{t('settings.notifications')}</span>
-        <div className="account__preference-row">
-          <span className="account__preference-status">{notificationStatus}</span>
-          {systemNotificationsEnabled ? (
-            <Button color="muted" icon={null} onClick={disableSystemNotifications}>
-              {t('settings.notificationsTurnOff')}
-            </Button>
-          ) : (
-            <Button
-              color="muted"
-              icon={null}
-              onClick={requestSystemNotifications}
-              disabled={!systemNotificationsSupported || notificationPermission === 'denied'}
+      {systemNotificationsAvailable && (
+        <div className="account__field">
+          <span className="account__field-label">{t('settings.notifications')}</span>
+          <div className="account__preference-row">
+            <span className="account__preference-status">{notificationStatus}</span>
+            <button
+              type="button"
+              className={[
+                'account__pixel-toggle',
+                systemNotificationsEnabled && 'account__pixel-toggle--on',
+              ].filter(Boolean).join(' ')}
+              role="switch"
+              aria-checked={systemNotificationsEnabled}
+              aria-label={t('settings.notifications')}
+              onClick={handleNotificationToggle}
+              disabled={
+                notificationsChanging ||
+                !systemNotificationsSupported ||
+                notificationPermission === 'denied'
+              }
             >
-              {t('settings.notificationsTurnOn')}
-            </Button>
-          )}
+              <span className="account__pixel-toggle-track" aria-hidden="true">
+                <span className="account__pixel-toggle-thumb" />
+              </span>
+              <span className="account__pixel-toggle-text">
+                {systemNotificationsEnabled
+                  ? t('settings.notificationsTurnOff')
+                  : t('settings.notificationsTurnOn')}
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       {success && <p className="account__success">{t('settings.success')}</p>}
       <Button fullWidth disabled={loading} icon={<CheckIcon />} onClick={handleSave}>
         {loading ? t('settings.saving') : t('settings.save')}

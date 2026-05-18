@@ -48,6 +48,91 @@
     overflow-wrap: anywhere;
   }
 
+  &__pixel-toggle {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: $text-muted;
+    font: inherit;
+    font-size: $text-xs;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $blue;
+      outline-offset: 4px;
+    }
+  }
+
+  &__pixel-toggle-track {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 28px;
+    background: $bg;
+    border: 3px solid $text-muted;
+    image-rendering: pixelated;
+    box-shadow:
+      inset 4px 4px 0 rgba(255, 255, 255, 0.06),
+      inset -4px -4px 0 rgba(0, 0, 0, 0.32),
+      0 0 0 2px rgba($bg-border, 0.9);
+  }
+
+  &__pixel-toggle-thumb {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 14px;
+    height: 14px;
+    background: $text-muted;
+    box-shadow:
+      3px 0 0 $text-muted,
+      0 3px 0 $text-muted,
+      3px 3px 0 $text-muted,
+      inset 3px 3px 0 rgba(255, 255, 255, 0.16),
+      inset -3px -3px 0 rgba(0, 0, 0, 0.2);
+    transition: transform 120ms steps(2, end), background-color 120ms steps(2, end), box-shadow 120ms steps(2, end);
+  }
+
+  &__pixel-toggle-text {
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  &__pixel-toggle--on {
+    color: $green;
+
+    .account__pixel-toggle-track {
+      border-color: $green;
+      background: rgba($green, 0.14);
+      box-shadow:
+        inset 4px 4px 0 rgba(255, 255, 255, 0.08),
+        inset -4px -4px 0 rgba(0, 0, 0, 0.24),
+        0 0 0 2px rgba($green, 0.18);
+    }
+
+    .account__pixel-toggle-thumb {
+      transform: translateX(24px);
+      background: $green;
+      box-shadow:
+        3px 0 0 $green,
+        0 3px 0 $green,
+        3px 3px 0 $green,
+        inset 3px 3px 0 rgba(255, 255, 255, 0.22),
+        inset -3px -3px 0 rgba(0, 0, 0, 0.18);
+    }
+  }
+
   &__error {
     font-size: $text-xs;
     color: $pink;

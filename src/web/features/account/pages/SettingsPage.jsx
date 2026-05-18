@@ -38,6 +38,7 @@ export default function SettingsPage() {
   const {
     systemNotificationsSupported,
     systemNotificationsEnabled,
+    systemNotificationError,
     notificationPermission,
     requestSystemNotifications,
     disableSystemNotifications,
@@ -49,6 +50,8 @@ export default function SettingsPage() {
 
   const notificationStatus = !systemNotificationsSupported
     ? t('settings.notificationsUnsupported')
+    : systemNotificationError === 'unconfigured'
+      ? t('settings.notificationsUnconfigured')
     : notificationPermission === 'denied'
       ? t('settings.notificationsBlocked')
       : systemNotificationsEnabled

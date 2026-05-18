@@ -3,6 +3,11 @@ import { useLocation, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { useDailyChallengesQuery, usePacksQuery } from '@shared/api/challenges'
 import { qk } from '@shared/api/queryKeys'
+import {
+  apiCreatePushSubscription,
+  apiDeletePushSubscription,
+  apiGetVapidPublicKey,
+} from '@shared/api/pushSubscriptions'
 import Notification from '../components/Notification'
 import { useAuth } from './AuthContext'
 import { useLang } from './LangContext'
@@ -48,7 +53,30 @@ function getNotificationPermission() {
 function supportsSystemNotifications() {
   return typeof window !== 'undefined' &&
     typeof Notification !== 'undefined' &&
-    'serviceWorker' in navigator
+    'serviceWorker' in navigator &&
+    'PushManager' in window
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+
+  for (let i = 0; i < rawData.length; i += 1) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}
+
+async function currentPushSubscription() {
+  if (!supportsSystemNotifications()) return null
+  const registration = await navigator.serviceWorker.ready
+  return registration.pushManager.getSubscription()
+}
+
+function serializePushSubscription(subscription) {
+  return subscription.toJSON()
 }
 
 export function NotificationProvider({ children }) {
@@ -64,6 +92,7 @@ export function NotificationProvider({ children }) {
     Notification.permission === 'granted' &&
     localStorage.getItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY) === '1'
   )
+  const [systemNotificationError, setSystemNotificationError] = useState(null)
   const timersRef = useRef(new Map())
   const offlineNotificationRef = useRef(null)
   const wasOfflineRef = useRef(typeof navigator !== 'undefined' ? !navigator.onLine : false)
@@ -145,25 +174,55 @@ export function NotificationProvider({ children }) {
     if (!supportsSystemNotifications()) {
       setNotificationPermission('unsupported')
       setSystemNotificationsEnabled(false)
+      setSystemNotificationError('unsupported')
       return 'unsupported'
     }
 
     const permission = await Notification.requestPermission()
     setNotificationPermission(permission)
+    setSystemNotificationError(null)
 
-    const enabled = permission === 'granted'
-    setSystemNotificationsEnabled(enabled)
-    if (enabled) {
-      localStorage.setItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY, '1')
-    } else {
+    if (permission !== 'granted') {
+      setSystemNotificationsEnabled(false)
       localStorage.removeItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY)
+      return permission
     }
+
+    const { public_key: publicKey } = await apiGetVapidPublicKey()
+    if (!publicKey) {
+      setSystemNotificationsEnabled(false)
+      setSystemNotificationError('unconfigured')
+      localStorage.removeItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY)
+      return 'unconfigured'
+    }
+
+    const registration = await navigator.serviceWorker.ready
+    const existing = await registration.pushManager.getSubscription()
+    const subscription = existing ?? await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    })
+    await apiCreatePushSubscription(serializePushSubscription(subscription))
+
+    setSystemNotificationsEnabled(true)
+    setSystemNotificationError(null)
+    localStorage.setItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY, '1')
     return permission
   }, [])
 
-  const disableSystemNotifications = useCallback(() => {
+  const disableSystemNotifications = useCallback(async () => {
+    const subscription = await currentPushSubscription()
+    if (subscription) {
+      try {
+        await apiDeletePushSubscription(subscription.endpoint)
+      } catch {
+        // Local opt-out should still succeed if the server record is already gone.
+      }
+      await subscription.unsubscribe()
+    }
     localStorage.removeItem(SYSTEM_NOTIFICATIONS_ENABLED_KEY)
     setSystemNotificationsEnabled(false)
+    setSystemNotificationError(null)
     setNotificationPermission(getNotificationPermission())
   }, [])
 
@@ -304,6 +363,7 @@ export function NotificationProvider({ children }) {
       dismiss,
       systemNotificationsSupported: supportsSystemNotifications(),
       systemNotificationsEnabled,
+      systemNotificationError,
       notificationPermission,
       requestSystemNotifications,
       disableSystemNotifications,

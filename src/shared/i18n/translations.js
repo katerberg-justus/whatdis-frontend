@@ -225,6 +225,7 @@ const translations = {
     'settings.notificationsDisabled': 'Off',
     'settings.notificationsBlocked': 'Blocked in browser',
     'settings.notificationsUnsupported': 'Not supported',
+    'settings.notificationsUnconfigured': 'Server not configured',
     'settings.notificationsTurnOn':  'Turn On',
     'settings.notificationsTurnOff': 'Turn Off',
 

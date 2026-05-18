@@ -3,11 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Play WHATDIS?!, a free AI-powered 20 questions game. Ask yes or no questions, solve daily mystery challenges, collect stickers, and battle friends." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#040c1c" />
+  <meta name="application-name" content="WHATDIS?!" />
+  <link rel="canonical" href="https://whatdis.app/" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <title>WHATDIS?! — 20 Questions with AI</title>
+  <title>WHATDIS?! - Free AI 20 Questions Game</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="WHATDIS?!" />
+  <meta property="og:title" content="WHATDIS?! - Free AI 20 Questions Game" />
+  <meta property="og:description" content="Ask yes or no questions, crack daily AI mystery challenges, collect stickers, and battle friends in WHATDIS?!" />
+  <meta property="og:url" content="https://whatdis.app/" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="WHATDIS?! - Free AI 20 Questions Game" />
+  <meta name="twitter:description" content="A free AI-powered 20 questions game with daily mysteries, stickers, and battles." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "WHATDIS?!",
+      "url": "https://whatdis.app/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web",
+      "description": "A free AI-powered 20 questions game with daily mystery challenges, collectible stickers, and player battles.",
+      "genre": ["Puzzle", "Trivia", "Word game"],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
   <style>
     :root {
       --pink:      #FF007B;
@@ -209,13 +239,19 @@
     /* ── Feature grid ──────────────────────────────────────── */
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: stretch;
       gap: 1.25rem;
       margin: 3rem 0;
     }
 
     .feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 1.75rem 1.25rem;
+      min-height: 12rem;
+      text-align: center;
     }
     .feature:hover {
       border-color: var(--blue);
@@ -245,6 +281,10 @@
 
     .feature h3 {
       font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.7em;
       margin: 0 0 0.75rem;
       color: var(--text);
       letter-spacing: 0.05em;
@@ -254,6 +294,13 @@
       color: var(--text-muted);
       margin: 0;
       line-height: 2;
+      max-width: 24ch;
+    }
+
+    @media (max-width: 559px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ── Demo chat (mirrors ChatWindow.scss) ───────────────── */
@@ -466,10 +513,11 @@
     <button data-lang="pt">PT</button>
   </nav>
 
-  <div class="wrap">
+  <main class="wrap">
 
     <header class="hero">
-      <h1 aria-label="WHATDIS?!">
+      <h1>
+        <span class="visually-hidden">WHATDIS?! - Free AI 20 Questions Game</span>
         <svg class="logo__row" viewBox="0 26 96 22" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-hidden="true">
           <use href="#logoMark" x="0" y="0" width="96" height="96"/>
         </svg>
@@ -522,9 +570,9 @@
       </div>
     </section>
 
-    <h2 class="sec-title">// <span data-i18n="features">FEATURES</span> //</h2>
+    <h2 class="sec-title" id="features-title">// <span data-i18n="features">FEATURES</span> //</h2>
 
-    <section class="features">
+    <section class="features" aria-labelledby="features-title">
       <div class="panel panel--pink feature feature--pink">
         <span class="icon">[ * ]</span>
         <h3 data-i18n="f1Title">DAILY CHALLENGE</h3>
@@ -556,7 +604,7 @@
       <a class="btn btn--pink btn--cta" href="https://whatdis.app" data-i18n="start">START &raquo;</a>
     </section>
 
-  </div>
+  </main>
 
   <footer data-i18n="footer">
     © WHATDIS?! — PRESS START TO BEGIN

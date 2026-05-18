@@ -17,8 +17,8 @@ export function FriendsProvider({ children }) {
     refetchInterval: user ? 30 * 1000 : false,
     refetchIntervalInBackground: true,
   }
-  const { data: rawFriends = [], refetch: refetchFriends } = useFriendsQuery(queryOpts)
-  const { data: rawRequests = [], refetch: refetchRequests } = useFriendRequestsQuery(queryOpts)
+  const { data: rawFriends = [], refetch: refetchFriends, isSuccess: friendsLoaded } = useFriendsQuery(queryOpts)
+  const { data: rawRequests = [], refetch: refetchRequests, isSuccess: requestsLoaded } = useFriendRequestsQuery(queryOpts)
 
   const friends  = useMemo(() => rawFriends.filter(x => x.status === 'accepted'),     [rawFriends])
   const requests = useMemo(() => rawRequests.filter(x => x.direction === 'received'), [rawRequests])
@@ -36,6 +36,7 @@ export function FriendsProvider({ children }) {
 
   useEffect(() => {
     if (!user) return
+    if (!friendsLoaded || !requestsLoaded) return
 
     const requestIds = new Set()
     const friendIds = new Set()
@@ -79,7 +80,7 @@ export function FriendsProvider({ children }) {
     }
 
     seenRef.current = { initialized: true, requestIds, friendIds }
-  }, [friends, requests, user, notify, t])
+  }, [friends, requests, user, friendsLoaded, requestsLoaded, notify, t])
 
   return (
     <FriendsContext.Provider value={{ friends, requests, refresh }}>

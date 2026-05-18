@@ -41,17 +41,17 @@ export const CloseIcon = () => (
 export const LinkIcon = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
     {/* Top-left link */}
-    <rect x="2"  y="6"  width="2" height="6" />
-    <rect x="4"  y="4"  width="6" height="2" />
-    <rect x="10" y="6"  width="2" height="2" />
-    <rect x="4"  y="10" width="2" height="2" />
+    <rect x="2"  y="6"  width="3" height="7" />
+    <rect x="4"  y="4"  width="7" height="3" />
+    <rect x="10" y="6"  width="3" height="3" />
+    <rect x="4"  y="10" width="3" height="3" />
     {/* Bridge */}
-    <rect x="6"  y="11" width="12" height="2" />
+    <rect x="6"  y="11" width="12" height="3" />
     {/* Bottom-right link */}
-    <rect x="20" y="12" width="2"  height="6" />
-    <rect x="14" y="18" width="6"  height="2" />
-    <rect x="12" y="16" width="2"  height="2" />
-    <rect x="18" y="12" width="2"  height="2" />
+    <rect x="19" y="11" width="3"  height="7" />
+    <rect x="13" y="17" width="7"  height="3" />
+    <rect x="11" y="15" width="3"  height="3" />
+    <rect x="17" y="11" width="3"  height="3" />
   </svg>
 )
 

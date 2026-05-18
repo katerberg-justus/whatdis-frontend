@@ -98,13 +98,13 @@ export default function CustomChallengesPage() {
             {c.share_token && (
               <div className="custom-challenges__actions">
                 <IconButton
-                  className="icon-btn--small"
+                  className="icon-btn--small custom-challenges__action-btn custom-challenges__action-btn--link"
                   icon={<LinkIcon />}
                   onClick={(e) => { e.stopPropagation(); copyShare(c.share_token) }}
                   aria-label={t('challenges.customCopyLink')}
                 />
                 <IconButton
-                  className="icon-btn--small"
+                  className="icon-btn--small custom-challenges__action-btn"
                   icon={<ShareIcon />}
                   onClick={(e) => { e.stopPropagation(); setShareToken(c.share_token) }}
                   aria-label={t('game.shareTitle')}

@@ -11,7 +11,7 @@ import DropdownSelect from '../../../components/DropdownSelect'
 import { BackIcon } from '../../../components/icons'
 import './CustomChallengesPage.scss'
 
-const NRG_COST = 5
+const DAILY_LIMIT = 5
 
 const DIFFICULTY_CODES = { easy: 0, medium: 1, hard: 2, impossible: 3 }
 
@@ -31,7 +31,7 @@ export default function CreateCustomChallengePage() {
 
   const formComplete = subject.trim().length > 0 && subjectHint.trim().length > 0
   const canSubmit = formComplete && !submitting && isOnline
-  const costHint = t('challenges.customCostHint').replace('{nrg}', NRG_COST)
+  const dailyLimitHint = t('challenges.customDailyLimitHint').replace('{count}', DAILY_LIMIT)
 
   async function handleSubmit() {
     if (!formComplete || submitting) return
@@ -53,8 +53,8 @@ export default function CreateCustomChallengePage() {
       })
       navigate('/challenges/custom')
     } catch (err) {
-      if (err.response?.status === 402) {
-        setError(t('challenges.customNotEnoughNrg'))
+      if (err.response?.status === 429) {
+        setError(t('challenges.customDailyLimitReached'))
       } else if (err.response?.status === 403) {
         setError(t('challenges.customClaimRequired'))
       } else {
@@ -80,7 +80,7 @@ export default function CreateCustomChallengePage() {
         />
         <div className="create-custom-challenge__heading">
           <h2 className="create-custom-challenge__title">{t('challenges.customCreateTitle')}</h2>
-          <p className="create-custom-challenge__description">{costHint}</p>
+          <p className="create-custom-challenge__description">{dailyLimitHint}</p>
         </div>
       </div>
 

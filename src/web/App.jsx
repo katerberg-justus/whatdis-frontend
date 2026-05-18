@@ -12,6 +12,7 @@ import StatusBar from './components/StatusBar'
 import ChallengesPage from './features/challenges/pages/ChallengesPage'
 import ChallengesLayout from './features/challenges/pages/ChallengesLayout'
 import CustomChallengesPage from './features/challenges/pages/CustomChallengesPage'
+import CustomChallengeSharePage from './features/challenges/pages/CustomChallengeSharePage'
 import CreateCustomChallengePage from './features/challenges/pages/CreateCustomChallengePage'
 import GamePage from './features/games/pages/GamePage'
 import BattlesLayout from './features/battles/pages/BattlesLayout'
@@ -57,6 +58,7 @@ function Layout() {
           <Route path="/challenges" element={<ChallengesLayout />}>
             <Route index element={<ChallengesPage />} />
             <Route path="custom" element={<CustomChallengesPage />} />
+            <Route path="custom/share/:token" element={<CustomChallengeSharePage />} />
           </Route>
           <Route path="/challenges/custom/new" element={<CreateCustomChallengePage />} />
           <Route path="/challenges/:challengeId/games/:gameId" element={<GamePage />} />

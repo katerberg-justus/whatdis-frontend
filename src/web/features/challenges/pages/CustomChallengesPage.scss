@@ -6,6 +6,12 @@
   gap: 1rem;
   padding-bottom: 5rem;
 
+  &--share {
+    max-width: 26rem;
+    margin: 0 auto;
+    padding-top: 2rem;
+  }
+
   &__empty {
     color: $text-muted;
     font-size: $text-sm;

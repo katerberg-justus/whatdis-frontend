@@ -89,6 +89,10 @@ const translations = {
     'challenges.customCreateError':     'Could not create challenge. Try again.',
     'challenges.customLockedTitle':     'Custom Challenges',
     'challenges.customLockedMessage':   'Claim your account to author and share custom challenges.',
+    'challenges.customShareLoading':    'Opening shared challenge...',
+    'challenges.customShareError':      'Could not open this shared challenge.',
+    'challenges.customShareInvalid':    'This shared challenge link is invalid.',
+    'challenges.customSharedLabel':     'Shared Challenge',
 
     'notifications.newInvite':      'New battle invite',
     'notifications.yourTurn':       'Your turn',

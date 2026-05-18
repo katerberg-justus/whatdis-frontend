@@ -6,12 +6,7 @@ import { queryClient } from '@shared/api/queryClient'
 import './web/index.scss'
 import App from './web/App.jsx'
 
-export const updateSW = registerSW({
-  immediate: true,
-  onNeedRefresh() {
-    window.__pwaNeedsRefresh = true
-  },
-})
+registerSW({ immediate: true })
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

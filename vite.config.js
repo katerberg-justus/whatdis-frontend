@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: [
         'favicon.svg',
         'apple-touch-icon.png',
@@ -16,6 +16,8 @@ export default defineConfig({
         'maskable-icon-512x512.png',
       ],
       workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         importScripts: ['/notification-sw.js'],

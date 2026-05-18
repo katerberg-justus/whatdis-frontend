@@ -15,6 +15,9 @@ import { formatLocalizedDate } from '../../../utils/dateFormat'
 import { useNotifications } from '../../../context/NotificationContext'
 import './ChallengesPage.scss'
 
+const INSTALL_BANNER_DISMISSED_UNTIL_KEY = 'whatdis_pwa_install_banner_dismissed_until'
+const INSTALL_BANNER_DISMISS_MS = 7 * 24 * 60 * 60 * 1000
+
 const LockBadge = () => (
   <svg viewBox="0 0 10 12" width="10" height="12" fill="currentColor" shapeRendering="crispEdges" className="challenges__pack-lock">
     <rect x="2" y="0" width="6" height="2" />
@@ -66,6 +69,15 @@ const SignUpBannerMessage = ({ t }) => {
   )
 }
 
+function isInstallBannerDismissed() {
+  const dismissedUntil = Number(localStorage.getItem(INSTALL_BANNER_DISMISSED_UNTIL_KEY))
+  return Number.isFinite(dismissedUntil) && dismissedUntil > Date.now()
+}
+
+function isRunningStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+}
+
 export default function ChallengesPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -77,10 +89,33 @@ export default function ChallengesPage() {
   const { isActive, subscription } = useSubscription()
   const [upgradeOpen,   setUpgradeOpen]   = useState(false)
   const [welcomeUpgradeOpen, setWelcomeUpgradeOpen] = useState(!!location.state?.promptUpgrade)
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [installBannerDismissed, setInstallBannerDismissed] = useState(isInstallBannerDismissed)
 
   useEffect(() => {
     if (location.state?.promptUpgrade) {
       navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isRunningStandalone()) return undefined
+
+    function handleBeforeInstallPrompt(event) {
+      event.preventDefault()
+      setInstallPrompt(event)
+    }
+
+    function handleAppInstalled() {
+      setInstallPrompt(null)
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.addEventListener('appinstalled', handleAppInstalled)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+      window.removeEventListener('appinstalled', handleAppInstalled)
     }
   }, [])
 
@@ -99,7 +134,28 @@ export default function ChallengesPage() {
   const isGuest = !user || user.is_guest
   const showUpgradeBanner = !isGuest && !isActive && subscription !== undefined
   const showSignUpBanner = isGuest
+  const showInstallBanner = Boolean(installPrompt) && !installBannerDismissed
   const dailyDate = formatLocalizedDate(new Date(), dateLocale)
+
+  function dismissInstallBanner() {
+    localStorage.setItem(
+      INSTALL_BANNER_DISMISSED_UNTIL_KEY,
+      String(Date.now() + INSTALL_BANNER_DISMISS_MS),
+    )
+    setInstallBannerDismissed(true)
+  }
+
+  async function installPwa() {
+    if (!installPrompt) return
+
+    installPrompt.prompt()
+    const choice = await installPrompt.userChoice
+    setInstallPrompt(null)
+
+    if (choice?.outcome !== 'accepted') {
+      dismissInstallBanner()
+    }
+  }
 
   async function playDaily(daily) {
     if (!isOnline) {
@@ -163,6 +219,19 @@ export default function ChallengesPage() {
           message={showSignUpBanner ? <SignUpBannerMessage t={t} /> : t('upgrade.perk2desc')}
           cta={showSignUpBanner ? t('register.submit') : t('upgrade.cta')}
           onCta={() => showSignUpBanner ? navigate('/register') : setUpgradeOpen(true)}
+        />
+      )}
+
+      {showInstallBanner && (
+        <Banner
+          variant="muted"
+          title={t('pwa.installTitle')}
+          message={t('pwa.installMessage')}
+          cta={t('pwa.installCta')}
+          onCta={installPwa}
+          dismissible
+          onDismiss={dismissInstallBanner}
+          dismissLabel={t('pwa.dismiss')}
         />
       )}
 

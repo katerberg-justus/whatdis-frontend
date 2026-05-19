@@ -69,6 +69,34 @@ export const ShareIcon = () => (
   </svg>
 )
 
+export const ThumbUpIcon = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    <rect x="9" y="3" width="4" height="3" />
+    <rect x="8" y="6" width="5" height="3" />
+    <rect x="6" y="9" width="8" height="3" />
+    <rect x="4" y="12" width="14" height="3" />
+    <rect x="4" y="15" width="12" height="3" />
+    <rect x="4" y="18" width="10" height="3" />
+    <rect x="1" y="11" width="3" height="10" />
+    <rect x="18" y="13" width="3" height="2" />
+    <rect x="16" y="17" width="3" height="2" />
+  </svg>
+)
+
+export const ThumbDownIcon = () => (
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    <rect x="4" y="3" width="10" height="3" />
+    <rect x="4" y="6" width="12" height="3" />
+    <rect x="4" y="9" width="14" height="3" />
+    <rect x="6" y="12" width="8" height="3" />
+    <rect x="8" y="15" width="5" height="3" />
+    <rect x="9" y="18" width="4" height="3" />
+    <rect x="1" y="3" width="3" height="10" />
+    <rect x="18" y="9" width="3" height="2" />
+    <rect x="16" y="5" width="3" height="2" />
+  </svg>
+)
+
 export const TrashIcon = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
     {/* Handle */}

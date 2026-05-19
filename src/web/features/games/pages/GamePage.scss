@@ -108,6 +108,36 @@
     color: $blue;
   }
 
+  &__rating {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: -0.25rem;
+  }
+
+  &__rating-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &--active {
+      color: $green;
+      border-color: $green;
+    }
+
+    &--active:first-child {
+      color: $pink;
+      border-color: $pink;
+    }
+  }
+
   &__share-title {
     margin: 0.25rem 0 -0.75rem;
     font-size: $text-xs;

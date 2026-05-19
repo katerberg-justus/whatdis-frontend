@@ -6,6 +6,7 @@ import {
   useCreateGameMutation,
   useSubmitGuessMutation,
   useRequestHintMutation,
+  useRateChallengeMutation,
 } from '@shared/api/games'
 
 const HINT_ENERGY_COST = 5
@@ -20,7 +21,7 @@ import Button from '../../../components/Button'
 import Input from '../../../components/Input'
 import Dialog from '../../../components/Dialog'
 import IconButton from '../../../components/IconButton'
-import { BackIcon } from '../../../components/icons'
+import { BackIcon, ThumbDownIcon, ThumbUpIcon } from '../../../components/icons'
 import { useEnergy } from '../../../context/EnergyContext'
 import { useNotifications } from '../../../context/NotificationContext'
 import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
@@ -59,6 +60,7 @@ export default function GamePage() {
   const prevGuessCountRef         = useRef(null)
   const submitMutation = useSubmitGuessMutation(gameId)
   const hintMutation   = useRequestHintMutation(gameId)
+  const rateMutation   = useRateChallengeMutation(gameId)
   const createGameMutation = useCreateGameMutation()
 
   useEffect(() => {
@@ -267,6 +269,31 @@ export default function GamePage() {
     }
   }
 
+  async function handleRate(rating) {
+    const challengeId = game?.challenge?.id
+    if (!challengeId || (!done && !game?.completed_at) || rateMutation.isPending) return
+    if (!isOnline) {
+      notify({
+        key: 'network-offline',
+        title: t('notifications.offlineTitle'),
+        message: t('notifications.offlineMessage'),
+        duration: 0,
+      })
+      return
+    }
+    const previousRating = game?.challenge?.rating ?? null
+    setGame(prev => prev?.challenge
+      ? { ...prev, challenge: { ...prev.challenge, rating } }
+      : prev)
+    try {
+      await rateMutation.mutateAsync({ challengeId, rating })
+    } catch {
+      setGame(prev => prev?.challenge
+        ? { ...prev, challenge: { ...prev.challenge, rating: previousRating } }
+        : prev)
+    }
+  }
+
   return (
     <div className="game">
 
@@ -331,6 +358,22 @@ export default function GamePage() {
             <p className="game__won-stat">
               {t('game.solvedIn')} <span className="game__won-stat-count">{messages.length}</span> {messages.length === 1 ? t('game.guess') : t('game.guesses')}!
             </p>
+            <div className="game__rating" aria-label="Rate challenge">
+              <IconButton
+                className={`game__rating-btn${challenge?.rating === 'dislike' ? ' game__rating-btn--active' : ''}`}
+                icon={<ThumbDownIcon />}
+                onClick={() => handleRate('dislike')}
+                disabled={(!done && !game?.completed_at) || rateMutation.isPending || !isOnline}
+                aria-label="Thumbs down"
+              />
+              <IconButton
+                className={`game__rating-btn${challenge?.rating === 'like' ? ' game__rating-btn--active' : ''}`}
+                icon={<ThumbUpIcon />}
+                onClick={() => handleRate('like')}
+                disabled={(!done && !game?.completed_at) || rateMutation.isPending || !isOnline}
+                aria-label="Thumbs up"
+              />
+            </div>
             <div className="game__won-actions">
               <Button fullWidth color="muted" onClick={() => navigate(backTo)}>{t('game.backToPack')}</Button>
               {nextChallenge && (

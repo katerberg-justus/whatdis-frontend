@@ -32,6 +32,11 @@ export async function apiRequestHint(gameId) {
   return data
 }
 
+export async function apiRateChallenge(challengeId, rating) {
+  const { data } = await apiClient.put(`/challenges/${challengeId}/rating`, { rating })
+  return data
+}
+
 export function useGamesQuery(options = {}) {
   const { params, ...queryOptions } = options
   return useQuery({
@@ -95,6 +100,19 @@ export function useRequestHintMutation(gameId) {
     mutationFn: () => apiRequestHint(gameId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: qk.guesses(gameId) })
+    },
+  })
+}
+
+export function useRateChallengeMutation(gameId) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ challengeId, rating }) => apiRateChallenge(challengeId, rating),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: qk.game(gameId) })
+      qc.invalidateQueries({ queryKey: qk.games })
+      qc.invalidateQueries({ queryKey: qk.customChallenges })
+      qc.invalidateQueries({ queryKey: qk.myCustomChallenges })
     },
   })
 }

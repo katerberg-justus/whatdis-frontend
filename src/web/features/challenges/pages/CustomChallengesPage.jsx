@@ -9,7 +9,7 @@ import ChallengeCard from '../../../components/ChallengeCard'
 import IconButton from '../../../components/IconButton'
 import LockedOverlay from '../../../components/LockedOverlay'
 import Dialog from '../../../components/Dialog'
-import { LinkIcon, ShareIcon } from '../../../components/icons'
+import { LinkIcon, ShareIcon, ThumbDownIcon, ThumbUpIcon } from '../../../components/icons'
 import { useNotifications } from '../../../context/NotificationContext'
 import { useOnlineStatus } from '../../../hooks/useOnlineStatus'
 import './CustomChallengesPage.scss'
@@ -19,6 +19,15 @@ const buildShareUrl = (token) => `${window.location.origin}/challenges/custom/sh
 function openShareWindow(url) {
   if (typeof window === 'undefined') return
   window.open(url, '_blank', 'noopener,noreferrer,width=720,height=640')
+}
+
+function StatItem({ label, value, children }) {
+  return (
+    <span className="custom-challenges__stat" aria-label={`${label}: ${value}`} title={`${label}: ${value}`}>
+      {children}
+      <span>{value ?? 0}</span>
+    </span>
+  )
 }
 
 export default function CustomChallengesPage() {
@@ -110,6 +119,14 @@ export default function CustomChallengesPage() {
                     onClick={(e) => { e.stopPropagation(); setShareToken(c.share_token) }}
                     aria-label={t('game.shareTitle')}
                   />
+                </div>
+              )}
+              {c.is_owner && (
+                <div className="custom-challenges__stats">
+                  <StatItem label="Plays" value={c.play_count}>P</StatItem>
+                  <StatItem label="Completions" value={c.completion_count}>C</StatItem>
+                  <StatItem label="Likes" value={c.like_count}><ThumbUpIcon /></StatItem>
+                  <StatItem label="Dislikes" value={c.dislike_count}><ThumbDownIcon /></StatItem>
                 </div>
               )}
             </div>

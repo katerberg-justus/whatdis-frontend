@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigationType } from 'react-router'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { LangProvider } from './context/LangContext'
 import { CurrencyProvider } from './context/CurrencyContext'
@@ -38,6 +39,18 @@ import { TourProvider } from './components/Tour'
 
 const AUTH_ROUTES = ['/login', '/register']
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  const navigationType = useNavigationType()
+
+  useEffect(() => {
+    if (navigationType === 'POP') return
+    window.scrollTo(0, 0)
+  }, [pathname, navigationType])
+
+  return null
+}
+
 function Layout() {
   const { pathname } = useLocation()
   const { user } = useAuth()
@@ -51,6 +64,7 @@ function Layout() {
 
   return (
     <>
+      <ScrollToTop />
       {!isAuth && <Nav />}
       {!isAuth && <StatusBar />}
       <main className={isAuth ? 'main-content main-content--full' : 'main-content'}>
